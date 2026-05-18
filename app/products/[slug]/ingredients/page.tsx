@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = getIngredientPageWithProduct(slug);
   if (!data) return { title: "Not Found" };
   return {
-    title: `Ingredients — ${data.product.name} | Miska`,
+    title: `Ingredients — ${data.product.name}`,
     description: `Full ingredient breakdown for ${data.product.name}. Clinical actives explained.`,
   };
 }

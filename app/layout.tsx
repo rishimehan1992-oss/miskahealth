@@ -17,7 +17,10 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "MISKA — Hair & Skin Science",
+  title: {
+    default: "Miska Hair & Skin Science",
+    template: "%s | Miska Hair & Skin Science",
+  },
   description: "Clinical-grade rosemary hair oil and treatment shampoo. Clinic formulated in Bangalore.",
 };
 

@@ -8,8 +8,8 @@ import { labelCaps, pageShell, sectionY } from "@/lib/layout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Ingredients — Miska",
-  description: "Clinical ingredient breakdowns for every MISKA hair formulation.",
+  title: "Ingredients",
+  description: "Clinical ingredient breakdowns for every Miska Hair & Skin Science formulation.",
 };
 
 export default function IngredientsIndexPage() {
@@ -27,7 +27,7 @@ export default function IngredientsIndexPage() {
           <em className="italic font-medium text-[#1C3A2A]">explained.</em>
         </h1>
         <p className="text-[15px] text-[#666] leading-[1.9] font-light max-w-lg">
-          Ingredient infographics for each MISKA product — what it does, why it&apos;s included, and how it supports your concern.
+          Ingredient infographics for each Miska formulation — what it does, why it&apos;s included, and how it supports your concern.
         </p>
       </section>
 

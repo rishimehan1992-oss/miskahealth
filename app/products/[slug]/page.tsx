@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { products, getProductBySlug } from "@/data/products";
 import ImageCarousel from "@/components/ImageCarousel";
 import ProductCard from "@/components/ProductCard";
 import ProductLifestyle from "@/components/ProductLifestyle";
+import ProductSubheader from "@/components/ProductSubheader";
 import { labelCaps, pageShell, sectionYSm } from "@/lib/layout";
 import type { Metadata } from "next";
 
@@ -30,32 +31,12 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E2DB]">
-        <div className={`${pageShell} h-16 sm:h-[4.25rem] grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:gap-6 min-w-0`}>
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-[10px] sm:text-[11px] tracking-[0.12em] sm:tracking-[0.15em] text-[#666] uppercase hover:text-[#0A0A0A] shrink-0"
-          >
-            <ArrowLeft size={13} />
-            Back
-          </Link>
-          <span className={`text-center text-[10px] sm:text-[11px] font-semibold ${labelCaps} truncate px-2`}>
-            MISKA
-          </span>
-          {p.available && p.amazonUrl ? (
-            <a
-              href={p.amazonUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="shrink-0 text-[9px] sm:text-[10px] tracking-[0.14em] sm:tracking-[0.18em] uppercase font-semibold bg-[#1C3A2A] text-white px-3 sm:px-5 py-2.5 hover:bg-[#152d20] whitespace-nowrap"
-            >
-              Buy ₹{p.price}
-            </a>
-          ) : (
-            <span className="text-[11px] text-[#AAA] shrink-0 justify-self-end">Soon</span>
-          )}
-        </div>
-      </header>
+      <ProductSubheader
+        product={p}
+        backHref="/"
+        backLabel="Back"
+        buyLabel={p.available && p.price ? `Buy ₹${p.price}` : undefined}
+      />
 
       <div className={`${pageShell} py-12 sm:py-20 lg:py-28`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 sm:gap-16 lg:gap-20 xl:gap-24">

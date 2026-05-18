@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
 import { products } from "@/data/products";
 import { labelCaps, pageShell, sectionY } from "@/lib/layout";
@@ -146,7 +147,7 @@ export default function Home() {
       <footer className="border-t border-[#E5E2DB] py-16 sm:py-20">
         <div className={`${pageShell} flex flex-col md:flex-row justify-between gap-6 text-[12px] text-[#999]`}>
           <div>
-            <p className={`font-semibold ${labelCaps} text-[#0A0A0A] mb-2`}>Miska</p>
+            <BrandMark variant="footer" href="/" className="mb-3" />
             <p>© 2026 · Bangalore</p>
           </div>
           <p className="md:text-right">Clinical-grade hair &amp; skin formulations</p>

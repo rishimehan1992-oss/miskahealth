@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { labelCaps, pageShell } from "@/lib/layout";
+import BrandMark from "./BrandMark";
+import { pageShell } from "@/lib/layout";
 
 const links = [
   { label: "Products", href: "/#products" },
@@ -28,13 +29,8 @@ export default function Navbar() {
         scrolled ? "bg-white/95 backdrop-blur-md border-b border-[#E5E2DB] shadow-sm" : "bg-[#F9F8F5]/90 backdrop-blur-sm"
       }`}
     >
-      <div className={`${pageShell} h-[4.25rem] sm:h-20 flex items-center justify-between gap-4 min-w-0`}>
-        <Link href="/" className="flex flex-col leading-none min-w-0 pr-3">
-          <span className={`text-[11px] sm:text-[12px] font-semibold ${labelCaps}`}>MISKA</span>
-          <span className="hidden sm:block text-[9px] tracking-[0.12em] text-[#888] uppercase mt-1.5">
-            Hair &amp; Skin Science
-          </span>
-        </Link>
+      <div className={`${pageShell} min-h-[4.25rem] sm:min-h-20 py-3 flex items-center justify-between gap-4 min-w-0`}>
+        <BrandMark variant="nav" href="/" className="shrink-0 pr-2 max-w-[55%] sm:max-w-none" />
 
         <nav className="hidden md:flex items-center gap-10">
           {links.map((l) => (
@@ -46,12 +42,12 @@ export default function Navbar() {
 
         <Link
           href="/#products"
-          className="hidden md:inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20]"
+          className="hidden md:inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20] shrink-0"
         >
           Shop now
         </Link>
 
-        <button type="button" className="md:hidden p-1 -mr-1" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button type="button" className="md:hidden p-1 -mr-1 shrink-0" onClick={() => setOpen(!open)} aria-label="Menu">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
