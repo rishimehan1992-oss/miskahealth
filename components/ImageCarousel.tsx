@@ -17,8 +17,8 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
   if (!valid.length) return null;
 
   return (
-    <div className="select-none">
-      <div className="relative aspect-square overflow-hidden bg-white">
+    <div className="select-none w-full cursor-default">
+      <div className="relative aspect-square overflow-hidden bg-white mx-auto max-w-[min(100%,28rem)]">
         {valid.map((src, i) => (
           <div
             key={imageUrl(src)}
@@ -31,7 +31,7 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
               alt={`${alt} — ${i + 1}`}
               priority={priority && i === 0}
               sizes="(max-width: 768px) 100vw, 400px"
-              className="object-contain p-4 sm:p-5 md:p-6"
+              className="object-contain p-6 sm:p-8 md:p-10"
             />
           </div>
         ))}
@@ -40,7 +40,7 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
             <button
               type="button"
               onClick={() => setCurrent((c) => (c - 1 + valid.length) % valid.length)}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 sm:p-2 text-[#999] hover:text-[#0A0A0A] touch-manipulation"
+              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 p-2 text-[#999] hover:text-[#0A0A0A] touch-manipulation"
               aria-label="Previous"
             >
               <ChevronLeft size={20} strokeWidth={1} />
@@ -48,7 +48,7 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
             <button
               type="button"
               onClick={() => setCurrent((c) => (c + 1) % valid.length)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 sm:p-2 text-[#999] hover:text-[#0A0A0A] touch-manipulation"
+              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 p-2 text-[#999] hover:text-[#0A0A0A] touch-manipulation"
               aria-label="Next"
             >
               <ChevronRight size={20} strokeWidth={1} />
@@ -57,7 +57,7 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
         )}
       </div>
       {valid.length > 1 && (
-        <div className="flex justify-center gap-2 mt-5 sm:mt-4 pb-2">
+        <div className="flex justify-center gap-2.5 mt-6 pb-1">
           {valid.map((_, i) => (
             <button
               key={i}

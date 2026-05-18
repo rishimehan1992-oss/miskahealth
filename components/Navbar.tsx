@@ -7,6 +7,7 @@ import { labelCaps, pageShell } from "@/lib/layout";
 
 const links = [
   { label: "Products", href: "/#products" },
+  { label: "Ingredients", href: "/ingredients" },
   { label: "Science", href: "/#science" },
   { label: "About", href: "/#about" },
 ];
@@ -27,13 +28,15 @@ export default function Navbar() {
         scrolled ? "bg-white/95 backdrop-blur-md border-b border-[#E5E2DB] shadow-sm" : "bg-[#F9F8F5]/90 backdrop-blur-sm"
       }`}
     >
-      <div className={`${pageShell} h-16 flex items-center justify-between gap-3 min-w-0`}>
-        <Link href="/" className="flex flex-col leading-none min-w-0 pr-2">
+      <div className={`${pageShell} h-[4.25rem] sm:h-20 flex items-center justify-between gap-4 min-w-0`}>
+        <Link href="/" className="flex flex-col leading-none min-w-0 pr-3">
           <span className={`text-[11px] sm:text-[12px] font-semibold ${labelCaps}`}>MISKA</span>
-          <span className="hidden sm:block text-[9px] tracking-[0.12em] text-[#888] uppercase mt-1">Hair &amp; Skin Science</span>
+          <span className="hidden sm:block text-[9px] tracking-[0.12em] text-[#888] uppercase mt-1.5">
+            Hair &amp; Skin Science
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-9">
+        <nav className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <Link key={l.href} href={l.href} className="text-[13px] text-[#555] hover:text-[#0A0A0A]">
               {l.label}
@@ -43,24 +46,28 @@ export default function Navbar() {
 
         <Link
           href="/#products"
-          className="hidden md:inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-5 py-2.5 hover:bg-[#152d20]"
+          className="hidden md:inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20]"
         >
           Shop now
         </Link>
 
-        <button type="button" className="md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
+        <button type="button" className="md:hidden p-1 -mr-1" onClick={() => setOpen(!open)} aria-label="Menu">
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
 
       {open && (
-        <nav className="md:hidden border-t border-[#E5E2DB] bg-white px-6 sm:px-8 py-5 flex flex-col gap-4">
+        <nav className={`md:hidden border-t border-[#E5E2DB] bg-white ${pageShell} py-6 flex flex-col gap-5`}>
           {links.map((l) => (
-            <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-[14px]">
+            <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-[15px] py-1">
               {l.label}
             </Link>
           ))}
-          <Link href="/#products" onClick={() => setOpen(false)} className="text-center bg-[#1C3A2A] text-white py-3 text-[11px] uppercase tracking-wider font-semibold">
+          <Link
+            href="/#products"
+            onClick={() => setOpen(false)}
+            className="text-center bg-[#1C3A2A] text-white py-3.5 mt-2 text-[11px] uppercase tracking-wider font-semibold"
+          >
             Shop now
           </Link>
         </nav>
