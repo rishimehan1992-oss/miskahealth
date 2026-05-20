@@ -19,7 +19,7 @@ export default function CartPage() {
 
       <div className={`${pageShell} py-10 sm:py-16 pb-24`}>
         {!ready ? (
-          <p className="text-center text-[#999] py-20">Loading…</p>
+          <p className="text-center text-[#999] py-20 font-light">Loading…</p>
         ) : itemCount === 0 ? (
           <div className="text-center py-20 sm:py-28">
             <h1 className="font-serif text-[32px] font-light text-[#0A0A0A] mb-4">Your bag is empty</h1>
@@ -32,57 +32,57 @@ export default function CartPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-12 lg:gap-16">
-            <div>
-              <h1 className="font-serif text-[28px] sm:text-[36px] font-light text-[#0A0A0A] mb-8 sm:mb-10">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(280px,340px)] gap-0 lg:gap-0">
+            <div className="min-w-0 lg:pr-12 xl:pr-16">
+              <h1 className="font-serif text-[28px] sm:text-[36px] font-light text-[#0A0A0A] mb-10 sm:mb-12">
                 Your bag
-                <span className="text-[#AAA] font-normal text-[18px] ml-3">({itemCount})</span>
+                <span className="text-[#CCC] font-normal text-[18px] ml-3">({itemCount})</span>
               </h1>
-              <ul className="space-y-6">
+              <ul>
                 {pricedLines.map((line) => (
                   <li
                     key={line.slug}
-                    className="flex gap-5 sm:gap-6 bg-white border border-[#E5E2DB] p-5 sm:p-6"
+                    className="flex gap-6 sm:gap-8 py-8 shop-divider first:pt-0 first:border-t-0"
                   >
                     {line.image && (
                       <Link
                         href={`/products/${line.slug}`}
-                        className="relative w-24 h-24 sm:w-28 sm:h-28 shrink-0 bg-[#F9F8F5] border border-[#EDE9E1]"
+                        className="relative w-28 h-28 sm:w-32 sm:h-32 shrink-0 bg-[#FDFCFA]"
                       >
                         <Image
                           src={imageUrl(line.image)}
                           alt={line.name}
                           fill
-                          className="object-contain p-2"
-                          sizes="112px"
+                          className="object-contain p-3"
+                          sizes="128px"
                         />
                       </Link>
                     )}
                     <div className="flex-1 min-w-0 flex flex-col">
                       <Link
                         href={`/products/${line.slug}`}
-                        className="font-serif text-[18px] sm:text-[20px] text-[#0A0A0A] hover:text-[#1C3A2A]"
+                        className="font-serif text-[20px] sm:text-[22px] text-[#0A0A0A] hover:text-[#1C3A2A] transition-colors"
                       >
                         {line.name}
                       </Link>
-                      <p className="text-[12px] text-[#999] mt-1">{line.volume}</p>
-                      <p className="text-[15px] font-semibold mt-3">{formatInr(line.unitPrice)}</p>
-                      <div className="mt-auto pt-5 flex items-center justify-between gap-4">
-                        <div className="inline-flex items-center border border-[#E5E2DB]">
+                      <p className="text-[12px] text-[#999] mt-1 font-light">{line.volume}</p>
+                      <p className="text-[16px] font-semibold mt-4">{formatInr(line.unitPrice)}</p>
+                      <div className="mt-auto pt-6 flex items-center justify-between gap-4">
+                        <div className="inline-flex items-center gap-4 text-[13px]">
                           <button
                             type="button"
                             aria-label="Decrease quantity"
                             onClick={() => setQuantity(line.slug, line.quantity - 1)}
-                            className="p-2.5 hover:bg-[#F9F8F5]"
+                            className="text-[#888] hover:text-[#0A0A0A] p-1"
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="w-10 text-center text-[13px] font-medium">{line.quantity}</span>
+                          <span className="font-medium w-6 text-center">{line.quantity}</span>
                           <button
                             type="button"
                             aria-label="Increase quantity"
                             onClick={() => setQuantity(line.slug, line.quantity + 1)}
-                            className="p-2.5 hover:bg-[#F9F8F5]"
+                            className="text-[#888] hover:text-[#0A0A0A] p-1"
                           >
                             <Plus size={14} />
                           </button>
@@ -90,10 +90,10 @@ export default function CartPage() {
                         <button
                           type="button"
                           onClick={() => removeItem(line.slug)}
-                          className="text-[#999] hover:text-[#0A0A0A] p-2"
+                          className="text-[11px] tracking-[0.1em] uppercase text-[#AAA] hover:text-[#0A0A0A]"
                           aria-label="Remove item"
                         >
-                          <Trash2 size={16} />
+                          Remove
                         </button>
                       </div>
                     </div>
@@ -101,7 +101,7 @@ export default function CartPage() {
                 ))}
               </ul>
             </div>
-            <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
+            <div className="mt-12 lg:mt-0 lg:sticky lg:top-28 lg:self-start space-y-8">
               <OrderSummary />
               <Link
                 href="/checkout?step=shipping"
@@ -109,7 +109,7 @@ export default function CartPage() {
               >
                 Proceed to checkout
               </Link>
-              <p className="text-[11px] text-[#AAA] text-center leading-relaxed">
+              <p className="text-[11px] text-[#AAA] text-center lg:text-left leading-relaxed font-light">
                 Guest checkout · Google sign-in before payment
               </p>
             </div>

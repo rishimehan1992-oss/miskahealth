@@ -39,9 +39,9 @@ export default async function IngredientsPage({ params }: Props) {
       <div className={`${pageShell} py-12 sm:py-16 lg:py-20`}>
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,280px)_1fr] gap-12 lg:gap-16 xl:gap-20">
           <aside className="lg:sticky lg:top-24 lg:self-start space-y-6">
-            <div className="rounded-2xl bg-white p-6 sm:p-8 shadow-[0_8px_40px_rgba(10,10,10,0.06)]">
+            <div className="border border-[#E5E2DB] bg-[#FDFCFA] p-6 sm:p-8">
               <p className={`text-[10px] ${labelCaps} text-[#AAA] mb-2`}>{p.label}</p>
-              <p className="font-serif text-[20px] text-[#0A0A0A] leading-tight mb-4">{p.name}</p>
+              <p className="font-serif text-[20px] text-[#0A0A0A] leading-tight mb-6">{p.name}</p>
               <div className="relative aspect-square max-w-[220px] mx-auto lg:mx-0">
                 <ProductImage
                   src={p.images.main}
@@ -64,7 +64,7 @@ export default async function IngredientsPage({ params }: Props) {
 
             <Link
               href={`/products/${p.slug}`}
-              className="block text-center text-[10px] tracking-[0.15em] uppercase text-[#666] rounded-2xl bg-white/80 py-4 shadow-[0_4px_24px_rgba(10,10,10,0.04)] hover:shadow-[0_8px_32px_rgba(10,10,10,0.08)] hover:text-[#0A0A0A] transition-colors"
+              className="block text-center text-[10px] tracking-[0.15em] uppercase text-[#666] py-4 shop-divider hover:text-[#0A0A0A] transition-colors"
             >
               View product details
             </Link>
@@ -77,12 +77,9 @@ export default async function IngredientsPage({ params }: Props) {
             </h1>
             <p className="text-[15px] text-[#666] leading-[1.9] font-light max-w-xl mb-10">{page.subhead}</p>
 
-            <div className="flex flex-wrap gap-2.5 mb-12">
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-12">
               {page.freeFrom.map((tag) => (
-                <span
-                  key={tag}
-                  className="text-[9px] tracking-[0.1em] uppercase text-[#666] bg-white/90 px-3.5 py-2 rounded-full shadow-[0_2px_12px_rgba(10,10,10,0.04)]"
-                >
+                <span key={tag} className="text-[9px] tracking-[0.12em] uppercase text-[#888]">
                   {tag}
                 </span>
               ))}
@@ -90,7 +87,7 @@ export default async function IngredientsPage({ params }: Props) {
 
             <IngredientInfographic
               cards={page.cards}
-              heroVisual={page.heroVisual}
+              productImage={p.images.main}
               labelImage={page.labelImage}
               productName={p.name}
             />

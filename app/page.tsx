@@ -1,6 +1,9 @@
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
 import ProductCard from "@/components/ProductCard";
+import ProductImage from "@/components/ProductImage";
+import { getIngredientPage } from "@/data/ingredients";
 import { products } from "@/data/products";
 import { labelCaps, pageShell, sectionY } from "@/lib/layout";
 import { ArrowRight } from "lucide-react";
@@ -88,7 +91,7 @@ export default function Home() {
       </section>
 
       <section id="science" className={`${pageShell} ${sectionY}`}>
-        <div className="grid lg:grid-cols-[minmax(0,260px)_1fr] gap-12 lg:gap-24">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14 sm:mb-16">
           <div>
             <div className="flex items-center gap-4 mb-6">
               <div className="w-10 h-px bg-[#1C3A2A]" />
@@ -96,26 +99,63 @@ export default function Home() {
                 The science
               </span>
             </div>
-            <h2 className="font-serif text-[32px] md:text-[40px] font-light leading-[1.12] text-[#0A0A0A]">
-              Every ingredient
+            <h2 className="font-serif text-[32px] md:text-[40px] font-light leading-[1.12] text-[#0A0A0A] max-w-lg">
+              Ingredients matched
               <br />
-              <em className="italic">earns its place.</em>
+              <em className="italic">to each formula.</em>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 gap-x-10 sm:gap-x-14 gap-y-10 sm:gap-y-12">
-            {[
-              { name: "Rosemary", note: "Increases scalp microcirculation" },
-              { name: "Biotin", note: "Strengthens the keratin matrix" },
-              { name: "Caffeine", note: "Counteracts DHT-driven hair loss" },
-              { name: "Moringa", note: "Antioxidant scalp protection" },
-            ].map((a) => (
-              <div key={a.name} className="border-b border-[#EDEBE5] pb-8">
-                <p className="font-serif text-[18px] text-[#0A0A0A] mb-3">{a.name}</p>
-                <p className="text-[13px] text-[#888] font-light leading-relaxed">{a.note}</p>
-              </div>
-            ))}
-          </div>
+          <Link
+            href="/ingredients"
+            className="inline-flex items-center gap-2 text-[10px] tracking-[0.15em] uppercase font-semibold text-[#1C3A2A] shrink-0"
+          >
+            All formulations
+            <ArrowRight size={12} />
+          </Link>
         </div>
+        <ul className="divide-y divide-[#E5E2DB] border-t border-[#E5E2DB]">
+          {products
+            .filter((p) => getIngredientPage(p.slug))
+            .map((p) => {
+              const page = getIngredientPage(p.slug)!;
+              return (
+                <li key={p.slug}>
+                  <Link
+                    href={`/products/${p.slug}/ingredients`}
+                    className="group grid grid-cols-1 sm:grid-cols-[120px_1fr] lg:grid-cols-[140px_1fr_auto] gap-6 sm:gap-10 py-10 sm:py-12 items-center"
+                  >
+                    <div className="relative aspect-square max-w-[120px] border border-[#E5E2DB] bg-[#FDFCFA]">
+                      <ProductImage
+                        src={p.images.main}
+                        alt={p.name}
+                        sizes="120px"
+                        className="object-contain p-4"
+                      />
+                    </div>
+                    <div>
+                      <p className={`text-[9px] ${labelCaps} text-[#1C3A2A] mb-2`}>{p.label}</p>
+                      <h3 className="font-serif text-[20px] sm:text-[22px] text-[#0A0A0A] mb-3 group-hover:text-[#1C3A2A] transition-colors">
+                        {p.name}
+                      </h3>
+                      <ul className="space-y-2">
+                        {page.cards.slice(0, 4).map((c) => (
+                          <li key={c.name} className="text-[12px] text-[#888] font-light">
+                            <span className="font-semibold text-[#0A0A0A]">{c.name}</span>
+                            <span className="text-[#CCC]"> · </span>
+                            {c.benefit}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <span className="hidden lg:inline-flex items-center gap-2 text-[10px] tracking-[0.14em] uppercase font-semibold text-[#1C3A2A]">
+                      Ingredient breakdown
+                      <ArrowRight size={11} />
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+        </ul>
       </section>
 
       <section id="about" className="bg-[#0A0A0A] text-white py-24 sm:py-32 lg:py-40">

@@ -234,3 +234,58 @@ details.ingredient-details summary::-webkit-details-marker {
     transform: none;
   }
 }
+
+/* Shop / checkout — open layout, no card boxes */
+.shop-input {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #e5e2db;
+  background: transparent;
+  padding: 0.75rem 0;
+  font-size: 15px;
+  color: #0a0a0a;
+  transition: border-color 0.2s;
+}
+
+.shop-input::placeholder {
+  color: #bbb;
+}
+
+.shop-input:focus {
+  outline: none;
+  border-bottom-color: #1c3a2a;
+}
+
+.shop-select {
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #e5e2db;
+  background: transparent;
+  padding: 0.75rem 0;
+  font-size: 15px;
+  color: #0a0a0a;
+  cursor: pointer;
+}
+
+.shop-select:focus {
+  outline: none;
+  border-bottom-color: #1c3a2a;
+}
+
+.shop-divider {
+  border-top: 1px solid #e5e2db;
+}
+
+.shop-summary {
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e2db;
+}
+
+@media (min-width: 1024px) {
+  .shop-summary {
+    padding-top: 0;
+    padding-left: 2.5rem;
+    border-top: none;
+    border-left: 1px solid #e5e2db;
+  }
+}

@@ -110,12 +110,12 @@ export default function CheckoutFlow() {
           <h1 className="font-serif text-[28px] sm:text-[36px] font-light text-[#0A0A0A] mb-8 sm:mb-10">{headline}</h1>
 
           {step === "shipping" && (
-            <form onSubmit={onShippingSubmit} className="bg-white border border-[#E5E2DB] p-6 sm:p-10">
-              <p className="text-[14px] text-[#666] font-light leading-relaxed mb-8 max-w-lg">
-                We deliver across India. You can checkout as a guest — sign in with Google before payment.
+            <form onSubmit={onShippingSubmit}>
+              <p className="text-[15px] text-[#666] font-light leading-[1.9] mb-10 max-w-lg">
+                We deliver across India. Checkout as a guest — sign in with Google before payment.
               </p>
               <ShippingForm value={shipping} errors={errors} onChange={setShipping} />
-              <div className="mt-10 flex flex-col sm:flex-row gap-4">
+              <div className="mt-12 pt-10 shop-divider flex flex-col sm:flex-row gap-4">
                 <button
                   type="submit"
                   className="flex-1 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
@@ -170,8 +170,8 @@ export default function CheckoutFlow() {
           )}
         </div>
 
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <OrderSummary showEditLink compact={step !== "shipping"} />
+        <div className="lg:sticky lg:top-28 lg:self-start">
+          <OrderSummary showEditLink={step !== "shipping"} />
         </div>
       </div>
     </div>

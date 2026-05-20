@@ -13,9 +13,7 @@ export type IngredientPageData = {
   slug: string;
   headline: string;
   subhead: string;
-  /** AI / editorial hero visual */
-  heroVisual?: string;
-  /** Pack label reference from Amazon */
+  /** Pack label / INCI reference (studio product photo) */
   labelImage?: string;
   cards: IngredientCard[];
   freeFrom: string[];
@@ -26,7 +24,6 @@ const pages: Record<string, IngredientPageData> = {
     slug: "rosemary-hair-oil",
     headline: "What goes on your scalp",
     subhead: "Four actives. One oil. Each ingredient is chosen for a documented role in hair fall and root strength.",
-    heroVisual: "/products/rosemary-hair-oil/ingredients/hero.jpg",
     labelImage: "/products/rosemary-hair-oil/image-3.jpg",
     freeFrom: ["Paraben free", "Mineral oil free", "SLS free", "Clinically formulated"],
     cards: [
@@ -68,7 +65,6 @@ const pages: Record<string, IngredientPageData> = {
     slug: "rosemary-shampoo",
     headline: "Treatment shampoo actives",
     subhead: "Deposits clinical actives with every wash. Sulphate-free cleansing that does not strip the scalp.",
-    heroVisual: "/products/rosemary-shampoo/ingredients/hero.jpg",
     labelImage: "/products/rosemary-shampoo/image-3.jpg",
     freeFrom: ["SLS free", "Paraben free", "Silicone free", "Dermatologist tested"],
     cards: [
@@ -110,7 +106,6 @@ const pages: Record<string, IngredientPageData> = {
     slug: "hair-scalp-serum",
     headline: "Clinical peptide complex",
     subhead: "Five premium actives from leading ingredient houses — formulated for severe hair fall and weak follicles.",
-    heroVisual: "/products/hair-scalp-serum/ingredients/hero.jpg",
     labelImage: "/products/hair-scalp-serum/image-3.jpg",
     freeFrom: ["Paraben free", "Minoxidil free", "Non-sticky", "Patch test advised"],
     cards: [

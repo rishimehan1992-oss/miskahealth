@@ -10,6 +10,7 @@ import { pageShell } from "@/lib/layout";
 const links = [
   { label: "Products", href: "/#products" },
   { label: "Ingredients", href: "/ingredients" },
+  { label: "Journal", href: "/blog" },
   { label: "Science", href: "/#science" },
   { label: "About", href: "/#about" },
 ];

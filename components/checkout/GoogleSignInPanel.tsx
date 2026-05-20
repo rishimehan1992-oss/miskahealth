@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Shield } from "lucide-react";
 
 type Config = {
   googleAuthEnabled: boolean;
@@ -24,31 +23,24 @@ export default function GoogleSignInPanel({ onContinue }: { onContinue?: () => v
   const handleSignIn = async () => {
     if (!enabled) return;
     setLoading(true);
-    // Wired when Supabase Google OAuth is connected
     window.location.href = "/api/auth/google";
     setLoading(false);
   };
 
   return (
-    <div className="bg-white border border-[#E5E2DB] p-8 sm:p-10">
-      <div className="flex items-start gap-4 mb-8">
-        <span className="w-10 h-10 flex items-center justify-center bg-[#F0EDE7] text-[#1C3A2A] shrink-0">
-          <Shield size={18} />
-        </span>
-        <div>
-          <h2 className="font-serif text-[22px] font-light text-[#0A0A0A] mb-2">Sign in to continue</h2>
-          <p className="text-[14px] text-[#666] leading-[1.85] font-light max-w-md">
-            Guest checkout saves your delivery details. Before payment, sign in with Google so we can confirm your
-            order and send tracking updates.
-          </p>
-        </div>
-      </div>
+    <div className="shop-divider pt-10">
+      <p className="text-[10px] tracking-[0.2em] uppercase text-[#1C3A2A] font-semibold mb-4">Account</p>
+      <h2 className="font-serif text-[26px] sm:text-[30px] font-light text-[#0A0A0A] mb-4">Sign in to continue</h2>
+      <p className="text-[15px] text-[#666] leading-[1.9] font-light max-w-lg mb-10">
+        Guest checkout saves your delivery details. Before payment, sign in with Google so we can confirm your order
+        and send tracking updates.
+      </p>
 
       <button
         type="button"
         onClick={handleSignIn}
         disabled={!enabled || loading}
-        className="w-full flex items-center justify-center gap-3 border border-[#E5E2DB] bg-white py-4 px-6 text-[13px] font-medium text-[#0A0A0A] hover:border-[#0A0A0A] transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-[#E5E2DB]"
+        className="w-full max-w-md flex items-center justify-center gap-3 border border-[#0A0A0A] py-4 px-6 text-[13px] font-medium text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[#0A0A0A]"
       >
         <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
           <path
@@ -72,9 +64,8 @@ export default function GoogleSignInPanel({ onContinue }: { onContinue?: () => v
       </button>
 
       {!enabled && (
-        <p className="mt-5 text-[12px] text-[#999] leading-relaxed text-center">
-          Google sign-in activates once Supabase is connected. Your shipping details are already saved for this
-          session.
+        <p className="mt-6 text-[12px] text-[#999] leading-relaxed max-w-md font-light">
+          Google sign-in activates once Supabase is connected. Your shipping details are saved for this session.
         </p>
       )}
 
@@ -82,7 +73,7 @@ export default function GoogleSignInPanel({ onContinue }: { onContinue?: () => v
         <button
           type="button"
           onClick={onContinue}
-          className="mt-4 w-full text-[10px] tracking-[0.12em] uppercase text-[#AAA] hover:text-[#666]"
+          className="mt-6 text-[10px] tracking-[0.12em] uppercase text-[#AAA] hover:text-[#666]"
         >
           Dev: skip to payment preview
         </button>
