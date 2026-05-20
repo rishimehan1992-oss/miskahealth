@@ -6,6 +6,7 @@ import ImageCarousel from "@/components/ImageCarousel";
 import ProductCard from "@/components/ProductCard";
 import ProductLifestyle from "@/components/ProductLifestyle";
 import ProductSubheader from "@/components/ProductSubheader";
+import AddToCartButton from "@/components/cart/AddToCartButton";
 import { labelCaps, pageShell, sectionYSm } from "@/lib/layout";
 import type { Metadata } from "next";
 
@@ -88,17 +89,20 @@ export default async function ProductPage({ params }: Props) {
 
             <p className="mt-10 text-[15px] text-[#555] leading-[2] font-light max-w-lg">{p.description}</p>
 
-            <div className="mt-10 sm:mt-12">
-              {p.available && p.amazonUrl ? (
-                <a
-                  href={p.amazonUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-[#1C3A2A] text-white px-10 py-4 text-[11px] tracking-[0.2em] uppercase font-semibold hover:bg-[#152d20]"
-                >
-                  Buy on Amazon
-                  <ArrowUpRight size={13} />
-                </a>
+            <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row flex-wrap gap-4 items-start">
+              {p.available ? (
+                <>
+                  <AddToCartButton
+                    product={p}
+                    className="w-full sm:w-auto px-10 py-4 text-[11px] tracking-[0.2em] uppercase"
+                  />
+                  <Link
+                    href="/cart"
+                    className="w-full sm:w-auto inline-flex items-center justify-center border border-[#CCC9C2] text-[#444] px-10 py-4 text-[11px] tracking-[0.15em] uppercase font-medium hover:border-[#0A0A0A]"
+                  >
+                    View bag
+                  </Link>
+                </>
               ) : (
                 <button
                   type="button"
@@ -106,6 +110,17 @@ export default async function ProductPage({ params }: Props) {
                 >
                   Notify me
                 </button>
+              )}
+              {p.available && p.amazonUrl && (
+                <a
+                  href={p.amazonUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-[11px] tracking-[0.14em] uppercase text-[#888] hover:text-[#1C3A2A] font-medium py-2"
+                >
+                  Buy on Amazon
+                  <ArrowUpRight size={12} />
+                </a>
               )}
             </div>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { CartProvider } from "@/components/cart/CartProvider";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -18,8 +19,8 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Miska Hair & Skin Science",
-    template: "%s | Miska Hair & Skin Science",
+    default: "MISKA Hair & Skin Science",
+    template: "%s | MISKA Hair & Skin Science",
   },
   description: "Clinical-grade rosemary hair oil and treatment shampoo. Clinic formulated in Bangalore.",
 };
@@ -27,7 +28,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${geist.variable} ${playfair.variable} antialiased`}>{children}</body>
+      <body className={`${geist.variable} ${playfair.variable} antialiased`}>
+        <CartProvider>{children}</CartProvider>
+      </body>
     </html>
   );
 }

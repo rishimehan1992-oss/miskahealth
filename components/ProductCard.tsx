@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import AddToCartButton from "./cart/AddToCartButton";
 import ImageCarousel from "./ImageCarousel";
 import type { Product } from "@/data/products";
 
@@ -67,27 +68,37 @@ export default function ProductCard({ p }: { p: Product }) {
           )}
         </div>
 
-        <div className="flex gap-3 mt-auto">
-          <Link
-            href={`/products/${p.slug}`}
-            className="flex-1 text-center py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#444] font-medium hover:border-[#0A0A0A] transition-colors"
-          >
-            Details
-          </Link>
-          {p.available && p.amazonUrl ? (
+        <div className="mt-auto space-y-3">
+          <div className="flex gap-3">
+            <Link
+              href={`/products/${p.slug}`}
+              className="flex-1 text-center py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#444] font-medium hover:border-[#0A0A0A] transition-colors"
+            >
+              Details
+            </Link>
+            {p.available ? (
+              <AddToCartButton
+                product={p}
+                className="flex-1 py-3.5 text-[10px] tracking-[0.18em] uppercase"
+              />
+            ) : (
+              <button
+                type="button"
+                className="flex-1 py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#777]"
+              >
+                Notify me
+              </button>
+            )}
+          </div>
+          {p.available && p.amazonUrl && (
             <a
               href={p.amazonUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 inline-flex items-center justify-center gap-2 bg-[#1C3A2A] text-white py-3.5 text-[10px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors"
+              className="block text-center text-[10px] tracking-[0.12em] uppercase text-[#888] hover:text-[#1C3A2A] font-medium"
             >
-              Buy now
-              <ArrowUpRight size={11} />
+              Also on Amazon <ArrowUpRight size={10} className="inline ml-0.5 -mt-px" />
             </a>
-          ) : (
-            <button type="button" className="flex-1 py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#777]">
-              Notify me
-            </button>
           )}
         </div>
       </div>

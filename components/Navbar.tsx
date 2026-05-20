@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import BrandMark from "./BrandMark";
+import CartIconLink from "./cart/CartIconLink";
 import { pageShell } from "@/lib/layout";
 
 const links = [
@@ -40,16 +41,22 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <Link
-          href="/#products"
-          className="hidden md:inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20] shrink-0"
-        >
-          Shop now
-        </Link>
+        <div className="hidden md:flex items-center gap-2 shrink-0">
+          <CartIconLink />
+          <Link
+            href="/#products"
+            className="inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20]"
+          >
+            Shop now
+          </Link>
+        </div>
 
-        <button type="button" className="md:hidden p-1 -mr-1 shrink-0" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="flex md:hidden items-center gap-1 shrink-0">
+          <CartIconLink />
+          <button type="button" className="p-1 -mr-1" onClick={() => setOpen(!open)} aria-label="Menu">
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -60,9 +67,16 @@ export default function Navbar() {
             </Link>
           ))}
           <Link
+            href="/cart"
+            onClick={() => setOpen(false)}
+            className="text-center border border-[#1C3A2A] text-[#1C3A2A] py-3.5 text-[11px] uppercase tracking-wider font-semibold"
+          >
+            View bag
+          </Link>
+          <Link
             href="/#products"
             onClick={() => setOpen(false)}
-            className="text-center bg-[#1C3A2A] text-white py-3.5 mt-2 text-[11px] uppercase tracking-wider font-semibold"
+            className="text-center bg-[#1C3A2A] text-white py-3.5 text-[11px] uppercase tracking-wider font-semibold"
           >
             Shop now
           </Link>
