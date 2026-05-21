@@ -69,13 +69,13 @@ export default function GoogleSignInPanel({ onContinue }: { onContinue?: () => v
         </p>
       )}
 
-      {process.env.NODE_ENV === "development" && onContinue && (
+      {onContinue && (
         <button
           type="button"
           onClick={onContinue}
-          className="mt-6 text-[10px] tracking-[0.12em] uppercase text-[#AAA] hover:text-[#666]"
+          className="mt-8 text-[10px] tracking-[0.14em] uppercase text-[#1C3A2A] font-semibold hover:underline"
         >
-          Dev: skip to payment preview
+          Continue to payment without sign-in
         </button>
       )}
     </div>

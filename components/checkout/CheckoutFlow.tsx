@@ -60,7 +60,7 @@ export default function CheckoutFlow() {
     setErrors(validation);
     if (hasErrors(validation)) return;
     writeShipping(shipping);
-    goTo("account");
+    goTo("payment");
   };
 
   const devSkipAuth = () => {
@@ -120,7 +120,7 @@ export default function CheckoutFlow() {
                   type="submit"
                   className="flex-1 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
                 >
-                  Continue to sign in
+                  Continue to payment
                 </button>
                 <Link
                   href="/cart"
@@ -158,7 +158,7 @@ export default function CheckoutFlow() {
 
           {step === "payment" && (
             <div className="space-y-6">
-              <PaymentPanel signedIn={signedIn} />
+              <PaymentPanel shipping={shipping} />
               <button
                 type="button"
                 onClick={() => goTo("account")}

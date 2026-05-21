@@ -2,16 +2,19 @@
 
 import { formatInr, orderTotal } from "@/lib/cart/pricing";
 import { useCart } from "@/components/cart/CartProvider";
+import RazorpayPayButton from "./RazorpayPayButton";
+import type { ShippingAddress } from "@/lib/checkout/types";
+import { validateShipping, hasErrors } from "@/lib/checkout/validate";
 
 type Props = {
-  signedIn: boolean;
-  onPay?: () => void;
+  shipping: ShippingAddress | null;
 };
 
-export default function PaymentPanel({ signedIn, onPay }: Props) {
+export default function PaymentPanel({ shipping }: Props) {
   const { subtotal } = useCart();
   const total = orderTotal(subtotal);
   const razorpayReady = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
+  const shippingValid = shipping ? !hasErrors(validateShipping(shipping)) : false;
 
   return (
     <div className="shop-divider pt-10">
@@ -24,24 +27,19 @@ export default function PaymentPanel({ signedIn, onPay }: Props) {
 
       <ul className="space-y-2 mb-10 text-[13px] text-[#888] font-light">
         <li>256-bit encrypted checkout</li>
-        <li>Instant order confirmation by email</li>
+        <li>Instant order confirmation</li>
       </ul>
 
-      <button
-        type="button"
-        disabled={!signedIn || !razorpayReady}
-        onClick={onPay}
-        className="w-full max-w-md bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-      >
-        Pay {formatInr(total)}
-      </button>
+      <RazorpayPayButton disabled={!razorpayReady || !shippingValid} />
 
-      {!signedIn && (
-        <p className="mt-5 text-[12px] text-[#999] font-light">Complete Google sign-in to unlock payment.</p>
+      {!shippingValid && (
+        <p className="mt-5 text-[12px] text-[#999] font-light">
+          Complete delivery details on the previous step before paying.
+        </p>
       )}
-      {signedIn && !razorpayReady && (
+      {shippingValid && !razorpayReady && (
         <p className="mt-5 text-[12px] text-[#999] font-light max-w-md">
-          Razorpay keys are not configured yet. Add them to your environment to enable live payments.
+          Razorpay keys are not configured. Add them to <code className="text-[11px]">.env.local</code>.
         </p>
       )}
     </div>
