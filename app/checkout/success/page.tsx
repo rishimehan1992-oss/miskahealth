@@ -1,6 +1,6 @@
 import ShopHeader from "@/components/checkout/ShopHeader";
 import CheckoutSuccessContent from "@/components/checkout/CheckoutSuccessContent";
-import { getOrderById } from "@/lib/orders/store";
+import { fetchOrderById } from "@/lib/orders/persist";
 import { pageShell } from "@/lib/layout";
 import type { Metadata } from "next";
 
@@ -13,7 +13,7 @@ type Props = { searchParams: Promise<{ order?: string }> };
 
 export default async function CheckoutSuccessPage({ searchParams }: Props) {
   const { order: orderId } = await searchParams;
-  const serverOrder = orderId ? await getOrderById(orderId) : null;
+  const serverOrder = orderId ? await fetchOrderById(orderId) : null;
 
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">

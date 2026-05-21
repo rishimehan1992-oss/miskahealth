@@ -12,9 +12,8 @@ import { useCart } from "@/components/cart/CartProvider";
 import { EMPTY_SHIPPING, type CheckoutStep, type ShippingAddress } from "@/lib/checkout/types";
 import { readShipping, writeShipping } from "@/lib/checkout/storage";
 import { hasErrors, validateShipping, type FieldErrors } from "@/lib/checkout/validate";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { pageShell } from "@/lib/layout";
-
-const AUTH_PREVIEW_KEY = "miska-checkout-auth-preview";
 
 function parseStep(raw: string | null): CheckoutStep {
   if (raw === "account" || raw === "payment") return raw;
@@ -29,15 +28,30 @@ export default function CheckoutFlow() {
 
   const [shipping, setShipping] = useState<ShippingAddress>(EMPTY_SHIPPING);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const [signedIn, setSignedIn] = useState(false);
+  const { user } = useAuth();
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const saved = readShipping();
     if (saved) setShipping(saved);
-    setSignedIn(sessionStorage.getItem(AUTH_PREVIEW_KEY) === "1");
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!user?.email) return;
+    setShipping((s) => {
+      if (s.email) return s;
+      return {
+        ...s,
+        email: user.email ?? s.email,
+        fullName:
+          s.fullName ||
+          (user.user_metadata?.full_name as string) ||
+          (user.user_metadata?.name as string) ||
+          "",
+      };
+    });
+  }, [user]);
 
   useEffect(() => {
     if (!ready || !hydrated) return;
@@ -63,11 +77,7 @@ export default function CheckoutFlow() {
     goTo("payment");
   };
 
-  const devSkipAuth = () => {
-    sessionStorage.setItem(AUTH_PREVIEW_KEY, "1");
-    setSignedIn(true);
-    goTo("payment");
-  };
+  const goToPayment = () => goTo("payment");
 
   const headline = useMemo(() => {
     switch (step) {
@@ -134,25 +144,14 @@ export default function CheckoutFlow() {
 
           {step === "account" && (
             <div className="space-y-6">
-              <GoogleSignInPanel onContinue={devSkipAuth} />
-              <div className="flex gap-4">
-                <button
-                  type="button"
-                  onClick={() => goTo("shipping")}
-                  className="flex-1 py-4 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
-                >
-                  Edit delivery
-                </button>
-                {signedIn && (
-                  <button
-                    type="button"
-                    onClick={() => goTo("payment")}
-                    className="flex-1 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
-                  >
-                    Continue to payment
-                  </button>
-                )}
-              </div>
+              <GoogleSignInPanel onContinue={goToPayment} />
+              <button
+                type="button"
+                onClick={() => goTo("shipping")}
+                className="mt-6 w-full max-w-md py-4 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
+              >
+                Edit delivery
+              </button>
             </div>
           )}
 

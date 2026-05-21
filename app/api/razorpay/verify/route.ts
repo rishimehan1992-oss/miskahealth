@@ -4,7 +4,8 @@ import type { CartLine } from "@/lib/cart/types";
 import type { ShippingAddress } from "@/lib/checkout/types";
 import { getRazorpayClient } from "@/lib/razorpay/config";
 import { verifyPaymentSignature } from "@/lib/razorpay/verify";
-import { getOrderById, saveOrder } from "@/lib/orders/store";
+import { fetchOrderById, persistOrder } from "@/lib/orders/persist";
+import { createClient } from "@/lib/supabase/server";
 import type { OrderRecord } from "@/lib/orders/types";
 
 type Body = {
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid payment signature" }, { status: 400 });
   }
 
-  let order = await getOrderById(orderId);
+  let order = await fetchOrderById(orderId);
 
   if ((!order || order.razorpayOrderId !== razorpayOrderId) && lines?.length && shipping) {
     const built = buildOrderFromCart(lines, shipping);
@@ -93,7 +94,16 @@ export async function POST(request: Request) {
     paymentId: razorpayPaymentId,
     paidAt: new Date().toISOString(),
   };
-  await saveOrder(updated);
+  let userId: string | null = updated.userId ?? null;
+  try {
+    const supabase = await createClient();
+    const { data } = await supabase.auth.getUser();
+    userId = data.user?.id ?? userId;
+  } catch {
+    /* guest */
+  }
+
+  await persistOrder({ ...updated, userId: userId ?? undefined }, userId);
 
   return NextResponse.json({
     success: true,

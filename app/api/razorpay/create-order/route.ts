@@ -3,7 +3,8 @@ import { buildOrderFromCart } from "@/lib/checkout/order-build";
 import type { CartLine } from "@/lib/cart/types";
 import type { ShippingAddress } from "@/lib/checkout/types";
 import { getRazorpayClient, getRazorpayKeyId, isRazorpayConfigured } from "@/lib/razorpay/config";
-import { saveOrder } from "@/lib/orders/store";
+import { persistOrder } from "@/lib/orders/persist";
+import { createClient } from "@/lib/supabase/server";
 import type { OrderRecord } from "@/lib/orders/types";
 
 type Body = {
@@ -63,7 +64,16 @@ export async function POST(request: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    await saveOrder(record);
+    let userId: string | null = null;
+    try {
+      const supabase = await createClient();
+      const { data } = await supabase.auth.getUser();
+      userId = data.user?.id ?? null;
+    } catch {
+      /* guest checkout */
+    }
+
+    await persistOrder(record, userId);
 
     return NextResponse.json({
       keyId: getRazorpayKeyId(),

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifyWebhookSignature } from "@/lib/razorpay/verify";
-import { getOrderByRazorpayOrderId, updateOrderStatus } from "@/lib/orders/store";
+import { fetchOrderByRazorpayId, persistOrder } from "@/lib/orders/persist";
 
 export async function POST(request: Request) {
   const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
@@ -27,9 +27,10 @@ export async function POST(request: Request) {
     const razorpayOrderId = payment?.order_id;
     const paymentId = payment?.id;
     if (razorpayOrderId) {
-      const existing = await getOrderByRazorpayOrderId(razorpayOrderId);
+      const existing = await fetchOrderByRazorpayId(razorpayOrderId);
       if (existing && existing.status !== "paid") {
-        await updateOrderStatus(razorpayOrderId, {
+        await persistOrder({
+          ...existing,
           status: "paid",
           paymentId,
           paidAt: new Date().toISOString(),

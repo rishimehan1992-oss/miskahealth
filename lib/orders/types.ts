@@ -10,6 +10,7 @@ export type OrderItem = {
 
 export type OrderRecord = {
   id: string;
+  userId?: string;
   razorpayOrderId: string;
   status: "created" | "paid" | "failed";
   amountPaise: number;

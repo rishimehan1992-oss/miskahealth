@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -29,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${geist.variable} ${playfair.variable} antialiased`}>
-        <CartProvider>{children}</CartProvider>
+        <AuthProvider>
+          <CartProvider>{children}</CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );
