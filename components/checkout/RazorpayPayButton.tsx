@@ -76,6 +76,7 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
           razorpay_payment_id: string;
           razorpay_signature: string;
         }) => {
+          const shippingNow = readShipping();
           const verifyRes = await fetch("/api/razorpay/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -84,6 +85,8 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
               razorpaySignature: response.razorpay_signature,
+              lines,
+              shipping: shippingNow,
             }),
           });
           const verifyData = await verifyRes.json();
@@ -91,6 +94,9 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
             setError(verifyData.error ?? "Payment verification failed");
             setLoading(false);
             return;
+          }
+          if (verifyData.order) {
+            sessionStorage.setItem("miska-last-order", JSON.stringify(verifyData.order));
           }
           clearCart();
           localStorage.removeItem("miska-shipping-v1");

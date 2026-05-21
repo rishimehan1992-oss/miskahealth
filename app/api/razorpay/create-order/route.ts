@@ -79,9 +79,10 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error("Razorpay create order failed:", err);
-    return NextResponse.json(
-      { error: "Could not create payment order. Check Razorpay keys and account status." },
-      { status: 502 }
-    );
+    const message =
+      err instanceof Error && err.message.includes("ENOENT")
+        ? "Server storage error — redeploy with latest code."
+        : "Could not create payment order. Check Razorpay keys and account status.";
+    return NextResponse.json({ error: message }, { status: 502 });
   }
 }
