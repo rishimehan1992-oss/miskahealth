@@ -99,11 +99,14 @@ Then at checkout: **Delivery** → **Continue to account** → Sign in or Create
 ### C. Supabase redirect URLs (your site)
 
 1. Supabase → **Authentication** → **URL Configuration**.
-2. **Site URL:** your production URL, e.g. `https://miskahealth.vercel.app`
-3. **Redirect URLs** — add both:
+2. **Site URL:** your **production** URL only, e.g. `https://miskahealth.vercel.app`  
+   (If this is `http://localhost:3000`, confirmation emails will wrongly point to localhost.)
+3. **Redirect URLs** — add **both** (one per line):
    - `http://localhost:3000/auth/callback`
    - `https://YOUR_VERCEL_DOMAIN.vercel.app/auth/callback`
 4. Save.
+
+Also set **Vercel** env `NEXT_PUBLIC_SITE_URL` to the same production URL (no trailing slash).
 
 ### D. Turn on Google in `.env.local`
 
