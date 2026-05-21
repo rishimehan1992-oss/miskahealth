@@ -7,6 +7,7 @@ export async function GET() {
 
   return NextResponse.json({
     supabaseConfigured,
+    authEnabled: supabaseConfigured,
     googleAuthEnabled,
     razorpayConfigured: Boolean(
       (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID) &&

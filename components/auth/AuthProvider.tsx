@@ -11,12 +11,17 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
-import { isGoogleAuthEnabled } from "@/lib/supabase/config";
+import { isGoogleAuthEnabled, isSupabaseConfigured } from "@/lib/supabase/config";
+
+type AuthResult = { error: string | null };
 
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
+  authEnabled: boolean;
   googleEnabled: boolean;
+  signInWithEmail: (email: string, password: string) => Promise<AuthResult>;
+  signUpWithEmail: (email: string, password: string, fullName?: string) => Promise<AuthResult>;
   signInWithGoogle: (redirectPath?: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -26,14 +31,13 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const authEnabled = isSupabaseConfigured();
   const googleEnabled = isGoogleAuthEnabled();
 
   const supabase = useMemo(() => {
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-      return null;
-    }
+    if (!authEnabled) return null;
     return createClient();
-  }, []);
+  }, [authEnabled]);
 
   useEffect(() => {
     if (!supabase) {
@@ -56,6 +60,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, [supabase]);
 
+  const signInWithEmail = useCallback(
+    async (email: string, password: string): Promise<AuthResult> => {
+      if (!supabase) return { error: "Sign-in is not configured." };
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      return { error: error?.message ?? null };
+    },
+    [supabase]
+  );
+
+  const signUpWithEmail = useCallback(
+    async (email: string, password: string, fullName?: string): Promise<AuthResult> => {
+      if (!supabase) return { error: "Sign-up is not configured." };
+      const origin = typeof window !== "undefined" ? window.location.origin : "";
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName ?? "" },
+          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/checkout?step=payment")}`,
+        },
+      });
+      if (error) return { error: error.message };
+      if (data.user && !data.session) {
+        return {
+          error: null,
+          /* caller shows confirm-email message via needsConfirmation flag - pass as special message */
+        };
+      }
+      return { error: null };
+    },
+    [supabase]
+  );
+
   const signInWithGoogle = useCallback(
     async (redirectPath = "/checkout?step=payment") => {
       if (!supabase || !googleEnabled) return;
@@ -75,8 +112,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   const value = useMemo(
-    () => ({ user, loading, googleEnabled, signInWithGoogle, signOut }),
-    [user, loading, googleEnabled, signInWithGoogle, signOut]
+    () => ({
+      user,
+      loading,
+      authEnabled,
+      googleEnabled,
+      signInWithEmail,
+      signUpWithEmail,
+      signInWithGoogle,
+      signOut,
+    }),
+    [
+      user,
+      loading,
+      authEnabled,
+      googleEnabled,
+      signInWithEmail,
+      signUpWithEmail,
+      signInWithGoogle,
+      signOut,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

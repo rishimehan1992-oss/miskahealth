@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CheckoutProgress from "./CheckoutProgress";
 import ShippingForm from "./ShippingForm";
-import GoogleSignInPanel from "./GoogleSignInPanel";
+import AccountSignInPanel from "./AccountSignInPanel";
 import PaymentPanel from "./PaymentPanel";
 import OrderSummary from "./OrderSummary";
 import { useCart } from "@/components/cart/CartProvider";
@@ -74,7 +74,7 @@ export default function CheckoutFlow() {
     setErrors(validation);
     if (hasErrors(validation)) return;
     writeShipping(shipping);
-    goTo("payment");
+    goTo("account");
   };
 
   const goToPayment = () => goTo("payment");
@@ -122,7 +122,7 @@ export default function CheckoutFlow() {
           {step === "shipping" && (
             <form onSubmit={onShippingSubmit}>
               <p className="text-[15px] text-[#666] font-light leading-[1.9] mb-10 max-w-lg">
-                We deliver across India. Checkout as a guest — sign in with Google before payment.
+                We deliver across India. Next, sign in or create an account — or continue as a guest.
               </p>
               <ShippingForm value={shipping} errors={errors} onChange={setShipping} />
               <div className="mt-12 pt-10 shop-divider flex flex-col sm:flex-row gap-4">
@@ -130,7 +130,7 @@ export default function CheckoutFlow() {
                   type="submit"
                   className="flex-1 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
                 >
-                  Continue to payment
+                  Continue to account
                 </button>
                 <Link
                   href="/cart"
@@ -144,7 +144,7 @@ export default function CheckoutFlow() {
 
           {step === "account" && (
             <div className="space-y-6">
-              <GoogleSignInPanel onContinue={goToPayment} />
+              <AccountSignInPanel onContinue={goToPayment} defaultEmail={shipping.email} />
               <button
                 type="button"
                 onClick={() => goTo("shipping")}

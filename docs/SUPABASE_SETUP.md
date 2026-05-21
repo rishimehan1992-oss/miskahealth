@@ -57,7 +57,21 @@ This creates:
 
 ---
 
-## Part 4 — Enable Google sign-in
+## Part 4 — Email sign-in (enabled now)
+
+Email + password works once Part 2 keys are set. No extra env flags needed.
+
+**Recommended for testing** (instant sign-in without email link):
+
+1. Supabase → **Authentication** → **Providers** → **Email**
+2. Turn **Confirm email** **OFF** (disable “Confirm email”)
+3. Save
+
+Then at checkout: **Delivery** → **Continue to account** → Sign in or Create account.
+
+---
+
+## Part 5 — Enable Google sign-in (later)
 
 ### A. Google Cloud Console
 
@@ -101,7 +115,7 @@ Restart `npm run dev`.
 
 ---
 
-## Part 5 — Vercel (production)
+## Part 6 — Vercel (production)
 
 In **Vercel → Project → Settings → Environment Variables**, add:
 
@@ -120,7 +134,7 @@ Redeploy after saving.
 
 ---
 
-## Part 6 — Test the flow
+## Part 7 — Test the flow
 
 ### Google login
 
