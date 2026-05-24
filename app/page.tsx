@@ -15,16 +15,13 @@ export default function Home() {
       <Navbar />
 
       <section
-        className={`flex flex-col justify-center ${pageShell} pt-28 sm:pt-32 pb-14 sm:pb-20`}
+        className={`relative z-0 flex flex-col justify-center min-h-[min(85vh,52rem)] ${pageShell} pt-32 sm:pt-36 pb-16 sm:pb-24`}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-12 sm:mb-14 min-w-0">
-          <div className="w-10 h-px bg-[#1C3A2A] shrink-0 hidden sm:block" />
-          <span className={`text-[10px] ${labelCaps} text-[#1C3A2A] font-semibold`}>
-            Clinical Hair &amp; Skin Science
-          </span>
-        </div>
+        <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-8 sm:mb-10`}>
+          Clinical Hair &amp; Skin Science
+        </p>
 
-        <h1 className="font-serif text-[34px] sm:text-[48px] md:text-[58px] lg:text-[68px] font-light leading-[1.08] text-[#0A0A0A] max-w-3xl break-words">
+        <h1 className="font-serif text-[36px] sm:text-[52px] md:text-[60px] lg:text-[68px] font-light leading-[1.1] text-[#0A0A0A] max-w-3xl">
           Hair science
           <br />
           that actually <em className="italic font-medium text-[#1C3A2A]">works.</em>

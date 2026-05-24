@@ -41,7 +41,7 @@ export default function Navbar() {
       }`}
     >
       <div className={`${pageShell} min-h-[4.25rem] sm:min-h-20 py-3 flex items-center justify-between gap-4 min-w-0`}>
-        <BrandMark variant="nav" href="/" className="shrink-0 pr-2 max-w-[55%] sm:max-w-none" />
+        <BrandMark variant="nav" href="/" className="shrink-0 min-w-0" />
 
         <nav className="hidden md:flex items-center gap-10">
           {links.map((l) =>
