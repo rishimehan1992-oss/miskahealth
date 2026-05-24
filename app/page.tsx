@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
-import HashLink from "@/components/HashLink";
+import HomeHashScroll from "@/components/HomeHashScroll";
+import HomeCheckoutBar from "@/components/cart/HomeCheckoutBar";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
 import { getIngredientPage } from "@/data/ingredients";
@@ -12,10 +13,12 @@ import { ArrowRight } from "lucide-react";
 export default function Home() {
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
+      <HomeHashScroll />
+      <HomeCheckoutBar />
       <Navbar />
 
       <section
-        className={`relative z-0 flex flex-col justify-center min-h-[min(85vh,52rem)] ${pageShell} pt-32 sm:pt-36 pb-16 sm:pb-24`}
+        className={`relative z-0 ${pageShell} pt-28 sm:pt-32 pb-10 sm:pb-14`}
       >
         <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-8 sm:mb-10`}>
           Clinical Hair &amp; Skin Science
@@ -27,58 +30,24 @@ export default function Home() {
           that actually <em className="italic font-medium text-[#1C3A2A]">works.</em>
         </h1>
 
-        <p className="mt-10 sm:mt-12 text-[16px] md:text-[17px] text-[#666] leading-[1.85] max-w-md font-light">
-          Formulated for serious hair concerns — hair fall, thinning and scalp damage.
-          Clinical-grade actives. Zero filler. Developed with a Bangalore clinic.
+        <p className="mt-6 sm:mt-8 text-[15px] md:text-[16px] text-[#666] leading-[1.8] max-w-md font-light">
+          Clinical-grade actives for hair fall, thinning &amp; scalp damage. Tap <strong className="text-[#0A0A0A] font-medium">Add to cart</strong> below — checkout in minutes.
         </p>
 
-        <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row gap-4 sm:gap-5">
-          <HashLink
-            href="/"
-            hash="products"
-            className="inline-flex items-center justify-center gap-3 bg-[#1C3A2A] text-white px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors touch-manipulation"
-          >
-            Shop the range
-            <ArrowRight size={13} />
-          </HashLink>
-          <Link
-            href="/ingredients"
-            className="inline-flex items-center justify-center gap-3 border border-[#CCC9C2] text-[#444] px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-medium hover:border-[#0A0A0A] transition-colors touch-manipulation"
-          >
-            Ingredients
-          </Link>
-        </div>
-
-        <div className="mt-14 sm:mt-16 pt-10 border-t border-[#E5E2DB] flex flex-wrap gap-x-12 gap-y-4">
-          {["Dermatologist tested", "Paraben & SLS free", "Clinically formulated", "Made in India"].map(
-            (t) => (
-              <span key={t} className={`text-[10px] ${labelCaps} text-[#999]`}>
-                {t}
-              </span>
-            )
-          )}
+        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[10px] text-[#999] uppercase tracking-wide">
+          {["Dermatologist tested", "Paraben & SLS free", "Made in India"].map((t) => (
+            <span key={t}>{t}</span>
+          ))}
         </div>
       </section>
 
       <section id="products" className="scroll-mt-24 border-t border-[#E5E2DB] bg-white">
-        <div className={`${pageShell} py-16 sm:py-20 lg:py-24`}>
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-end mb-12 sm:mb-14">
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-10 h-px bg-[#1C3A2A]" />
-                <span className={`text-[10px] ${labelCaps} text-[#1C3A2A] font-semibold`}>
-                  The range
-                </span>
-              </div>
-              <h2 className="font-serif text-[32px] sm:text-[38px] md:text-[44px] font-light leading-[1.12] text-[#0A0A0A] break-words">
-                Formulated for
-                <br />
-                <em className="not-italic font-medium">serious concerns.</em>
-              </h2>
-            </div>
-            <p className="text-[14px] text-[#666] leading-[1.9] font-light lg:max-w-sm lg:ml-auto lg:pb-1">
-              Each product targets a specific clinical problem. Every ingredient has a documented role.
-            </p>
+        <div className={`${pageShell} py-12 sm:py-16 lg:py-20`}>
+          <div className="mb-10 sm:mb-12">
+            <span className={`text-[10px] ${labelCaps} text-[#1C3A2A] font-semibold`}>Shop the range</span>
+            <h2 className="font-serif text-[28px] sm:text-[36px] font-light leading-[1.12] text-[#0A0A0A] mt-3">
+              Add to cart · pay on checkout
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">

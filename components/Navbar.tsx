@@ -5,17 +5,20 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import BrandMark from "./BrandMark";
 import CartIconLink from "./cart/CartIconLink";
-import HashLink from "./HashLink";
+import ShopNowButton from "./ShopNowButton";
+import { scrollToSection } from "@/lib/scroll-to-section";
+import { usePathname, useRouter } from "next/navigation";
 import { pageShell } from "@/lib/layout";
 
 const links = [
-  { label: "Products", href: "/#products", hash: "products" },
   { label: "Ingredients", href: "/ingredients" },
   { label: "Journal", href: "/blog" },
-  { label: "About", href: "/#about", hash: "about" },
+  { label: "About", href: "/#about", isAbout: true },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -34,26 +37,41 @@ export default function Navbar() {
 
   const closeMenu = () => setOpen(false);
 
+  const goProducts = () => {
+    closeMenu();
+    if (pathname === "/") scrollToSection("products");
+    else router.push("/#products");
+  };
+
+  const goAbout = () => {
+    closeMenu();
+    if (pathname === "/") scrollToSection("about");
+    else router.push("/#about");
+  };
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
         scrolled ? "bg-white/95 backdrop-blur-md border-b border-[#E5E2DB] shadow-sm" : "bg-[#F9F8F5]/90 backdrop-blur-sm"
       }`}
     >
-      <div className={`${pageShell} min-h-[4.25rem] sm:min-h-20 py-3 flex items-center justify-between gap-4 min-w-0`}>
+      <div className={`${pageShell} min-h-[4.25rem] sm:min-h-20 py-3 flex items-center justify-between gap-3 min-w-0`}>
         <BrandMark variant="nav" href="/" className="shrink-0 min-w-0" />
 
         <nav className="hidden md:flex items-center gap-10">
+          <button type="button" onClick={goProducts} className="text-[13px] text-[#555] hover:text-[#0A0A0A]">
+            Products
+          </button>
           {links.map((l) =>
-            l.hash ? (
-              <HashLink
+            l.isAbout ? (
+              <button
                 key={l.href}
-                href="/"
-                hash={l.hash}
+                type="button"
+                onClick={goAbout}
                 className="text-[13px] text-[#555] hover:text-[#0A0A0A]"
               >
                 {l.label}
-              </HashLink>
+              </button>
             ) : (
               <Link key={l.href} href={l.href} className="text-[13px] text-[#555] hover:text-[#0A0A0A]">
                 {l.label}
@@ -64,51 +82,48 @@ export default function Navbar() {
 
         <div className="hidden md:flex items-center gap-2 shrink-0">
           <CartIconLink />
-          <HashLink
-            href="/"
-            hash="products"
-            className="inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20]"
-          >
-            Shop now
-          </HashLink>
+          <ShopNowButton className="inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20] touch-manipulation" />
         </div>
 
+        {/* Mobile: Shop + bag always visible — no menu dig for Shop now */}
         <div className="flex md:hidden items-center gap-1 shrink-0">
+          <ShopNowButton
+            onAfterClick={closeMenu}
+            className="text-[10px] tracking-[0.1em] uppercase font-semibold bg-[#1C3A2A] text-white px-3.5 py-2.5 hover:bg-[#152d20] touch-manipulation"
+          >
+            Shop
+          </ShopNowButton>
           <CartIconLink />
-          <button type="button" className="p-2 -mr-1 touch-manipulation" onClick={() => setOpen(!open)} aria-label="Menu">
+          <button
+            type="button"
+            className="p-2 touch-manipulation"
+            onClick={() => setOpen(!open)}
+            aria-label="Menu"
+          >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {open && (
-        <nav className={`md:hidden border-t border-[#E5E2DB] bg-white ${pageShell} py-5 flex flex-col gap-1`}>
-          <HashLink
-            href="/"
-            hash="products"
-            onClick={closeMenu}
-            className="text-center bg-[#1C3A2A] text-white py-4 text-[11px] uppercase tracking-wider font-semibold mb-3 touch-manipulation"
+        <nav className={`md:hidden border-t border-[#E5E2DB] bg-white ${pageShell} py-4 flex flex-col gap-1`}>
+          <button
+            type="button"
+            onClick={goProducts}
+            className="text-left text-[15px] py-3 touch-manipulation"
           >
-            Shop now
-          </HashLink>
-          <Link
-            href="/cart"
-            onClick={closeMenu}
-            className="text-center border border-[#1C3A2A] text-[#1C3A2A] py-3.5 text-[11px] uppercase tracking-wider font-semibold mb-2 touch-manipulation"
-          >
-            View bag
-          </Link>
+            Products
+          </button>
           {links.map((l) =>
-            l.hash ? (
-              <HashLink
+            l.isAbout ? (
+              <button
                 key={l.href}
-                href="/"
-                hash={l.hash}
-                onClick={closeMenu}
-                className="text-[15px] py-3 touch-manipulation"
+                type="button"
+                onClick={goAbout}
+                className="text-left text-[15px] py-3 touch-manipulation"
               >
                 {l.label}
-              </HashLink>
+              </button>
             ) : (
               <Link key={l.href} href={l.href} onClick={closeMenu} className="text-[15px] py-3 touch-manipulation">
                 {l.label}

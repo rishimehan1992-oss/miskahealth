@@ -9,9 +9,15 @@ type Props = {
   product: Product;
   className?: string;
   variant?: "primary" | "secondary";
+  label?: string;
 };
 
-export default function AddToCartButton({ product, className = "", variant = "primary" }: Props) {
+export default function AddToCartButton({
+  product,
+  className = "",
+  variant = "primary",
+  label,
+}: Props) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
 
@@ -40,7 +46,7 @@ export default function AddToCartButton({ product, className = "", variant = "pr
       ) : (
         <>
           <ShoppingBag size={14} />
-          Add to cart
+          {label ?? "Add to cart"}
         </>
       )}
     </button>

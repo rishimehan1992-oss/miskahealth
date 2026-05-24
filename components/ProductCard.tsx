@@ -83,7 +83,8 @@ export default function ProductCard({ p }: { p: Product }) {
           {p.available ? (
             <AddToCartButton
               product={p}
-              className="flex-1 py-3.5 text-[10px] tracking-[0.18em] uppercase"
+              className="flex-1 py-3.5 text-[10px] tracking-[0.14em] uppercase font-semibold"
+              label={`Add · ₹${p.price}`}
             />
           ) : (
             <button
