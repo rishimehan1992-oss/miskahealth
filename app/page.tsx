@@ -156,7 +156,8 @@ export default function Home() {
         <div className={`${pageShell} flex flex-col md:flex-row justify-between gap-6 text-[12px] text-[#999]`}>
           <div>
             <BrandMark variant="footer" href="/" className="mb-3" />
-            <p>© 2026 · Bangalore</p>
+            <p className="text-[#666] font-medium mb-1">MISKA Hair &amp; Skin Science</p>
+            <p className="text-[#AAA]">miskahealth.in · © 2026 · Bangalore</p>
           </div>
           <div className="md:text-right space-y-2">
             <p>Clinical-grade hair &amp; skin formulations</p>

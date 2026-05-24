@@ -25,7 +25,7 @@ function MiskaWordmark({
   return (
     <span
       className={`inline-flex items-baseline whitespace-nowrap font-sans font-semibold uppercase text-[#0A0A0A] ${main}`}
-      aria-label="MISKA"
+      aria-label="MISKA Hair and Skin Science"
     >
       <span>MI</span>
       <span className="relative inline-block">
@@ -84,7 +84,7 @@ export default function BrandMark({ variant = "nav", href = "/", className = "" 
     <Link
       href={href}
       className={`hover:opacity-80 transition-opacity ${className}`}
-      aria-label="MISKA Hair and Skin Science — Home"
+      aria-label="MISKA Hair & Skin Science — Home"
     >
       {inner}
     </Link>

@@ -18,12 +18,22 @@ const playfair = Playfair_Display({
   style: ["normal", "italic"],
 });
 
+const APP_NAME = "MISKA Hair & Skin Science";
+
 export const metadata: Metadata = {
+  applicationName: APP_NAME,
   title: {
-    default: "MISKA Hair & Skin Science",
-    template: "%s | MISKA Hair & Skin Science",
+    default: APP_NAME,
+    template: `%s | ${APP_NAME}`,
   },
   description: "Clinical-grade rosemary hair oil and treatment shampoo. Clinic formulated in Bangalore.",
+  openGraph: {
+    siteName: APP_NAME,
+    type: "website",
+    locale: "en_IN",
+    url: "https://www.miskahealth.in",
+  },
+  metadataBase: new URL("https://www.miskahealth.in"),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
