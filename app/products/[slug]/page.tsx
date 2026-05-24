@@ -159,7 +159,7 @@ export default async function ProductPage({ params }: Props) {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             {others.map((op) => (
-              <ProductCard key={op.id} p={op} />
+              <ProductCard key={op.id} p={op} compact />
             ))}
           </div>
         </div>

@@ -7,7 +7,17 @@ function allProductImages(p: Product) {
   return [...p.images.gallery, ...p.images.lifestyle];
 }
 
-export default function ProductCard({ p }: { p: Product }) {
+function ingredientLine(p: Product) {
+  return p.formula.map((f) => f.name).join(" · ");
+}
+
+type Props = {
+  p: Product;
+  /** Home / grid: one-line actives + use only. Full: copy for detail-page “also in range”. */
+  compact?: boolean;
+};
+
+export default function ProductCard({ p, compact = false }: Props) {
   const images = allProductImages(p);
 
   return (
@@ -29,44 +39,42 @@ export default function ProductCard({ p }: { p: Product }) {
         )}
       </div>
 
-      <div className="flex flex-col flex-1 p-6 sm:p-7">
-        <p className="text-[9px] tracking-[0.22em] text-[#1C3A2A] uppercase font-semibold mb-2">{p.tagline}</p>
-        <h3 className="font-serif text-[22px] font-medium text-[#0A0A0A] leading-tight mb-3 min-h-[3.25rem]">
+      <div className="flex flex-col flex-1 p-5 sm:p-6">
+        <p className="text-[9px] tracking-[0.2em] text-[#1C3A2A] uppercase font-semibold mb-1.5">{p.tagline}</p>
+        <h3 className="font-serif text-[20px] sm:text-[22px] font-medium text-[#0A0A0A] leading-tight mb-3">
           {p.name}
         </h3>
-        <p className="text-[13px] text-[#777] leading-[1.75] font-light mb-6 line-clamp-3 min-h-[4.25rem]">
-          {p.description}
-        </p>
 
-        <ul className="space-y-2.5 mb-5 pt-5 border-t border-[#EDE9E1] flex-1">
-          {p.formula.map((f) => (
-            <li key={f.name} className="flex items-start gap-2.5 text-[12px] leading-snug">
-              <span className="w-1 h-1 rounded-full bg-[#1C3A2A] mt-[7px] shrink-0" />
-              <span>
-                <strong className="font-semibold text-[#0A0A0A]">{f.name}</strong>
-                <span className="text-[#AAA] font-light"> — {f.action}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
+        {compact ? (
+          <div className="space-y-2 mb-4 flex-1 text-[12px] text-[#666] font-light leading-snug">
+            <p className="line-clamp-1">
+              <span className="text-[#999] uppercase text-[10px] tracking-wide mr-1">Actives</span>
+              {ingredientLine(p)}
+            </p>
+            <p className="line-clamp-1">
+              <span className="text-[#999] uppercase text-[10px] tracking-wide mr-1">For</span>
+              {p.concern}
+            </p>
+          </div>
+        ) : (
+          <>
+            <p className="text-[13px] text-[#777] leading-[1.75] font-light mb-5 line-clamp-3">{p.description}</p>
+            <ul className="space-y-2 mb-5 pt-4 border-t border-[#EDE9E1] flex-1">
+              {p.formula.map((f) => (
+                <li key={f.name} className="text-[12px] leading-snug text-[#666]">
+                  <strong className="font-semibold text-[#0A0A0A]">{f.name}</strong>
+                  <span className="text-[#AAA]"> — {f.action}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
 
-        <Link
-          href={`/products/${p.slug}/ingredients`}
-          className="text-[10px] tracking-[0.14em] uppercase font-semibold text-[#1C3A2A] mb-5 inline-block hover:underline underline-offset-4"
-        >
-          Ingredient breakdown →
-        </Link>
-
-        <div className="flex items-baseline gap-2 mb-5 mt-auto">
+        <div className="flex items-baseline gap-2 mb-4 mt-auto">
           {p.available ? (
             <>
-              <span className="text-[22px] font-semibold text-[#0A0A0A]">₹{p.price}</span>
-              <span className="text-[13px] text-[#CCC] line-through">₹{p.mrp}</span>
-              {p.mrp && p.price && (
-                <span className="text-[9px] tracking-[0.08em] text-[#1C3A2A] font-semibold uppercase">
-                  {Math.round(((p.mrp - p.price) / p.mrp) * 100)}% off
-                </span>
-              )}
+              <span className="text-[20px] font-semibold text-[#0A0A0A]">₹{p.price}</span>
+              <span className="text-[12px] text-[#CCC] line-through">₹{p.mrp}</span>
             </>
           ) : (
             <span className="text-[14px] text-[#AAA]">Coming soon</span>
@@ -76,20 +84,20 @@ export default function ProductCard({ p }: { p: Product }) {
         <div className="flex gap-2">
           <Link
             href={`/products/${p.slug}`}
-            className="flex-1 text-center py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#444] font-medium hover:border-[#0A0A0A] transition-colors"
+            className="flex-1 text-center py-3 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#444] font-medium hover:border-[#0A0A0A] transition-colors"
           >
             Details
           </Link>
           {p.available ? (
             <AddToCartButton
               product={p}
-              className="flex-1 py-3.5 text-[10px] tracking-[0.14em] uppercase font-semibold"
+              className="flex-1 py-3 text-[10px] tracking-[0.14em] uppercase font-semibold"
               label={`Add · ₹${p.price}`}
             />
           ) : (
             <button
               type="button"
-              className="flex-1 py-3.5 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#777]"
+              className="flex-1 py-3 text-[10px] tracking-[0.15em] uppercase border border-[#CCC9C2] text-[#777]"
             >
               Notify me
             </button>
