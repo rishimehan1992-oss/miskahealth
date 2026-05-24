@@ -15,14 +15,12 @@ export default function Home() {
       <HomeHashScroll />
       <Navbar />
 
-      <section
-        className={`relative z-0 ${pageShell} pt-28 sm:pt-32 pb-10 sm:pb-14`}
-      >
-        <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-8 sm:mb-10`}>
+      <section className={`page-hero-pad relative z-0 ${pageShell} pb-10 sm:pb-14`}>
+        <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-6 sm:mb-8`}>
           Clinical Hair &amp; Skin Science
         </p>
 
-        <h1 className="font-serif text-[36px] sm:text-[52px] md:text-[60px] lg:text-[68px] font-light leading-[1.1] text-[#0A0A0A] max-w-3xl">
+        <h1 className="font-serif text-[34px] sm:text-[50px] md:text-[58px] lg:text-[64px] font-light leading-[1.15] text-[#0A0A0A] max-w-3xl">
           Hair science
           <br />
           that actually <em className="italic font-medium text-[#1C3A2A]">works.</em>

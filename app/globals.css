@@ -121,11 +121,26 @@ textarea,
   text-transform: uppercase;
   letter-spacing: 0.12em;
   cursor: default;
+  /* Letter-spacing can clip the first/last glyph when a parent uses overflow clip */
+  padding-inline: 0.2em;
+  margin-inline: -0.2em;
 }
 
 @media (min-width: 640px) {
   .label-caps {
     letter-spacing: 0.18em;
+  }
+}
+
+/* First screen content clears fixed header + iOS notch */
+.page-hero-pad {
+  overflow: visible;
+  padding-top: calc(6.5rem + env(safe-area-inset-top, 0px) + 1.25rem);
+}
+
+@media (min-width: 640px) {
+  .page-hero-pad {
+    padding-top: calc(6rem + env(safe-area-inset-top, 0px) + 1.5rem);
   }
 }
 
