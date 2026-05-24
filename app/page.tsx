@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
+import HashLink from "@/components/HashLink";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
 import { getIngredientPage } from "@/data/ingredients";
@@ -14,7 +15,7 @@ export default function Home() {
       <Navbar />
 
       <section
-        className={`min-h-[88vh] flex flex-col justify-center ${pageShell} pt-28 sm:pt-32 pb-20 sm:pb-28`}
+        className={`flex flex-col justify-center ${pageShell} pt-28 sm:pt-32 pb-14 sm:pb-20`}
       >
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-12 sm:mb-14 min-w-0">
           <div className="w-10 h-px bg-[#1C3A2A] shrink-0 hidden sm:block" />
@@ -34,23 +35,24 @@ export default function Home() {
           Clinical-grade actives. Zero filler. Developed with a Bangalore clinic.
         </p>
 
-        <div className="mt-12 sm:mt-14 flex flex-col sm:flex-row gap-4 sm:gap-5">
-          <a
-            href="#products"
-            className="inline-flex items-center justify-center gap-3 bg-[#1C3A2A] text-white px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors"
+        <div className="mt-10 sm:mt-12 flex flex-col sm:flex-row gap-4 sm:gap-5">
+          <HashLink
+            href="/"
+            hash="products"
+            className="inline-flex items-center justify-center gap-3 bg-[#1C3A2A] text-white px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors touch-manipulation"
           >
             Shop the range
             <ArrowRight size={13} />
-          </a>
-          <a
-            href="#science"
-            className="inline-flex items-center justify-center gap-3 border border-[#CCC9C2] text-[#444] px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-medium hover:border-[#0A0A0A] transition-colors"
+          </HashLink>
+          <Link
+            href="/ingredients"
+            className="inline-flex items-center justify-center gap-3 border border-[#CCC9C2] text-[#444] px-10 py-4 text-[11px] tracking-[0.18em] uppercase font-medium hover:border-[#0A0A0A] transition-colors touch-manipulation"
           >
-            The science
-          </a>
+            Ingredients
+          </Link>
         </div>
 
-        <div className="mt-20 sm:mt-24 pt-12 border-t border-[#E5E2DB] flex flex-wrap gap-x-12 gap-y-4">
+        <div className="mt-14 sm:mt-16 pt-10 border-t border-[#E5E2DB] flex flex-wrap gap-x-12 gap-y-4">
           {["Dermatologist tested", "Paraben & SLS free", "Clinically formulated", "Made in India"].map(
             (t) => (
               <span key={t} className={`text-[10px] ${labelCaps} text-[#999]`}>
@@ -61,9 +63,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="products" className="border-t border-[#E5E2DB] bg-white">
-        <div className={`${pageShell} ${sectionY}`}>
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-end mb-16 sm:mb-20 lg:mb-24">
+      <section id="products" className="scroll-mt-24 border-t border-[#E5E2DB] bg-white">
+        <div className={`${pageShell} py-16 sm:py-20 lg:py-24`}>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-end mb-12 sm:mb-14">
             <div>
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-10 h-px bg-[#1C3A2A]" />
@@ -82,7 +84,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-20 md:gap-x-10 md:gap-y-24 xl:gap-x-8 xl:gap-y-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
             {products.map((p) => (
               <ProductCard key={p.id} p={p} />
             ))}
@@ -90,7 +92,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="science" className={`${pageShell} ${sectionY}`}>
+      <section id="about" className="scroll-mt-24 bg-[#0A0A0A] text-white py-20 sm:py-28 lg:py-32">
+        <div className={pageShell}>
+          <div className="max-w-2xl mx-auto text-center">
+            <p className={`text-[10px] ${labelCaps} text-[#555] mb-10`}>Our founding principle</p>
+            <blockquote className="font-serif text-[26px] sm:text-[32px] md:text-[38px] font-light leading-[1.25] mb-10">
+              Built for people who are done with products that{" "}
+              <span className="italic text-[#3D6B52]">promise</span> and don&apos;t{" "}
+              <span className="italic text-[#3D6B52]">deliver.</span>
+            </blockquote>
+            <p className="text-[14px] text-[#666] leading-[2] font-light max-w-md mx-auto">
+              Miska was developed inside Miska Hair Transplant &amp; Skin Clinic, Bangalore — tested on real
+              patients with measurable outcomes.
+            </p>
+            <a
+              href="https://miskaclinics.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 mt-12 border border-[#333] text-[#888] px-10 py-4 text-[11px] tracking-[0.2em] uppercase hover:border-white hover:text-white transition-colors"
+            >
+              Visit Miska Clinic
+              <ArrowRight size={12} />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="science" className={`scroll-mt-24 ${pageShell} py-16 sm:py-20 lg:py-24`}>
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-14 sm:mb-16">
           <div>
             <div className="flex items-center gap-4 mb-6">
@@ -156,32 +184,6 @@ export default function Home() {
               );
             })}
         </ul>
-      </section>
-
-      <section id="about" className="bg-[#0A0A0A] text-white py-24 sm:py-32 lg:py-40">
-        <div className={pageShell}>
-          <div className="max-w-2xl mx-auto text-center">
-            <p className={`text-[10px] ${labelCaps} text-[#555] mb-10`}>Our founding principle</p>
-            <blockquote className="font-serif text-[26px] sm:text-[32px] md:text-[38px] font-light leading-[1.25] mb-10">
-              Built for people who are done with products that{" "}
-              <span className="italic text-[#3D6B52]">promise</span> and don&apos;t{" "}
-              <span className="italic text-[#3D6B52]">deliver.</span>
-            </blockquote>
-            <p className="text-[14px] text-[#666] leading-[2] font-light max-w-md mx-auto">
-              Miska was developed inside Miska Hair Transplant &amp; Skin Clinic, Bangalore — tested on real
-              patients with measurable outcomes.
-            </p>
-            <a
-              href="https://miskaclinics.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-12 border border-[#333] text-[#888] px-10 py-4 text-[11px] tracking-[0.2em] uppercase hover:border-white hover:text-white transition-colors"
-            >
-              Visit Miska Clinic
-              <ArrowRight size={12} />
-            </a>
-          </div>
-        </div>
       </section>
 
       <footer className="border-t border-[#E5E2DB] py-16 sm:py-20">

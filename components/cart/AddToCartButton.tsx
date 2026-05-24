@@ -30,7 +30,7 @@ export default function AddToCartButton({ product, className = "", variant = "pr
         setAdded(true);
         window.setTimeout(() => setAdded(false), 2000);
       }}
-      className={`${base} ${className}`}
+      className={`${base} touch-manipulation ${className}`}
     >
       {added ? (
         <>

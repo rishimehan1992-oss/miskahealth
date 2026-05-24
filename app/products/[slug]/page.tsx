@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { products, getProductBySlug } from "@/data/products";
 import ImageCarousel from "@/components/ImageCarousel";
 import ProductCard from "@/components/ProductCard";
 import ProductLifestyle from "@/components/ProductLifestyle";
 import ProductSubheader from "@/components/ProductSubheader";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import ProductBuyBar from "@/components/cart/ProductBuyBar";
 import { labelCaps, pageShell, sectionYSm } from "@/lib/layout";
 import type { Metadata } from "next";
 
@@ -32,12 +32,7 @@ export default async function ProductPage({ params }: Props) {
 
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
-      <ProductSubheader
-        product={p}
-        backHref="/"
-        backLabel="Back"
-        buyLabel={p.available && p.price ? `Buy ₹${p.price}` : undefined}
-      />
+      <ProductSubheader product={p} backHref="/" backLabel="Back" />
 
       <div className={`${pageShell} py-12 sm:py-20 lg:py-28`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 sm:gap-16 lg:gap-20 xl:gap-24">
@@ -111,17 +106,6 @@ export default async function ProductPage({ params }: Props) {
                   Notify me
                 </button>
               )}
-              {p.available && p.amazonUrl && (
-                <a
-                  href={p.amazonUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[11px] tracking-[0.14em] uppercase text-[#888] hover:text-[#1C3A2A] font-medium py-2"
-                >
-                  Buy on Amazon
-                  <ArrowUpRight size={12} />
-                </a>
-              )}
             </div>
 
             <div className="mt-16 sm:mt-20 pt-12 border-t border-[#EDE9E1]">
@@ -165,12 +149,15 @@ export default async function ProductPage({ params }: Props) {
         </div>
       </div>
 
+      <ProductBuyBar product={p} variant="inline" />
+      <ProductBuyBar product={p} variant="sticky" />
+
       <section className={`border-t border-[#E5E2DB] bg-white ${sectionYSm}`}>
         <div className={pageShell}>
           <h2 className="text-[11px] tracking-[0.22em] uppercase font-semibold mb-12 sm:mb-16 text-[#0A0A0A]">
             Also in the range
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-20 md:gap-x-12 md:gap-y-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 items-stretch">
             {others.map((op) => (
               <ProductCard key={op.id} p={op} />
             ))}

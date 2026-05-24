@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import ProductImage from "@/components/ProductImage";
 import ProductSubheader from "@/components/ProductSubheader";
+import ProductBuyBar from "@/components/cart/ProductBuyBar";
 import IngredientInfographic from "@/components/IngredientInfographic";
 import { getIngredientPageWithProduct } from "@/data/ingredients";
 import { products } from "@/data/products";
-import { labelCaps, pageShell, sectionYSm } from "@/lib/layout";
+import { labelCaps, pageShell } from "@/lib/layout";
 import type { Metadata } from "next";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -95,42 +95,8 @@ export default async function IngredientsPage({ params }: Props) {
         </div>
       </div>
 
-      <section className={`border-t border-[#E5E2DB] bg-white ${sectionYSm} hidden sm:block`}>
-        <div className={`${pageShell} flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6`}>
-          <div>
-            <p className="font-serif text-[22px] text-[#0A0A0A] mb-1">{p.name}</p>
-            <p className="text-[13px] text-[#888] font-light">{p.volume} · {p.concern}</p>
-          </div>
-          {p.available && p.amazonUrl && (
-            <a
-              href={p.amazonUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 bg-[#1C3A2A] text-white px-10 py-4 text-[11px] tracking-[0.2em] uppercase font-semibold hover:bg-[#152d20] shrink-0"
-            >
-              Buy now on Amazon
-              <ArrowUpRight size={13} />
-            </a>
-          )}
-        </div>
-      </section>
-
-      {/* Mobile sticky buy bar */}
-      {p.available && p.amazonUrl && (
-        <div className="fixed bottom-0 inset-x-0 z-40 sm:hidden bg-white/95 backdrop-blur-md border-t border-[#E5E2DB] p-4">
-          <div className={pageShell}>
-            <a
-              href={p.amazonUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex w-full items-center justify-center gap-2 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold"
-            >
-              Buy now · ₹{p.price}
-              <ArrowUpRight size={13} />
-            </a>
-          </div>
-        </div>
-      )}
+      <ProductBuyBar product={p} variant="inline" />
+      <ProductBuyBar product={p} variant="sticky" />
     </main>
   );
 }
