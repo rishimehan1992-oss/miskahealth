@@ -190,7 +190,17 @@ export default function Home() {
             <BrandMark variant="footer" href="/" className="mb-3" />
             <p>© 2026 · Bangalore</p>
           </div>
-          <p className="md:text-right">Clinical-grade hair &amp; skin formulations</p>
+          <div className="md:text-right space-y-2">
+            <p>Clinical-grade hair &amp; skin formulations</p>
+            <p className="flex flex-wrap gap-x-4 gap-y-1">
+              <Link href="/privacy" className="hover:text-[#1C3A2A]">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-[#1C3A2A]">
+                Terms
+              </Link>
+            </p>
+          </div>
         </div>
       </footer>
     </main>
