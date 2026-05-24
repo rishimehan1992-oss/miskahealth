@@ -36,17 +36,32 @@ export default function ProductCard({ p, compact = false }: Props) {
       </div>
 
       <div className="flex flex-col flex-1 p-5 sm:p-6">
-        <p className="text-[9px] tracking-[0.2em] text-[#1C3A2A] uppercase font-semibold mb-1.5">{p.tagline}</p>
-        <h3 className="font-serif text-[20px] sm:text-[22px] font-medium text-[#0A0A0A] leading-tight mb-3">
+        <p
+          className={`text-[9px] tracking-[0.18em] text-[#1C3A2A] uppercase font-semibold mb-1.5 ${
+            compact ? "line-clamp-1" : ""
+          }`}
+        >
+          {p.tagline}
+        </p>
+        <h3
+          className={`font-serif font-medium text-[#0A0A0A] mb-3 ${
+            compact
+              ? "text-[17px] sm:text-[18px] leading-[1.2] line-clamp-2"
+              : "text-[20px] sm:text-[22px] leading-tight"
+          }`}
+        >
           {p.name}
         </h3>
 
         {compact ? (
-          <ul className="space-y-2 mb-4 pt-3 border-t border-[#EDE9E1] flex-1">
+          <ul className="space-y-1.5 mb-4 pt-3 border-t border-[#EDE9E1] flex-1 min-w-0">
             {p.formula.map((f) => (
-              <li key={f.name} className="flex items-start gap-2 text-[12px] leading-snug text-[#666]">
-                <span className="w-1 h-1 rounded-full bg-[#1C3A2A] mt-[7px] shrink-0" />
-                <span>
+              <li
+                key={f.name}
+                className="flex items-start gap-1.5 text-[11px] sm:text-[11.5px] leading-tight text-[#666] min-w-0"
+              >
+                <span className="w-1 h-1 rounded-full bg-[#1C3A2A] mt-[6px] shrink-0" />
+                <span className="min-w-0">
                   <strong className="font-semibold text-[#0A0A0A]">{f.name}</strong>
                   <span className="text-[#999] font-light"> — {f.action}</span>
                 </span>
