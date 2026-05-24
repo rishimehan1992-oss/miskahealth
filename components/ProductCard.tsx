@@ -63,7 +63,7 @@ export default function ProductCard({ p, compact = false }: Props) {
                 <span className="w-1 h-1 rounded-full bg-[#1C3A2A] mt-[6px] shrink-0" />
                 <span className="min-w-0">
                   <strong className="font-semibold text-[#0A0A0A]">{f.name}</strong>
-                  <span className="text-[#999] font-light"> — {f.action}</span>
+                  <span className="text-[#999] font-light"> — {f.cardAction ?? f.action}</span>
                 </span>
               </li>
             ))}

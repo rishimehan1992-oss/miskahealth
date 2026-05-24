@@ -5,6 +5,8 @@
 export type ProductFormula = {
   name: string;
   action: string;
+  /** Shorter line for homepage cards (optional) */
+  cardAction?: string;
 };
 
 export type Product = {
@@ -151,10 +153,10 @@ export const products: Product[] = [
     description:
       "Follivive hairfall control serum with Capilia Longa, Procapil, Redensyl, Anagain and Follicusan. Works at the root to reactivate growth-phase follicles and block DHT at the cellular level.",
     formula: [
-      { name: "Redensyl", action: "Stem cell support" },
-      { name: "Procapil", action: "Follicle anchor" },
-      { name: "Anagain", action: "Growth phase" },
-      { name: "Capilia Longa", action: "Density support" },
+      { name: "Redensyl", action: "Reactivates hair stem cells", cardAction: "Stem cell support" },
+      { name: "Procapil", action: "Strengthens follicle anchor", cardAction: "Follicle anchor" },
+      { name: "Anagain", action: "Extends growth phase", cardAction: "Growth phase" },
+      { name: "Capilia Longa", action: "Density & thickness support", cardAction: "Density support" },
     ],
     amazonUrl: "https://www.amazon.in/dp/B0FXTS927W",
     seo: {
