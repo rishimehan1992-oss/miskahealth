@@ -1,4 +1,5 @@
 -- Run in Supabase SQL Editor after schema.sql
+-- Safe to re-run: uses IF NOT EXISTS / DROP POLICY IF EXISTS
 
 create table if not exists public.saved_addresses (
   id uuid primary key default gen_random_uuid(),
@@ -20,6 +21,8 @@ create table if not exists public.saved_addresses (
 create index if not exists saved_addresses_user_id_idx on public.saved_addresses (user_id);
 
 alter table public.saved_addresses enable row level security;
+
+drop policy if exists "Users manage own addresses" on public.saved_addresses;
 
 create policy "Users manage own addresses"
   on public.saved_addresses for all

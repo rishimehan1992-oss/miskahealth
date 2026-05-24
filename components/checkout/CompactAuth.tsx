@@ -13,7 +13,7 @@ type Mode = "signin" | "signup";
 
 export default function CompactAuth({ defaultEmail = "", onSignedIn }: Props) {
   const { user, loading, authEnabled, signInWithEmail, signUpWithEmail, signOut } = useAuth();
-  const [open, setOpen] = useState(false);
+  const [emailOpen, setEmailOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("signin");
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState("");
@@ -65,22 +65,22 @@ export default function CompactAuth({ defaultEmail = "", onSignedIn }: Props) {
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 space-y-3">
+      <p className="text-[10px] tracking-[0.14em] uppercase text-[#888] font-semibold">Account (optional)</p>
+
+      <GoogleSignInButton redirectPath="/checkout?step=pay" />
+
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full text-left py-3 px-3 border border-[#E5E2DB] text-[12px] text-[#666] hover:border-[#999]"
+        onClick={() => setEmailOpen((v) => !v)}
+        className="w-full text-left py-2.5 px-3 border border-[#E5E2DB] text-[12px] text-[#888] hover:border-[#999]"
       >
-        <span className="font-semibold text-[#1C3A2A]">Sign in</span>
-        <span className="text-[#999]"> — save addresses & order history</span>
-        <span className="float-right text-[#AAA]">{open ? "−" : "+"}</span>
+        Sign in with email instead
+        <span className="float-right text-[#AAA]">{emailOpen ? "−" : "+"}</span>
       </button>
 
-      {open && (
-        <div className="mt-3 p-3 border border-[#E5E2DB] border-t-0 space-y-4">
-          <GoogleSignInButton redirectPath="/checkout?step=pay" />
-          <p className="text-center text-[10px] tracking-[0.1em] uppercase text-[#CCC]">or email</p>
-          <form onSubmit={handleSubmit} className="space-y-4">
+      {emailOpen && (
+        <form onSubmit={handleSubmit} className="p-3 border border-[#E5E2DB] space-y-4">
           <div className="flex gap-4 text-[10px] tracking-[0.12em] uppercase font-semibold">
             <button
               type="button"
@@ -132,8 +132,7 @@ export default function CompactAuth({ defaultEmail = "", onSignedIn }: Props) {
           >
             {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
           </button>
-          </form>
-        </div>
+        </form>
       )}
     </div>
   );

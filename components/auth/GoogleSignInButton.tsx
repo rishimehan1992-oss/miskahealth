@@ -14,12 +14,18 @@ export default function GoogleSignInButton({
   className = "",
   fullWidth = true,
 }: Props) {
-  const { googleEnabled, signInWithGoogle } = useAuth();
+  const { authEnabled, googleEnabled, signInWithGoogle } = useAuth();
   const [signingIn, setSigningIn] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!googleEnabled) return null;
+  if (!authEnabled) return null;
 
   const handleClick = async () => {
+    if (!googleEnabled) {
+      setError("Google sign-in is turned off on this site.");
+      return;
+    }
+    setError(null);
     setSigningIn(true);
     try {
       await signInWithGoogle(redirectPath);
@@ -29,11 +35,12 @@ export default function GoogleSignInButton({
   };
 
   return (
+    <div className={fullWidth ? "w-full" : ""}>
     <button
       type="button"
       onClick={handleClick}
-      disabled={signingIn}
-      className={`${fullWidth ? "w-full" : ""} flex items-center justify-center gap-3 border border-[#0A0A0A] py-3 px-5 text-[13px] font-medium text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[#0A0A0A] ${className}`}
+      disabled={signingIn || !googleEnabled}
+      className={`${fullWidth ? "w-full" : ""} flex items-center justify-center gap-3 border border-[#0A0A0A] py-3.5 px-5 text-[13px] font-medium text-[#0A0A0A] hover:bg-[#0A0A0A] hover:text-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-[#0A0A0A] ${className}`}
     >
       <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden>
         <path
@@ -55,5 +62,7 @@ export default function GoogleSignInButton({
       </svg>
       {signingIn ? "Redirecting to Google…" : "Continue with Google"}
     </button>
+    {error && <p className="mt-2 text-[11px] text-[#B42318]">{error}</p>}
+    </div>
   );
 }

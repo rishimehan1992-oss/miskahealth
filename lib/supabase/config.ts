@@ -8,9 +8,8 @@ export function isSupabaseAdminConfigured() {
   return isSupabaseConfigured() && Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
+/** On when Supabase is configured unless explicitly disabled with `false`. */
 export function isGoogleAuthEnabled() {
-  return (
-    isSupabaseConfigured() &&
-    process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true"
-  );
+  if (!isSupabaseConfigured()) return false;
+  return process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== "false";
 }
