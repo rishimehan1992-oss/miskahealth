@@ -5,29 +5,39 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import CheckoutProgress from "./CheckoutProgress";
 import ShippingForm from "./ShippingForm";
-import AccountSignInPanel from "./AccountSignInPanel";
+import CompactAuth from "./CompactAuth";
+import SavedAddressPicker from "./SavedAddressPicker";
+import DeliveryRecap from "./DeliveryRecap";
 import PaymentPanel from "./PaymentPanel";
 import OrderSummary from "./OrderSummary";
+import MobileOrderSummary from "./MobileOrderSummary";
+import CheckoutMobileBar from "./CheckoutMobileBar";
 import { useCart } from "@/components/cart/CartProvider";
-import { EMPTY_SHIPPING, type CheckoutStep, type ShippingAddress } from "@/lib/checkout/types";
+import {
+  EMPTY_SHIPPING,
+  parseCheckoutStep,
+  type CheckoutStep,
+  type ShippingAddress,
+} from "@/lib/checkout/types";
 import { readShipping, writeShipping } from "@/lib/checkout/storage";
 import { hasErrors, validateShipping, type FieldErrors } from "@/lib/checkout/validate";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { pageShell } from "@/lib/layout";
 
-function parseStep(raw: string | null): CheckoutStep {
-  if (raw === "account" || raw === "payment") return raw;
-  return "shipping";
-}
+const SHIPPING_FORM_ID = "checkout-shipping";
 
 export default function CheckoutFlow() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const step = parseStep(searchParams.get("step"));
+  const rawStep = searchParams.get("step");
+  const step = parseCheckoutStep(rawStep);
   const { pricedLines, itemCount, ready } = useCart();
 
   const [shipping, setShipping] = useState<ShippingAddress>(EMPTY_SHIPPING);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
+  const [saveAddress, setSaveAddress] = useState(true);
+  const [addressReloadKey, setAddressReloadKey] = useState(0);
   const { user } = useAuth();
   const [hydrated, setHydrated] = useState(false);
 
@@ -36,6 +46,11 @@ export default function CheckoutFlow() {
     if (saved) setShipping(saved);
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!rawStep || rawStep === "delivery" || rawStep === "pay") return;
+    router.replace(`/checkout?step=${parseCheckoutStep(rawStep)}`);
+  }, [rawStep, router]);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -55,7 +70,7 @@ export default function CheckoutFlow() {
 
   useEffect(() => {
     if (!ready || !hydrated) return;
-    if (itemCount === 0 && step !== "shipping") {
+    if (itemCount === 0 && step !== "delivery") {
       router.replace("/cart");
     }
   }, [ready, hydrated, itemCount, step, router]);
@@ -63,32 +78,47 @@ export default function CheckoutFlow() {
   const goTo = useCallback(
     (next: CheckoutStep) => {
       router.push(`/checkout?step=${next}`);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     },
     [router]
   );
 
-  const onShippingSubmit = (e: React.FormEvent) => {
+  const persistAddress = async (address: ShippingAddress) => {
+    if (!user || savedAddressId) return;
+    try {
+      await fetch("/api/addresses", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...address, setDefault: true }),
+      });
+    } catch {
+      /* non-blocking */
+    }
+  };
+
+  const onShippingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validation = validateShipping(shipping);
     setErrors(validation);
     if (hasErrors(validation)) return;
     writeShipping(shipping);
-    goTo("account");
+    if (user && saveAddress && !savedAddressId) {
+      await persistAddress(shipping);
+    }
+    goTo("pay");
   };
-
-  const goToPayment = () => goTo("payment");
 
   const headline = useMemo(() => {
     switch (step) {
-      case "shipping":
-        return "Delivery details";
-      case "account":
-        return "Your account";
-      case "payment":
+      case "delivery":
+        return "Delivery";
+      case "pay":
         return "Payment";
     }
   }, [step]);
+
+  const shippingValid = !hasErrors(validateShipping(shipping));
+  const razorpayReady = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
 
   if (!hydrated || !ready) {
     return (
@@ -111,30 +141,60 @@ export default function CheckoutFlow() {
   }
 
   return (
-    <div className={`${pageShell} py-10 sm:py-16 pb-24`}>
+    <div className={`${pageShell} py-6 sm:py-12 pb-28 lg:pb-16`}>
       <CheckoutProgress current={step} />
+      <MobileOrderSummary showEditLink={step === "pay"} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_380px] gap-12 lg:gap-16 xl:gap-20">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_340px] gap-8 lg:gap-12">
         <div className="min-w-0">
-          <p className="text-[10px] tracking-[0.2em] uppercase text-[#1C3A2A] font-semibold mb-3">Checkout</p>
-          <h1 className="font-serif text-[28px] sm:text-[36px] font-light text-[#0A0A0A] mb-8 sm:mb-10">{headline}</h1>
+          <h1 className="font-serif text-[24px] sm:text-[32px] font-light text-[#0A0A0A] mb-4 sm:mb-6">
+            {headline}
+          </h1>
 
-          {step === "shipping" && (
-            <form onSubmit={onShippingSubmit}>
-              <p className="text-[15px] text-[#666] font-light leading-[1.9] mb-10 max-w-lg">
-                We deliver across India. Next, sign in or create an account — or continue as a guest.
+          {step === "delivery" && (
+            <form id={SHIPPING_FORM_ID} onSubmit={onShippingSubmit}>
+              <p className="text-[13px] text-[#666] font-light mb-5 max-w-md">
+                Delivering across India. Two steps: delivery, then pay.
               </p>
-              <ShippingForm value={shipping} errors={errors} onChange={setShipping} />
-              <div className="mt-12 pt-10 shop-divider flex flex-col sm:flex-row gap-4">
+
+              <CompactAuth
+                defaultEmail={shipping.email}
+                onSignedIn={() => setAddressReloadKey((k) => k + 1)}
+              />
+
+              {user && (
+                <SavedAddressPicker
+                  key={addressReloadKey}
+                  selectedId={savedAddressId}
+                  onSelectedIdChange={setSavedAddressId}
+                  onSelect={setShipping}
+                />
+              )}
+
+              <ShippingForm value={shipping} errors={errors} onChange={setShipping} compact />
+
+              {user && !savedAddressId && (
+                <label className="mt-4 flex items-center gap-2 text-[12px] text-[#666] cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={saveAddress}
+                    onChange={(e) => setSaveAddress(e.target.checked)}
+                    className="accent-[#1C3A2A]"
+                  />
+                  Save this address for next time
+                </label>
+              )}
+
+              <div className="hidden lg:flex mt-8 pt-6 shop-divider flex-col sm:flex-row gap-3">
                 <button
                   type="submit"
-                  className="flex-1 bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
+                  className="flex-1 bg-[#1C3A2A] text-white py-3.5 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
                 >
-                  Continue to account
+                  Continue to pay
                 </button>
                 <Link
                   href="/cart"
-                  className="flex-1 text-center py-4 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
+                  className="flex-1 text-center py-3.5 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
                 >
                   Back to bag
                 </Link>
@@ -142,37 +202,31 @@ export default function CheckoutFlow() {
             </form>
           )}
 
-          {step === "account" && (
-            <div className="space-y-6">
-              <AccountSignInPanel onContinue={goToPayment} defaultEmail={shipping.email} />
+          {step === "pay" && (
+            <div>
+              <DeliveryRecap shipping={shipping} onEdit={() => goTo("delivery")} />
+              <PaymentPanel shipping={shipping} showPayButton="desktop" />
               <button
                 type="button"
-                onClick={() => goTo("shipping")}
-                className="mt-6 w-full max-w-md py-4 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
+                onClick={() => goTo("delivery")}
+                className="hidden lg:block mt-6 w-full max-w-md py-3.5 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
               >
                 Edit delivery
               </button>
             </div>
           )}
-
-          {step === "payment" && (
-            <div className="space-y-6">
-              <PaymentPanel shipping={shipping} />
-              <button
-                type="button"
-                onClick={() => goTo("account")}
-                className="w-full py-4 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
-              >
-                Back
-              </button>
-            </div>
-          )}
         </div>
 
-        <div className="lg:sticky lg:top-28 lg:self-start">
-          <OrderSummary showEditLink={step !== "shipping"} />
+        <div className="hidden lg:block lg:sticky lg:top-24 lg:self-start">
+          <OrderSummary showEditLink={step === "pay"} />
         </div>
       </div>
+
+      <CheckoutMobileBar
+        step={step}
+        formId={step === "delivery" ? SHIPPING_FORM_ID : undefined}
+        payDisabled={!razorpayReady || !shippingValid}
+      />
     </div>
   );
 }

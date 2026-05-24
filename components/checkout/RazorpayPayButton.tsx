@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Script from "next/script";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
 import { readShipping } from "@/lib/checkout/storage";
 import { formatInr, orderTotal } from "@/lib/cart/pricing";
+import { useRazorpayReady } from "./RazorpayScript";
+
 declare global {
   interface Window {
     Razorpay?: new (options: Record<string, unknown>) => {
@@ -25,7 +26,7 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
   const { lines, pricedLines, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [scriptReady, setScriptReady] = useState(false);
+  const scriptReady = useRazorpayReady();
 
   const total = orderTotal(subtotal);
   const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
@@ -121,20 +122,15 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
 
   return (
     <>
-      <Script
-        src="https://checkout.razorpay.com/v1/checkout.js"
-        strategy="lazyOnload"
-        onReady={() => setScriptReady(true)}
-      />
       <button
         type="button"
         disabled={disabled || loading || pricedLines.length === 0}
         onClick={handlePay}
         className={`w-full max-w-md bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${className}`}
       >
-        {loading ? "Opening secure checkout…" : `Pay ${formatInr(total)}`}
+        {loading ? "Opening checkout…" : `Pay ${formatInr(total)}`}
       </button>
-      {error && <p className="mt-4 text-[12px] text-[#B42318] font-light max-w-md">{error}</p>}
+      {error && <p className="mt-3 text-[12px] text-[#B42318] font-light max-w-md">{error}</p>}
     </>
   );
 }

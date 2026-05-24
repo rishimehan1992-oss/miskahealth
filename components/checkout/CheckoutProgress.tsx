@@ -8,8 +8,8 @@ export default function CheckoutProgress({ current }: Props) {
   const currentIndex = CHECKOUT_STEPS.findIndex((s) => s.id === current);
 
   return (
-    <nav aria-label="Checkout progress" className="mb-12 sm:mb-16 pb-8 shop-divider">
-      <ol className="flex items-center justify-between max-w-lg">
+    <nav aria-label="Checkout progress" className="mb-6 sm:mb-10 pb-4 sm:pb-6 shop-divider">
+      <ol className="flex items-center justify-between max-w-xs sm:max-w-sm">
         {CHECKOUT_STEPS.map((step, i) => {
           const done = i < currentIndex;
           const active = step.id === current;

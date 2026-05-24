@@ -3,9 +3,8 @@
 The site now has a **guest checkout UI** with this flow:
 
 1. **Bag** (`/cart`) — add products, adjust quantity  
-2. **Delivery** (`/checkout?step=shipping`) — shipping address (saved in browser for guests)  
-3. **Sign in** (`/checkout?step=account`) — **Continue with Google** (required before payment)  
-4. **Payment** (`/checkout?step=payment`) — Razorpay (enabled when keys are set)
+2. **Delivery** (`/checkout` or `?step=delivery`) — address form; sign-in is optional (collapsed). Logged-in users see **saved addresses** from Supabase (`supabase/addresses.sql`).  
+3. **Pay** (`?step=pay`) — Razorpay (script preloads on checkout page for faster open)
 
 Amazon links remain as a secondary option on product cards.
 

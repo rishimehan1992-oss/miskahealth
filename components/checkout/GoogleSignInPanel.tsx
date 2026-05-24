@@ -15,7 +15,7 @@ export default function GoogleSignInPanel({ onContinue }: Props) {
     if (!googleEnabled) return;
     setSigningIn(true);
     try {
-      await signInWithGoogle("/checkout?step=payment");
+      await signInWithGoogle("/checkout?step=pay");
     } finally {
       setSigningIn(false);
     }

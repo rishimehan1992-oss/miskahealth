@@ -104,13 +104,13 @@ export default function CartPage() {
             <div className="mt-12 lg:mt-0 lg:sticky lg:top-28 lg:self-start space-y-8">
               <OrderSummary />
               <Link
-                href="/checkout?step=shipping"
+                href="/checkout"
                 className="block w-full text-center bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
               >
                 Proceed to checkout
               </Link>
               <p className="text-[11px] text-[#AAA] text-center lg:text-left leading-relaxed font-light">
-                Guest checkout · Google sign-in before payment
+                Guest checkout · delivery then pay
               </p>
             </div>
           </div>

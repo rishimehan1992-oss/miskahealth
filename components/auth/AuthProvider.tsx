@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         password,
         options: {
           data: { full_name: fullName ?? "" },
-          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/checkout?step=payment")}`,
+          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/checkout?step=pay")}`,
         },
       });
       if (error) return { error: error.message };
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signInWithGoogle = useCallback(
-    async (redirectPath = "/checkout?step=payment") => {
+    async (redirectPath = "/checkout?step=pay") => {
       if (!supabase || !googleEnabled) return;
       const redirectTo = `${getSiteOrigin()}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
       await supabase.auth.signInWithOAuth({

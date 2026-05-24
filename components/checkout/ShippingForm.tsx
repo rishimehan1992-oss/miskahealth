@@ -4,13 +4,14 @@ import { INDIA_STATES } from "@/lib/checkout/india-states";
 import type { ShippingAddress } from "@/lib/checkout/types";
 import type { FieldErrors } from "@/lib/checkout/validate";
 
-const labelClass = "block text-[10px] tracking-[0.14em] uppercase text-[#888] font-semibold mb-2";
+const labelClass = "block text-[10px] tracking-[0.14em] uppercase text-[#888] font-semibold mb-1.5";
 const errorClass = "text-[11px] text-[#B42318] mt-1.5";
 
 type Props = {
   value: ShippingAddress;
   errors: FieldErrors;
   onChange: (next: ShippingAddress) => void;
+  compact?: boolean;
 };
 
 function Field({
@@ -35,11 +36,12 @@ function Field({
   );
 }
 
-export default function ShippingForm({ value, errors, onChange }: Props) {
+export default function ShippingForm({ value, errors, onChange, compact }: Props) {
   const set = (key: keyof ShippingAddress, v: string) => onChange({ ...value, [key]: v });
+  const gap = compact ? "gap-x-6 gap-y-4 sm:gap-y-5" : "gap-x-10 gap-y-8";
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${gap}`}>
       <div className="sm:col-span-2">
         <Field id="fullName" label="Full name" error={errors.fullName}>
           <input

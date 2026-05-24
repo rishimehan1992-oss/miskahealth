@@ -276,6 +276,10 @@ details.ingredient-details summary::-webkit-details-marker {
   border-top: 1px solid #e5e2db;
 }
 
+.safe-area-pb {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+}
+
 .shop-summary {
   padding-top: 1.5rem;
   border-top: 1px solid #e5e2db;
