@@ -7,13 +7,9 @@ function allProductImages(p: Product) {
   return [...p.images.gallery, ...p.images.lifestyle];
 }
 
-function ingredientLine(p: Product) {
-  return p.formula.map((f) => f.name).join(" · ");
-}
-
 type Props = {
   p: Product;
-  /** Home / grid: one-line actives + use only. Full: copy for detail-page “also in range”. */
+  /** Home / grid: ingredient bullets + short use. Full: full description for detail-page “also in range”. */
   compact?: boolean;
 };
 
@@ -46,16 +42,17 @@ export default function ProductCard({ p, compact = false }: Props) {
         </h3>
 
         {compact ? (
-          <div className="space-y-2 mb-4 flex-1 text-[12px] text-[#666] font-light leading-snug">
-            <p className="line-clamp-1">
-              <span className="text-[#999] uppercase text-[10px] tracking-wide mr-1">Actives</span>
-              {ingredientLine(p)}
-            </p>
-            <p className="line-clamp-1">
-              <span className="text-[#999] uppercase text-[10px] tracking-wide mr-1">For</span>
-              {p.concern}
-            </p>
-          </div>
+          <ul className="space-y-2 mb-4 pt-3 border-t border-[#EDE9E1] flex-1">
+            {p.formula.map((f) => (
+              <li key={f.name} className="flex items-start gap-2 text-[12px] leading-snug text-[#666]">
+                <span className="w-1 h-1 rounded-full bg-[#1C3A2A] mt-[7px] shrink-0" />
+                <span>
+                  <strong className="font-semibold text-[#0A0A0A]">{f.name}</strong>
+                  <span className="text-[#999] font-light"> — {f.action}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
         ) : (
           <>
             <p className="text-[13px] text-[#777] leading-[1.75] font-light mb-5 line-clamp-3">{p.description}</p>
