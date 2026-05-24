@@ -12,6 +12,7 @@ import {
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
 import { isGoogleAuthEnabled, isSupabaseConfigured } from "@/lib/supabase/config";
+import { authCallbackUrl, getSiteOrigin } from "@/lib/supabase/site-url";
 
 type AuthResult = { error: string | null };
 
@@ -27,14 +28,6 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-/** Prefer NEXT_PUBLIC_SITE_URL on Vercel so confirmation emails use production, not localhost. */
-function getSiteOrigin() {
-  const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
-  if (fromEnv) return fromEnv;
-  if (typeof window !== "undefined") return window.location.origin;
-  return "";
-}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -103,11 +96,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signInWithGoogle = useCallback(
     async (redirectPath = "/checkout?step=pay") => {
-      if (!supabase || !googleEnabled) return;
-      const redirectTo = `${getSiteOrigin()}/auth/callback?next=${encodeURIComponent(redirectPath)}`;
+      if (!supabase) return;
+      if (!googleEnabled) return;
       await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo },
+        options: { redirectTo: authCallbackUrl(redirectPath) },
       });
     },
     [supabase, googleEnabled]
