@@ -2,7 +2,6 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
 import HomeHashScroll from "@/components/HomeHashScroll";
-import HomeCheckoutBar from "@/components/cart/HomeCheckoutBar";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
 import { getIngredientPage } from "@/data/ingredients";
@@ -14,7 +13,6 @@ export default function Home() {
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
       <HomeHashScroll />
-      <HomeCheckoutBar />
       <Navbar />
 
       <section

@@ -81,19 +81,17 @@ export default function Navbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2 shrink-0">
-          <CartIconLink />
+          <CartIconLink ariaLabel="View bag" />
           <ShopNowButton className="inline-flex text-[11px] tracking-[0.12em] uppercase font-semibold bg-[#1C3A2A] text-white px-6 py-2.5 hover:bg-[#152d20] touch-manipulation" />
         </div>
 
-        {/* Mobile: Shop + bag always visible — no menu dig for Shop now */}
+        {/* Mobile: bag = review cart · Shop/Checkout = browse or pay */}
         <div className="flex md:hidden items-center gap-1 shrink-0">
+          <CartIconLink ariaLabel="View bag" />
           <ShopNowButton
             onAfterClick={closeMenu}
             className="text-[10px] tracking-[0.1em] uppercase font-semibold bg-[#1C3A2A] text-white px-3.5 py-2.5 hover:bg-[#152d20] touch-manipulation"
-          >
-            Shop
-          </ShopNowButton>
-          <CartIconLink />
+          />
           <button
             type="button"
             className="p-2 touch-manipulation"
