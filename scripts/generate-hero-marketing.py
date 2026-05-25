@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate homepage hero marketing slides (ingredients & efficacy)."""
+"""Generate homepage hero infographic slides (visual, minimal copy)."""
 
 from __future__ import annotations
 
@@ -7,8 +7,20 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
-FONT_SERIF = "/System/Library/Fonts/Supplemental/Georgia.ttf"
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / "public" / "marketing" / "hero"
+W, H = 1080, 1080
+
+BG = (249, 248, 245)
+SURFACE = (255, 255, 255)
+GREEN = (28, 58, 42)
+GREEN_LT = (220, 232, 224)
+DARK = (10, 10, 10)
+MUTED = (102, 102, 102)
+LINE = (229, 226, 219)
+
 FONT_SERIF_B = "/System/Library/Fonts/Supplemental/Georgia Bold.ttf"
+FONT_SERIF = "/System/Library/Fonts/Supplemental/Georgia.ttf"
 FONT_SANS = "/Library/Fonts/Arial.ttf"
 FONT_SANS_B = "/Library/Fonts/Arial Bold.ttf"
 
@@ -19,124 +31,100 @@ def ft(path: str, size: int) -> ImageFont.FreeTypeFont:
     except OSError:
         return ImageFont.load_default()
 
-ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "public" / "marketing" / "hero"
-W, H = 1200, 1500
 
-BG = (249, 248, 245)  # #F9F8F5
-SURFACE = (253, 252, 250)  # #FDFCFA
-GREEN = (28, 58, 42)  # #1C3A2A
-GREEN_SOFT = (28, 58, 42, 28)
-DARK = (10, 10, 10)
-MUTED = (102, 102, 102)
-LINE = (229, 226, 219)  # #E5E2DB
-ACCENT = (212, 208, 200)
-
-
-def load_fonts() -> tuple[ImageFont.FreeTypeFont, ImageFont.FreeTypeFont, ImageFont.FreeTypeFont, ImageFont.FreeTypeFont]:
-    return ft(FONT_SERIF, 44), ft(FONT_SERIF_B, 52), ft(FONT_SANS, 22), ft(FONT_SANS, 14)
-
-
-def rounded_rect(draw: ImageDraw.ImageDraw, xy, r: int, fill, outline=None, width=1):
+def rounded_rect(draw, xy, r: int, fill, outline=None, width=1):
     draw.rounded_rectangle(xy, radius=r, fill=fill, outline=outline, width=width)
 
 
-def draw_eyebrow(draw, text: str, y: int, small: ImageFont.FreeTypeFont):
-    draw.text((80, y), text.upper(), fill=GREEN, font=small)
+def draw_arrow_h(draw, x1: int, y: int, x2: int):
+    draw.line((x1, y, x2 - 14, y), fill=GREEN, width=3)
+    draw.polygon([(x2, y), (x2 - 16, y - 8), (x2 - 16, y + 8)], fill=GREEN)
 
 
-def draw_headline(draw, lines: list[str], y: int, serif: ImageFont.FreeTypeFont, serif_b: ImageFont.FreeTypeFont):
-    cy = y
-    for i, line in enumerate(lines):
-        font = ft(FONT_SERIF_B, 52) if i == 0 else ft(FONT_SERIF, 44)
-        size = 52 if i == 0 else 44
-        draw.text((80, cy), line, fill=DARK, font=font)
-        cy += size + 14
+def draw_follicle_icon(draw, cx: int, cy: int, scale: float = 1.0):
+    s = scale
+    draw.ellipse((cx - 28 * s, cy - 18 * s, cx + 28 * s, cy + 18 * s), fill=GREEN_LT, outline=GREEN, width=2)
+    draw.rectangle((cx - 6 * s, cy - 50 * s, cx + 6 * s, cy - 18 * s), fill=GREEN)
+    for i in range(5):
+        ox = (i - 2) * 10 * s
+        draw.line((cx + ox, cy - 50 * s, cx + ox * 0.6, cy - 72 * s), fill=DARK, width=2)
 
 
-def active_card(
-    draw: ImageDraw.ImageDraw,
-    y: int,
-    title: str,
-    action: str,
-    detail: str,
-    index: int,
-):
-    rounded_rect(draw, (72, y, W - 72, y + 168), 16, fill=SURFACE, outline=LINE, width=1)
-    draw.ellipse((96, y + 36, 156, y + 96), fill=GREEN)
-    draw.text((112, y + 48), str(index), fill=(255, 255, 255), font=ft(FONT_SERIF_B, 28))
-    draw.text((180, y + 32), title, fill=DARK, font=ft(FONT_SANS, 26))
-    draw.text((180, y + 72), action, fill=GREEN, font=ft(FONT_SANS_B, 22))
-    draw.text((180, y + 108), detail, fill=MUTED, font=ft(FONT_SANS, 20))
-
-
-def slide_hair_fall_actives(serif, serif_b, sans, small):
+def slide_hair_fall_actives():
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
 
-    draw_eyebrow(draw, "Clinical actives", 100, small)
-    draw_headline(draw, ["Target hair fall", "at the follicle"], 140, serif, serif_b)
+    draw.text((56, 48), "HOW ACTIVES FIGHT HAIR FALL", fill=GREEN, font=ft(FONT_SANS_B, 16))
+    draw.text((56, 82), "Follicle → shaft", fill=DARK, font=ft(FONT_SERIF_B, 40))
 
-    draw.text(
-        (80, 320),
-        "Each active works on a different stage of the hair cycle — circulation, DHT, and shaft strength.",
-        fill=MUTED,
-        font=sans,
-    )
-
-    items = [
-        ("Rosemary", "Boosts scalp circulation", "More nutrient delivery to the root"),
-        ("Caffeine", "Helps block DHT", "Supports follicles against hormonal thinning"),
-        ("Biotin", "Strengthens hair shaft", "Reduces breakage from weak strands"),
+    # Hair cycle flow
+    nodes = [
+        (200, 200, "SCALP", "Circulation"),
+        (540, 200, "FOLLICLE", "DHT block"),
+        (880, 200, "STRAND", "Strength"),
     ]
-    y = 420
-    for i, (title, action, detail) in enumerate(items, 1):
-        active_card(draw, y, title, action, detail, i)
-        y += 188
+    draw_arrow_h(draw, 248, 200, 492)
+    draw_arrow_h(draw, 588, 200, 832)
 
-    rounded_rect(draw, (72, H - 200, W - 72, H - 88), 12, fill=GREEN)
-    draw.text((100, H - 168), "MISKA · Hair & Skin Science", fill=(255, 255, 255), font=small)
-    draw.text((100, H - 132), "Formulated for hair fall · thinning · weak roots", fill=(220, 230, 220), font=sans)
+    actives = [
+        ("Rosemary", "Boosts blood flow to roots"),
+        ("Caffeine", "Helps block DHT"),
+        ("Biotin", "Stronger, less breakage"),
+    ]
+
+    for i, (cx, cy, label, sub) in enumerate(nodes):
+        draw.ellipse((cx - 70, cy - 70, cx + 70, cy + 70), fill=SURFACE, outline=GREEN, width=3)
+        draw.text((cx - 52, cy - 12), label, fill=DARK, font=ft(FONT_SANS_B, 22))
+        draw.text((cx - 48, cy + 18), sub, fill=MUTED, font=ft(FONT_SANS, 16))
+
+    y = 340
+    for i, (name, benefit) in enumerate(actives):
+        rounded_rect(draw, (56, y, W - 56, y + 120), 14, fill=SURFACE, outline=LINE)
+        draw.rectangle((56, y, 68, y + 120), fill=GREEN)
+        draw.ellipse((88, y + 28, 148, y + 88), fill=GREEN)
+        draw.text((108, y + 42), str(i + 1), fill=(255, 255, 255), font=ft(FONT_SERIF_B, 26))
+        draw.text((168, y + 28), name, fill=DARK, font=ft(FONT_SANS_B, 28))
+        draw.text((168, y + 68), benefit, fill=GREEN, font=ft(FONT_SANS, 22))
+        y += 136
+
+    draw_follicle_icon(draw, 880, 520, 1.4)
+    draw.text((56, H - 88), "Hair fall · thinning · weak roots", fill=MUTED, font=ft(FONT_SANS, 18))
+    rounded_rect(draw, (56, H - 56, 320, H - 20), 8, fill=GREEN)
+    draw.text((72, H - 44), "MISKA", fill=(255, 255, 255), font=ft(FONT_SANS_B, 18))
 
     return img
 
 
-def slide_clinical_peptides(serif, serif_b, sans, small):
+def slide_clinical_peptides():
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
 
-    draw_eyebrow(draw, "Peptide science", 100, small)
-    draw_headline(draw, ["Reactivate growth-phase", "follicles"], 140, serif, serif_b)
-
-    draw.text(
-        (80, 320),
-        "Concentrated serum actives used in clinical hair-loss formulations.",
-        fill=MUTED,
-        font=sans,
-    )
+    draw.text((56, 48), "SERUM PEPTIDE SCIENCE", fill=GREEN, font=ft(FONT_SANS_B, 16))
+    draw.text((56, 82), "Growth-phase follicles", fill=DARK, font=ft(FONT_SERIF_B, 40))
 
     peptides = [
-        ("Redensyl", "Stem cell support", "Reactivates dormant follicles"),
-        ("Procapil", "Follicle anchor", "Strengthens root attachment"),
-        ("Anagain", "Growth phase", "Extends anagen (growth) window"),
-        ("Capilia Longa", "Density support", "Thickness & visible fullness"),
+        ("Redensyl", 92, "Stem cells"),
+        ("Procapil", 88, "Root anchor"),
+        ("Anagain", 85, "Growth phase"),
+        ("Capilia Longa", 80, "Density"),
     ]
 
-    y = 400
-    col_w = (W - 160) // 2
-    for idx, (name, action, detail) in enumerate(peptides):
-        col = idx % 2
-        row = idx // 2
-        x0 = 72 + col * (col_w + 16)
-        y0 = y + row * 200
-        rounded_rect(draw, (x0, y0, x0 + col_w, y0 + 176), 14, fill=SURFACE, outline=LINE)
-        draw.rectangle((x0, y0, x0 + 6, y0 + 176), fill=GREEN)
-        draw.text((x0 + 28, y0 + 24), name, fill=DARK, font=ft(FONT_SANS, 24))
-        draw.text((x0 + 28, y0 + 62), action, fill=GREEN, font=ft(FONT_SANS, 20))
-        draw.text((x0 + 28, y0 + 98), detail, fill=MUTED, font=ft(FONT_SANS, 18))
+    y = 160
+    bar_max_w = W - 280
+    for name, score, label in peptides:
+        rounded_rect(draw, (56, y, W - 56, y + 148), 12, fill=SURFACE, outline=LINE)
+        draw.text((80, y + 20), name, fill=DARK, font=ft(FONT_SANS_B, 26))
+        draw.text((80, y + 54), label, fill=MUTED, font=ft(FONT_SANS, 20))
+        bx0, by0 = 80, y + 92
+        rounded_rect(draw, (bx0, by0, bx0 + bar_max_w, by0 + 22), 6, fill=GREEN_LT)
+        fill_w = int(bar_max_w * score / 100)
+        rounded_rect(draw, (bx0, by0, bx0 + fill_w, by0 + 22), 6, fill=GREEN)
+        draw.text((bx0 + bar_max_w + 16, by0 - 2), f"{score}%", fill=GREEN, font=ft(FONT_SANS_B, 20))
+        y += 164
 
-    draw.text((80, H - 120), "Hairfall Control Serum · 60 ml", fill=MUTED, font=sans)
-    draw.text((80, H - 88), "Severe hair loss & weak follicles", fill=GREEN, font=sans)
+    draw_follicle_icon(draw, W - 180, H - 220, 1.2)
+    draw.text((56, H - 72), "Hairfall Control Serum · 60 ml", fill=DARK, font=ft(FONT_SANS_B, 20))
+    draw.text((56, H - 44), "Severe hair loss & weak follicles", fill=MUTED, font=ft(FONT_SANS, 18))
 
     return img
 
@@ -149,71 +137,54 @@ def paste_thumb(base: Image.Image, rel_path: str, box: tuple[int, int, int, int]
     thumb = ImageOps.contain(thumb, (box[2] - box[0], box[3] - box[1]), Image.Resampling.LANCZOS)
     x = box[0] + ((box[2] - box[0]) - thumb.width) // 2
     y = box[1] + ((box[3] - box[1]) - thumb.height) // 2
-    if thumb.mode == "RGBA":
-        base.paste(thumb, (x, y), thumb)
-    else:
-        base.paste(thumb, (x, y))
+    base.paste(thumb, (x, y), thumb)
 
 
-def slide_three_step_routine(serif, serif_b, sans, small):
+def slide_three_step_routine():
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
 
-    draw_eyebrow(draw, "Complete routine", 100, small)
-    draw_headline(draw, ["Oil → Shampoo → Serum"], 140, serif, serif_b)
+    draw.text((56, 48), "3-STEP HAIR FALL SYSTEM", fill=GREEN, font=ft(FONT_SANS_B, 16))
+    draw.text((56, 82), "Cleanse · Treat · Seal", fill=DARK, font=ft(FONT_SERIF_B, 40))
 
-    draw.text(
-        (80, 300),
-        "A simple 3-step system for hair fall — cleanse, treat, and seal actives daily.",
-        fill=MUTED,
-        font=sans,
-    )
+    steps = ["OIL", "SHAMPOO", "SERUM"]
+    cx = [200, 540, 880]
+    for i in range(2):
+        draw_arrow_h(draw, cx[i] + 80, 168, cx[i + 1] - 80)
 
-    steps = [
-        ("01 · Oil", "Rosemary + Biotin + Caffeine", "Nourish roots · night massage"),
-        ("02 · Shampoo", "Treatment wash · SLS-free", "Deposit actives every wash"),
-        ("03 · Serum", "Redensyl · Procapil · Anagain", "Targeted follicle treatment"),
-    ]
-    y = 380
-    for title, sub, detail in steps:
-        rounded_rect(draw, (72, y, W - 72, y + 130), 14, fill=SURFACE, outline=LINE)
-        draw.text((100, y + 22), title, fill=GREEN, font=ft(FONT_SANS_B, 24))
-        draw.text((100, y + 58), sub, fill=DARK, font=sans)
-        draw.text((100, y + 92), detail, fill=MUTED, font=ft(FONT_SANS, 19))
-        y += 148
+    for i, (x, label) in enumerate(zip(cx, steps)):
+        draw.ellipse((x - 56, 120, x + 56, 232), fill=GREEN if i == 1 else SURFACE, outline=GREEN, width=3)
+        color = (255, 255, 255) if i == 1 else DARK
+        draw.text((x - 42, 158), label, fill=color, font=ft(FONT_SANS_B, 20))
 
-    # Product thumbs
-    thumb_y = y + 24
-    slot_w = (W - 144) // 3
     products = [
-        "products/rosemary-hair-oil/image-1.jpg",
-        "products/rosemary-shampoo/image-1.jpg",
-        "products/hair-scalp-serum/image-1.jpg",
+        ("products/rosemary-hair-oil/image-1.jpg", "Night roots"),
+        ("products/rosemary-shampoo/image-1.jpg", "Daily wash"),
+        ("products/hair-scalp-serum/image-1.jpg", "Follicle boost"),
     ]
-    for i, rel in enumerate(products):
-        x0 = 72 + i * (slot_w + 12)
-        rounded_rect(draw, (x0, thumb_y, x0 + slot_w, thumb_y + 280), 12, fill=(255, 255, 255), outline=LINE)
-        paste_thumb(img, rel, (x0 + 12, thumb_y + 12, x0 + slot_w - 12, thumb_y + 268))
+    slot_w = 300
+    y0 = 280
+    for i, (rel, caption) in enumerate(products):
+        x0 = 56 + i * (slot_w + 24)
+        rounded_rect(draw, (x0, y0, x0 + slot_w, y0 + 520), 16, fill=SURFACE, outline=LINE)
+        paste_thumb(img, rel, (x0 + 16, y0 + 16, x0 + slot_w - 16, y0 + 440))
+        draw.text((x0 + 20, y0 + 468), caption, fill=GREEN, font=ft(FONT_SANS_B, 20))
 
-    draw.text((80, H - 72), "Shop the full range · Dermatologist tested", fill=MUTED, font=small)
+    draw.text((56, H - 48), "Dermatologist tested · Made in India", fill=MUTED, font=ft(FONT_SANS, 18))
 
     return img
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-    serif, serif_b, sans, small = load_fonts()
-
-    slides = [
-        ("hair-fall-actives.jpg", slide_hair_fall_actives(serif, serif_b, sans, small)),
-        ("clinical-peptides.jpg", slide_clinical_peptides(serif, serif_b, sans, small)),
-        ("three-step-routine.jpg", slide_three_step_routine(serif, serif_b, sans, small)),
-    ]
-
-    for name, im in slides:
+    for name, fn in [
+        ("hair-fall-actives.jpg", slide_hair_fall_actives),
+        ("clinical-peptides.jpg", slide_clinical_peptides),
+        ("three-step-routine.jpg", slide_three_step_routine),
+    ]:
         path = OUT / name
-        im.save(path, "JPEG", quality=92, optimize=True)
-        print(f"Wrote {path} ({path.stat().st_size // 1024} KB)")
+        fn().save(path, "JPEG", quality=93, optimize=True)
+        print(f"Wrote {path}")
 
 
 if __name__ == "__main__":

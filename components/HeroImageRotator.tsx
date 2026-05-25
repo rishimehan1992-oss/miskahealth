@@ -3,12 +3,13 @@
 import { useCallback, useEffect, useState } from "react";
 import ProductImage from "@/components/ProductImage";
 import { imageUrl } from "@/lib/images";
-import type { HeroImage } from "@/data/hero-images";
 
-const INTERVAL_MS = 4000;
+const INTERVAL_MS = 4500;
+
+type Slide = { src: string; alt: string };
 
 type Props = {
-  images: HeroImage[];
+  images: readonly Slide[];
 };
 
 export default function HeroImageRotator({ images }: Props) {
@@ -28,17 +29,15 @@ export default function HeroImageRotator({ images }: Props) {
 
   if (!images.length) return null;
 
-  const current = images[index];
-
   return (
     <div
-      className="w-full"
+      className="w-full min-w-0"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       aria-roledescription="carousel"
-      aria-label="Product photos"
+      aria-label="Hair science infographics"
     >
-      <div className="relative aspect-[4/5] sm:aspect-square max-w-md mx-auto lg:max-w-none bg-white overflow-hidden">
+      <div className="relative w-full aspect-square sm:aspect-[5/6] lg:aspect-square min-h-[min(88vw,520px)] sm:min-h-[480px] lg:min-h-[min(52vw,580px)] overflow-hidden rounded-sm border border-[#E5E2DB] bg-[#F9F8F5] shadow-sm">
         {images.map((img, i) => (
           <div
             key={imageUrl(img.src)}
@@ -51,36 +50,30 @@ export default function HeroImageRotator({ images }: Props) {
               src={img.src}
               alt={img.alt}
               priority={i === 0}
-              sizes="(max-width: 1024px) 90vw, 480px"
-              className={
-                img.marketing
-                  ? "object-cover object-center"
-                  : "object-contain p-4 sm:p-6 md:p-8"
-              }
+              sizes="(max-width: 1024px) 95vw, 58vw"
+              className="object-contain w-full h-full"
             />
           </div>
         ))}
       </div>
 
       {images.length > 1 && (
-        <div className="flex justify-center gap-2 mt-5">
-          {images.map((_, i) => (
+        <div className="flex justify-center gap-2 mt-4" role="tablist" aria-label="Infographic slides">
+          {images.map((img, i) => (
             <button
-              key={i}
+              key={img.src}
               type="button"
-              aria-label={`Show image ${i + 1}`}
+              role="tab"
+              aria-selected={i === index}
+              aria-label={img.alt}
               onClick={() => setIndex(i)}
-              className={`h-1 rounded-full transition-all ${
-                i === index ? "w-6 bg-[#1C3A2A]" : "w-1.5 bg-[#D4D0C8] hover:bg-[#B8B4AC]"
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? "w-7 bg-[#1C3A2A]" : "w-1.5 bg-[#D4D0C8] hover:bg-[#B8B4AC]"
               }`}
             />
           ))}
         </div>
       )}
-
-      <p className="mt-3 text-center text-[11px] tracking-[0.14em] uppercase text-[#888] font-medium">
-        {current.alt}
-      </p>
     </div>
   );
 }
