@@ -1,12 +1,28 @@
-/** Real product photos for the homepage hero rotator */
-export const heroImages: { src: string; alt: string }[] = [
+export type HeroImage = {
+  src: string;
+  alt: string;
+  /** Full-bleed infographic (no product padding) */
+  marketing?: boolean;
+};
+
+/** Marketing efficacy slides first, then product pack shots */
+export const heroImages: HeroImage[] = [
+  {
+    src: "/marketing/hero/hair-fall-actives.jpg",
+    alt: "Rosemary · Caffeine · Biotin — follicle-level actives",
+    marketing: true,
+  },
+  {
+    src: "/marketing/hero/clinical-peptides.jpg",
+    alt: "Redensyl · Procapil · Anagain — clinical peptides",
+    marketing: true,
+  },
+  {
+    src: "/marketing/hero/three-step-routine.jpg",
+    alt: "Oil → Shampoo → Serum — complete hair fall routine",
+    marketing: true,
+  },
   { src: "/products/rosemary-hair-oil/image-1.jpg", alt: "Rosemary Hair Oil" },
   { src: "/products/rosemary-shampoo/image-1.jpg", alt: "Rosemary Shampoo" },
-  { src: "/products/hair-scalp-serum/image-1.jpg", alt: "Hair & Scalp Serum" },
-  { src: "/products/rosemary-hair-oil/lifestyle/lifestyle-1.jpg", alt: "Rosemary Hair Oil lifestyle" },
-  { src: "/products/rosemary-shampoo/lifestyle/lifestyle-1.jpg", alt: "Rosemary Shampoo lifestyle" },
-  { src: "/products/hair-scalp-serum/lifestyle/lifestyle-1.jpg", alt: "Hair & Scalp Serum lifestyle" },
-  { src: "/products/rosemary-hair-oil/image-3.jpg", alt: "Rosemary Hair Oil" },
-  { src: "/products/rosemary-shampoo/image-3.jpg", alt: "Rosemary Shampoo" },
-  { src: "/products/hair-scalp-serum/image-2.jpg", alt: "Hair & Scalp Serum" },
+  { src: "/products/hair-scalp-serum/image-1.jpg", alt: "Hairfall Control Serum" },
 ];

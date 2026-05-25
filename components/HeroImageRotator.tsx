@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import ProductImage from "@/components/ProductImage";
 import { imageUrl } from "@/lib/images";
+import type { HeroImage } from "@/data/hero-images";
 
 const INTERVAL_MS = 4000;
 
 type Props = {
-  images: { src: string; alt: string }[];
+  images: HeroImage[];
 };
 
 export default function HeroImageRotator({ images }: Props) {
@@ -51,7 +52,11 @@ export default function HeroImageRotator({ images }: Props) {
               alt={img.alt}
               priority={i === 0}
               sizes="(max-width: 1024px) 90vw, 480px"
-              className="object-contain p-4 sm:p-6 md:p-8"
+              className={
+                img.marketing
+                  ? "object-cover object-center"
+                  : "object-contain p-4 sm:p-6 md:p-8"
+              }
             />
           </div>
         ))}
