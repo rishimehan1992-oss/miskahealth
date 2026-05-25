@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { buildOrderFromCart } from "@/lib/checkout/order-build";
 import type { CartLine } from "@/lib/cart/types";
 import type { ShippingAddress } from "@/lib/checkout/types";
+import type { PaymentMethod } from "@/lib/cart/pricing";
 import { getRazorpayClient, getRazorpayKeyId, isRazorpayConfigured } from "@/lib/razorpay/config";
 import { persistOrder } from "@/lib/orders/persist";
 import { createClient } from "@/lib/supabase/server";
@@ -10,6 +11,7 @@ import type { OrderRecord } from "@/lib/orders/types";
 type Body = {
   lines: CartLine[];
   shipping: ShippingAddress;
+  paymentMethod?: PaymentMethod;
 };
 
 export async function POST(request: Request) {
@@ -28,7 +30,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Cart and shipping are required" }, { status: 400 });
   }
 
-  const built = buildOrderFromCart(body.lines, body.shipping);
+  const method = body.paymentMethod === "cod" ? "cod" : "prepaid";
+  if (method === "cod") {
+    return NextResponse.json({ error: "Use COD checkout for cash on delivery" }, { status: 400 });
+  }
+
+  const built = buildOrderFromCart(body.lines, body.shipping, "prepaid");
   if ("error" in built) {
     return NextResponse.json({ error: built.error }, { status: 400 });
   }
@@ -56,6 +63,7 @@ export async function POST(request: Request) {
       id: orderId,
       razorpayOrderId: rzOrder.id,
       status: "created",
+      paymentMethod: "prepaid",
       amountPaise: built.amountPaise,
       subtotal: built.subtotal,
       shippingFee: built.shippingFee,

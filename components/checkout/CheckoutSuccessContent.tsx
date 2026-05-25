@@ -32,6 +32,7 @@ export default function CheckoutSuccessContent({
   }, [orderId, serverOrder]);
 
   const totalInr = order ? order.subtotal + order.shippingFee : null;
+  const isCod = order?.paymentMethod === "cod" || order?.status === "cod_pending";
 
   return (
     <>
@@ -39,7 +40,19 @@ export default function CheckoutSuccessContent({
         <div className="space-y-6 text-[15px] text-[#666] font-light leading-[1.9]">
           <p>
             Your order <strong className="text-[#0A0A0A] font-medium">{order.id}</strong> is confirmed.
-            {totalInr != null && <> Total paid: {formatInr(totalInr)}.</>}
+            {totalInr != null && (
+              <>
+                {" "}
+                {isCod ? (
+                  <>
+                    Pay <strong className="text-[#0A0A0A] font-medium">{formatInr(totalInr)}</strong> in cash when
+                    your order arrives (includes ₹{order.shippingFee} COD shipping).
+                  </>
+                ) : (
+                  <>Total paid: {formatInr(totalInr)}.</>
+                )}
+              </>
+            )}
           </p>
           <p>
             We will contact you at{" "}

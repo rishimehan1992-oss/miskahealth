@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
 import { readShipping } from "@/lib/checkout/storage";
-import { formatInr, orderTotal } from "@/lib/cart/pricing";
+import { formatInr, orderTotal, type PaymentMethod } from "@/lib/cart/pricing";
+import { clearPaymentMethod } from "@/lib/checkout/storage";
 import { useRazorpayReady } from "./RazorpayScript";
 
 declare global {
@@ -19,16 +20,17 @@ declare global {
 type Props = {
   disabled?: boolean;
   className?: string;
+  paymentMethod: PaymentMethod;
 };
 
-export default function RazorpayPayButton({ disabled, className = "" }: Props) {
+export default function RazorpayPayButton({ disabled, className = "", paymentMethod }: Props) {
   const router = useRouter();
   const { lines, pricedLines, subtotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scriptReady = useRazorpayReady();
 
-  const total = orderTotal(subtotal);
+  const total = orderTotal(subtotal, paymentMethod);
   const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
   const handlePay = async () => {
@@ -52,7 +54,7 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
       const res = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines, shipping }),
+        body: JSON.stringify({ lines, shipping, paymentMethod: "prepaid" }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -101,6 +103,7 @@ export default function RazorpayPayButton({ disabled, className = "" }: Props) {
           }
           clearCart();
           localStorage.removeItem("miska-shipping-v1");
+          clearPaymentMethod();
           router.push(`/checkout/success?order=${data.orderId}`);
         },
         modal: {

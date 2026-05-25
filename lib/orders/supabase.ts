@@ -1,5 +1,20 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { PaymentMethod } from "@/lib/cart/pricing";
 import type { OrderRecord } from "./types";
+
+type ShippingPayload = OrderRecord["shipping"] & { paymentMethod?: PaymentMethod };
+
+function parsePaymentMethod(
+  shipping: ShippingPayload,
+  razorpayOrderId: string,
+  status: string
+): { paymentMethod: PaymentMethod; status: OrderRecord["status"] } {
+  const method =
+    shipping.paymentMethod ?? (razorpayOrderId.startsWith("cod_") ? "cod" : "prepaid");
+  const orderStatus: OrderRecord["status"] =
+    method === "cod" && status === "created" ? "cod_pending" : (status as OrderRecord["status"]);
+  return { paymentMethod: method, status: orderStatus };
+}
 
 function rowToOrder(
   row: {
@@ -23,16 +38,21 @@ function rowToOrder(
     line_total: number;
   }[]
 ): OrderRecord {
+  const ship = row.shipping as ShippingPayload;
+  const { paymentMethod, status } = parsePaymentMethod(ship, row.razorpay_order_id, row.status);
+  const { paymentMethod: _pm, ...shipping } = ship;
+
   return {
     id: row.id,
     userId: row.user_id ?? undefined,
     razorpayOrderId: row.razorpay_order_id,
     paymentId: row.razorpay_payment_id ?? undefined,
-    status: row.status as OrderRecord["status"],
+    status,
+    paymentMethod,
     amountPaise: row.amount_paise,
     subtotal: row.subtotal,
     shippingFee: row.shipping_fee,
-    shipping: row.shipping,
+    shipping,
     items: items.map((i) => ({
       slug: i.product_slug,
       name: i.product_name,
@@ -49,16 +69,22 @@ export async function saveOrderToSupabase(order: OrderRecord, userId?: string | 
   const admin = createAdminClient();
   if (!admin) return false;
 
+  const dbStatus = order.status === "cod_pending" ? "created" : order.status;
+  const shippingPayload: ShippingPayload = {
+    ...order.shipping,
+    paymentMethod: order.paymentMethod,
+  };
+
   const { error: orderError } = await admin.from("orders").upsert({
     id: order.id,
     user_id: userId ?? order.userId ?? null,
     razorpay_order_id: order.razorpayOrderId,
     razorpay_payment_id: order.paymentId ?? null,
-    status: order.status,
+    status: dbStatus,
     amount_paise: order.amountPaise,
     subtotal: order.subtotal,
     shipping_fee: order.shippingFee,
-    shipping: order.shipping,
+    shipping: shippingPayload,
     created_at: order.createdAt,
     paid_at: order.paidAt ?? null,
   });

@@ -49,7 +49,7 @@ export async function POST(request: Request) {
   let order = await fetchOrderById(orderId);
 
   if ((!order || order.razorpayOrderId !== razorpayOrderId) && lines?.length && shipping) {
-    const built = buildOrderFromCart(lines, shipping);
+    const built = buildOrderFromCart(lines, shipping, "prepaid");
     if ("error" in built) {
       return NextResponse.json({ error: built.error }, { status: 400 });
     }
@@ -75,6 +75,7 @@ export async function POST(request: Request) {
       id: orderId,
       razorpayOrderId,
       status: "created",
+      paymentMethod: "prepaid",
       amountPaise: built.amountPaise,
       subtotal: built.subtotal,
       shippingFee: built.shippingFee,
@@ -90,6 +91,7 @@ export async function POST(request: Request) {
 
   const updated: OrderRecord = {
     ...order,
+    paymentMethod: order.paymentMethod ?? "prepaid",
     status: "paid",
     paymentId: razorpayPaymentId,
     paidAt: new Date().toISOString(),

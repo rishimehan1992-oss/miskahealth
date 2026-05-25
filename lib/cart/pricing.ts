@@ -1,6 +1,10 @@
 import { getProductBySlug } from "@/data/products";
 import type { CartLine } from "./types";
 
+export type PaymentMethod = "prepaid" | "cod";
+
+export const COD_SHIPPING_FEE = 49;
+
 export type PricedLine = {
   slug: string;
   name: string;
@@ -35,14 +39,14 @@ export function cartSubtotal(lines: PricedLine[]) {
   return lines.reduce((sum, l) => sum + l.lineTotal, 0);
 }
 
-/** Flat shipping until Razorpay + rules are configured */
-export function shippingFee(subtotal: number) {
+/** Prepaid: free shipping. COD: flat ₹49. */
+export function shippingFee(subtotal: number, method: PaymentMethod = "prepaid") {
   if (subtotal <= 0) return 0;
-  return subtotal >= 999 ? 0 : 49;
+  return method === "cod" ? COD_SHIPPING_FEE : 0;
 }
 
-export function orderTotal(subtotal: number) {
-  return subtotal + shippingFee(subtotal);
+export function orderTotal(subtotal: number, method: PaymentMethod = "prepaid") {
+  return subtotal + shippingFee(subtotal, method);
 }
 
 export function formatInr(amount: number) {
@@ -51,4 +55,9 @@ export function formatInr(amount: number) {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(amount);
+}
+
+export function shippingLabel(method: PaymentMethod) {
+  if (method === "cod") return formatInr(COD_SHIPPING_FEE);
+  return "Free";
 }

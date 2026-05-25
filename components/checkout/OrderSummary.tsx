@@ -2,19 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { formatInr, orderTotal, shippingFee } from "@/lib/cart/pricing";
+import { formatInr, orderTotal, shippingLabel, type PaymentMethod } from "@/lib/cart/pricing";
 import { useCart } from "@/components/cart/CartProvider";
 import { imageUrl } from "@/lib/images";
 
 type Props = {
   showEditLink?: boolean;
-  compact?: boolean;
+  paymentMethod?: PaymentMethod;
 };
 
-export default function OrderSummary({ showEditLink = false }: Props) {
+export default function OrderSummary({ showEditLink = false, paymentMethod = "prepaid" }: Props) {
   const { pricedLines, subtotal } = useCart();
-  const shipping = shippingFee(subtotal);
-  const total = orderTotal(subtotal);
+  const shipping = shippingLabel(paymentMethod);
+  const total = orderTotal(subtotal, paymentMethod);
 
   if (pricedLines.length === 0) {
     return (
@@ -73,9 +73,13 @@ export default function OrderSummary({ showEditLink = false }: Props) {
         </div>
         <div className="flex justify-between text-[#666]">
           <dt>Shipping</dt>
-          <dd>{shipping === 0 ? "Free" : formatInr(shipping)}</dd>
+          <dd>{shipping}</dd>
         </div>
-        <p className="text-[11px] text-[#AAA] leading-relaxed pt-1">Free shipping on orders ₹999+</p>
+        <p className="text-[11px] text-[#AAA] leading-relaxed pt-1">
+          {paymentMethod === "cod"
+            ? "₹49 shipping on COD · Free on pay now"
+            : "Free shipping on prepaid orders"}
+        </p>
         <div className="flex justify-between pt-4 mt-2 shop-divider text-[16px] font-semibold text-[#0A0A0A]">
           <dt>Total</dt>
           <dd>{formatInr(total)}</dd>

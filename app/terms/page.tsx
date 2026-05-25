@@ -39,7 +39,7 @@ export default function TermsPage() {
           <section>
             <h2 className="text-[#0A0A0A] font-medium text-[17px] mb-2">Shipping &amp; returns</h2>
             <p>
-              Delivery is currently offered within India. Shipping fees and timelines are shown at checkout.
+              Delivery is currently offered within India. Prepaid orders include free shipping; cash on delivery includes a ₹49 shipping fee shown at checkout.
               Returns and refunds follow our published return policy and applicable consumer law in India.
               Contact us for order-specific issues.
             </p>

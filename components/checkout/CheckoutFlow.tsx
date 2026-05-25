@@ -19,7 +19,8 @@ import {
   type CheckoutStep,
   type ShippingAddress,
 } from "@/lib/checkout/types";
-import { readShipping, writeShipping } from "@/lib/checkout/storage";
+import { readShipping, writeShipping, readPaymentMethod, writePaymentMethod } from "@/lib/checkout/storage";
+import type { PaymentMethod } from "@/lib/cart/pricing";
 import { hasErrors, validateShipping, type FieldErrors } from "@/lib/checkout/validate";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { pageShell } from "@/lib/layout";
@@ -34,6 +35,7 @@ export default function CheckoutFlow() {
   const { pricedLines, itemCount, ready, openCart } = useCart();
 
   const [shipping, setShipping] = useState<ShippingAddress>(EMPTY_SHIPPING);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("prepaid");
   const [errors, setErrors] = useState<FieldErrors>({});
   const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
   const [saveAddress, setSaveAddress] = useState(true);
@@ -44,6 +46,7 @@ export default function CheckoutFlow() {
   useEffect(() => {
     const saved = readShipping();
     if (saved) setShipping(saved);
+    setPaymentMethod(readPaymentMethod());
     setHydrated(true);
   }, []);
 
@@ -143,7 +146,7 @@ export default function CheckoutFlow() {
   return (
     <div className={`${pageShell} py-6 sm:py-12 pb-28 lg:pb-16`}>
       <CheckoutProgress current={step} />
-      <MobileOrderSummary showEditLink={step === "pay"} />
+      <MobileOrderSummary showEditLink={step === "pay"} paymentMethod={paymentMethod} />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_340px] gap-8 lg:gap-12">
         <div className="min-w-0">
@@ -206,7 +209,15 @@ export default function CheckoutFlow() {
           {step === "pay" && (
             <div>
               <DeliveryRecap shipping={shipping} onEdit={() => goTo("delivery")} />
-              <PaymentPanel shipping={shipping} showPayButton="desktop" />
+              <PaymentPanel
+                shipping={shipping}
+                paymentMethod={paymentMethod}
+                onPaymentMethodChange={(m) => {
+                  setPaymentMethod(m);
+                  writePaymentMethod(m);
+                }}
+                showPayButton="desktop"
+              />
               <button
                 type="button"
                 onClick={() => goTo("delivery")}
@@ -219,14 +230,17 @@ export default function CheckoutFlow() {
         </div>
 
         <div className="hidden lg:block lg:sticky lg:top-24 lg:self-start">
-          <OrderSummary showEditLink={step === "pay"} />
+          <OrderSummary showEditLink={step === "pay"} paymentMethod={paymentMethod} />
         </div>
       </div>
 
       <CheckoutMobileBar
         step={step}
         formId={step === "delivery" ? SHIPPING_FORM_ID : undefined}
-        payDisabled={!razorpayReady || !shippingValid}
+        payDisabled={
+          !shippingValid || (paymentMethod === "prepaid" && !razorpayReady)
+        }
+        paymentMethod={paymentMethod}
       />
     </div>
   );

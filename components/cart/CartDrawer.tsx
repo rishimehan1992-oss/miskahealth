@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, X } from "lucide-react";
 import { useCart } from "./CartProvider";
-import { formatInr, orderTotal, shippingFee } from "@/lib/cart/pricing";
-import { FREE_SHIPPING_THRESHOLD } from "@/data/promos";
+import { formatInr, orderTotal } from "@/lib/cart/pricing";
 import { imageUrl } from "@/lib/images";
 
 export default function CartDrawer() {
@@ -24,12 +23,7 @@ export default function CartDrawer() {
 
   if (!drawerOpen) return null;
 
-  const ship = shippingFee(subtotal);
-  const total = orderTotal(subtotal);
-  const amountToFree =
-    subtotal > 0 && subtotal < FREE_SHIPPING_THRESHOLD
-      ? FREE_SHIPPING_THRESHOLD - subtotal
-      : 0;
+  const total = orderTotal(subtotal, "prepaid");
 
   const goCheckout = () => {
     closeCart();
@@ -60,11 +54,9 @@ export default function CartDrawer() {
           </button>
         </div>
 
-        {amountToFree > 0 && (
-          <div className="px-5 py-3 bg-[#1C3A2A]/8 border-b border-[#E5E2DB] text-[12px] text-[#1C3A2A] font-medium text-center">
-            Add {formatInr(amountToFree)} more for free shipping
-          </div>
-        )}
+        <div className="px-5 py-2.5 bg-[#1C3A2A]/8 border-b border-[#E5E2DB] text-[11px] text-[#1C3A2A] font-medium text-center">
+          Free shipping if you pay now · ₹49 on COD
+        </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {!ready ? (
@@ -154,8 +146,8 @@ export default function CartDrawer() {
               <span className="font-medium text-[#0A0A0A]">{formatInr(subtotal)}</span>
             </div>
             <div className="flex justify-between text-[12px] text-[#999]">
-              <span>Shipping</span>
-              <span>{ship === 0 ? "Free" : formatInr(ship)}</span>
+              <span>Shipping (pay now)</span>
+              <span>Free</span>
             </div>
             <div className="flex justify-between text-[15px] font-semibold text-[#0A0A0A] pt-2 border-t border-[#E5E2DB]">
               <span>Total</span>

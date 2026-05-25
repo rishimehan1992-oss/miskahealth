@@ -1,3 +1,4 @@
+import type { PaymentMethod } from "@/lib/cart/pricing";
 import type { ShippingAddress } from "@/lib/checkout/types";
 
 export type OrderItem = {
@@ -12,7 +13,8 @@ export type OrderRecord = {
   id: string;
   userId?: string;
   razorpayOrderId: string;
-  status: "created" | "paid" | "failed";
+  status: "created" | "paid" | "failed" | "cod_pending";
+  paymentMethod: PaymentMethod;
   amountPaise: number;
   subtotal: number;
   shippingFee: number;

@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import type { PaymentMethod } from "@/lib/cart/pricing";
 import OrderSummary from "./OrderSummary";
 
 type Props = {
   showEditLink?: boolean;
+  paymentMethod?: PaymentMethod;
 };
 
 /** Collapsible bag total on mobile — keeps the main column short */
-export default function MobileOrderSummary({ showEditLink }: Props) {
+export default function MobileOrderSummary({ showEditLink, paymentMethod = "prepaid" }: Props) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -23,7 +25,7 @@ export default function MobileOrderSummary({ showEditLink }: Props) {
       </button>
       {open && (
         <div className="mt-3 px-1">
-          <OrderSummary showEditLink={showEditLink} />
+          <OrderSummary showEditLink={showEditLink} paymentMethod={paymentMethod} />
         </div>
       )}
     </div>
