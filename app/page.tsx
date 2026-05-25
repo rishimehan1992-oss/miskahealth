@@ -2,6 +2,9 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
 import HomeHashScroll from "@/components/HomeHashScroll";
+import HeroImageRotator from "@/components/HeroImageRotator";
+import ShopNowButton from "@/components/ShopNowButton";
+import { heroImages } from "@/data/hero-images";
 import ProductCard from "@/components/ProductCard";
 import ProductImage from "@/components/ProductImage";
 import { getIngredientPage } from "@/data/ingredients";
@@ -15,25 +18,37 @@ export default function Home() {
       <HomeHashScroll />
       <Navbar />
 
-      <section className={`page-hero-pad relative z-0 ${pageShell} pb-10 sm:pb-14`}>
-        <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-6 sm:mb-8`}>
-          Clinical Hair &amp; Skin Science
-        </p>
+      <section className={`page-hero-pad relative z-0 ${pageShell} pb-12 sm:pb-16 lg:pb-20`}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 xl:gap-20 items-center">
+          <div>
+            <p className={`text-[11px] sm:text-[12px] ${labelCaps} text-[#1C3A2A] font-semibold mb-6 sm:mb-8`}>
+              Clinical Hair &amp; Skin Science
+            </p>
 
-        <h1 className="font-serif text-[34px] sm:text-[50px] md:text-[58px] lg:text-[64px] font-light leading-[1.15] text-[#0A0A0A] max-w-3xl">
-          Hair science
-          <br />
-          that actually <em className="italic font-medium text-[#1C3A2A]">works.</em>
-        </h1>
+            <h1 className="font-serif text-[34px] sm:text-[50px] md:text-[58px] lg:text-[64px] font-light leading-[1.15] text-[#0A0A0A] max-w-3xl">
+              Hair science
+              <br />
+              that actually <em className="italic font-medium text-[#1C3A2A]">works.</em>
+            </h1>
 
-        <p className="mt-6 sm:mt-8 text-[15px] md:text-[16px] text-[#666] leading-[1.8] max-w-md font-light">
-          Clinical-grade actives for hair fall, thinning &amp; scalp damage. Tap <strong className="text-[#0A0A0A] font-medium">Add to cart</strong> below — checkout in minutes.
-        </p>
+            <p className="mt-6 sm:mt-8 text-[15px] md:text-[16px] text-[#666] leading-[1.8] max-w-md font-light">
+              Clinical-grade actives for hair fall, thinning &amp; scalp damage. Tap{" "}
+              <strong className="text-[#0A0A0A] font-medium">Add to cart</strong> below — checkout in
+              minutes.
+            </p>
 
-        <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[10px] text-[#999] uppercase tracking-wide">
-          {["Dermatologist tested", "Paraben & SLS free", "Made in India"].map((t) => (
-            <span key={t}>{t}</span>
-          ))}
+            <div className="mt-8 sm:mt-10">
+              <ShopNowButton className="inline-flex bg-[#1C3A2A] text-white px-10 py-3.5 text-[11px] tracking-[0.16em] uppercase font-semibold hover:bg-[#152d20]" />
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-[10px] text-[#999] uppercase tracking-wide">
+              {["Dermatologist tested", "Paraben & SLS free", "Made in India"].map((t) => (
+                <span key={t}>{t}</span>
+              ))}
+            </div>
+          </div>
+
+          <HeroImageRotator images={heroImages} />
         </div>
       </section>
 
