@@ -37,7 +37,7 @@ export default function HeroImageRotator({ images }: Props) {
       aria-roledescription="carousel"
       aria-label="Hair science infographics"
     >
-      <div className="relative w-full aspect-square sm:aspect-[5/6] lg:aspect-square min-h-[min(88vw,520px)] sm:min-h-[480px] lg:min-h-[min(52vw,580px)] overflow-hidden rounded-sm border border-[#E5E2DB] bg-[#F9F8F5] shadow-sm">
+      <div className="relative w-full aspect-[10/9] min-h-[min(88vw,520px)] sm:min-h-[440px] lg:min-h-[min(50vw,560px)] overflow-hidden rounded-sm border border-[#E5E2DB] bg-[#F9F8F5] shadow-sm">
         {images.map((img, i) => (
           <div
             key={imageUrl(img.src)}

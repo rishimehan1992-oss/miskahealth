@@ -1,15 +1,15 @@
-/** Homepage hero — efficacy infographics only (no product pack shots) */
+/** One slide per product: bottle + actives infographic */
 export const heroImages = [
   {
-    src: "/marketing/hero/hair-fall-actives.jpg",
-    alt: "How rosemary, caffeine and biotin target hair fall",
+    src: "/marketing/hero/hero-rosemary-hair-oil.jpg",
+    alt: "Rosemary Hair Oil with follicle actives infographic",
   },
   {
-    src: "/marketing/hero/clinical-peptides.jpg",
-    alt: "Clinical peptide actives for growth-phase follicles",
+    src: "/marketing/hero/hero-rosemary-shampoo.jpg",
+    alt: "Rosemary Shampoo with treatment wash actives infographic",
   },
   {
-    src: "/marketing/hero/three-step-routine.jpg",
-    alt: "Three-step oil, shampoo and serum routine",
+    src: "/marketing/hero/hero-hair-scalp-serum.jpg",
+    alt: "Hairfall Control Serum with peptide efficacy infographic",
   },
 ] as const;
