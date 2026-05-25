@@ -12,7 +12,7 @@ type Props = {
 
 export default function ShopHeader({ backHref = "/", backLabel = "Continue shopping", title }: Props) {
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E2DB]">
+    <header className="sticky top-[var(--announcement-h)] z-50 bg-white/95 backdrop-blur-md border-b border-[#E5E2DB]">
       <div className={`${pageShell} min-h-[4rem] sm:min-h-[4.25rem] py-3 grid grid-cols-[auto_1fr_auto] items-center gap-4`}>
         <Link
           href={backHref}

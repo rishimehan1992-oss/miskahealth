@@ -15,7 +15,7 @@ type Props = {
 export default function ShopNowButton({ className = "", children, onAfterClick }: Props) {
   const pathname = usePathname();
   const router = useRouter();
-  const { itemCount, ready } = useCart();
+  const { itemCount, ready, closeCart } = useCart();
 
   const hasItems = ready && itemCount > 0;
   const label = children ?? (hasItems ? "Checkout" : "Shop now");
@@ -27,6 +27,7 @@ export default function ShopNowButton({ className = "", children, onAfterClick }
       onAfterClick?.();
 
       if (hasItems) {
+        closeCart();
         router.push("/checkout");
         return;
       }
@@ -38,7 +39,7 @@ export default function ShopNowButton({ className = "", children, onAfterClick }
 
       router.push("/#products");
     },
-    [hasItems, pathname, router, onAfterClick]
+    [hasItems, pathname, router, onAfterClick, closeCart]
   );
 
   return (

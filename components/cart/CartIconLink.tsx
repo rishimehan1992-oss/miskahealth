@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "./CartProvider";
 
@@ -10,15 +9,16 @@ type Props = {
 };
 
 export default function CartIconLink({ className = "", ariaLabel }: Props) {
-  const { itemCount, ready } = useCart();
+  const { itemCount, ready, openCart } = useCart();
 
   const label =
     ariaLabel ??
     (itemCount > 0 ? `View bag, ${itemCount} items` : "View bag");
 
   return (
-    <Link
-      href="/cart"
+    <button
+      type="button"
+      onClick={openCart}
       className={`relative inline-flex items-center justify-center p-2 text-[#444] hover:text-[#0A0A0A] transition-colors touch-manipulation ${className}`}
       aria-label={label}
       title="View bag"
@@ -29,6 +29,6 @@ export default function CartIconLink({ className = "", ariaLabel }: Props) {
           {itemCount > 9 ? "9+" : itemCount}
         </span>
       )}
-    </Link>
+    </button>
   );
 }

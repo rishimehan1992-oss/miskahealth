@@ -105,9 +105,9 @@ export default function CartPage() {
               <OrderSummary />
               <Link
                 href="/checkout"
-                className="block w-full text-center bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20]"
+                className="block w-full text-center bg-[#1C3A2A] text-white py-4 text-[11px] tracking-[0.18em] uppercase font-semibold hover:bg-[#152d20] touch-manipulation"
               >
-                Proceed to checkout
+                Checkout
               </Link>
               <p className="text-[11px] text-[#AAA] text-center lg:text-left leading-relaxed font-light">
                 Guest checkout · delivery then pay

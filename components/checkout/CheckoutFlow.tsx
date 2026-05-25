@@ -31,7 +31,7 @@ export default function CheckoutFlow() {
   const searchParams = useSearchParams();
   const rawStep = searchParams.get("step");
   const step = parseCheckoutStep(rawStep);
-  const { pricedLines, itemCount, ready } = useCart();
+  const { pricedLines, itemCount, ready, openCart } = useCart();
 
   const [shipping, setShipping] = useState<ShippingAddress>(EMPTY_SHIPPING);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -192,12 +192,13 @@ export default function CheckoutFlow() {
                 >
                   Continue to pay
                 </button>
-                <Link
-                  href="/cart"
+                <button
+                  type="button"
+                  onClick={openCart}
                   className="flex-1 text-center py-3.5 border border-[#CCC9C2] text-[11px] tracking-[0.15em] uppercase text-[#666] font-medium hover:border-[#0A0A0A]"
                 >
-                  Back to bag
-                </Link>
+                  Edit bag
+                </button>
               </div>
             </form>
           )}

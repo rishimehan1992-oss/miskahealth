@@ -1,4 +1,5 @@
-const NAV_OFFSET = 88;
+/** Matches --site-top in globals.css (announcement + header). */
+const NAV_OFFSET = 148;
 
 /** Scroll to an in-page section; retries until the element exists (post-navigation). */
 export function scrollToSection(id: string, behavior: ScrollBehavior = "smooth") {

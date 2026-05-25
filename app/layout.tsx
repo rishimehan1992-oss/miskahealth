@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Geist } from "next/font/google";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import SiteChrome from "@/components/SiteChrome";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -41,7 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${geist.variable} ${playfair.variable} antialiased`}>
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            <Suspense fallback={null}>
+              <SiteChrome>{children}</SiteChrome>
+            </Suspense>
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

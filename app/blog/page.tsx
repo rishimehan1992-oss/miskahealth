@@ -24,7 +24,7 @@ export default function BlogIndexPage() {
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
       <Navbar />
 
-      <section className={`${pageShell} pt-28 sm:pt-32 pb-16 sm:pb-20`}>
+      <section className={`${pageShell} page-top-pad pb-16 sm:pb-20`}>
         <p className={`text-[10px] ${labelCaps} text-[#1C3A2A] font-semibold mb-5`}>Journal</p>
         <h1 className="font-serif text-[36px] sm:text-[48px] font-light leading-[1.1] text-[#0A0A0A] max-w-2xl mb-6">
           Hair science,

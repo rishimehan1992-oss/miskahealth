@@ -18,7 +18,7 @@ export default function AddToCartButton({
   variant = "primary",
   label,
 }: Props) {
-  const { addItem } = useCart();
+  const { addItem, openCart } = useCart();
   const [added, setAdded] = useState(false);
 
   if (!product.available || product.price == null) return null;
@@ -33,6 +33,7 @@ export default function AddToCartButton({
       type="button"
       onClick={() => {
         addItem(product.slug, product.id);
+        openCart();
         setAdded(true);
         window.setTimeout(() => setAdded(false), 2000);
       }}
