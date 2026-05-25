@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import AnnouncementBar from "./AnnouncementBar";
 import CartDrawer from "./cart/CartDrawer";
 import { useCart } from "./cart/CartProvider";
 
@@ -22,7 +21,6 @@ export default function SiteChrome({ children }: Props) {
 
   return (
     <>
-      <AnnouncementBar />
       <CartDrawer />
       {children}
     </>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
 import HomeHashScroll from "@/components/HomeHashScroll";
+import AnnouncementBar from "@/components/AnnouncementBar";
 import HeroImageRotator from "@/components/HeroImageRotator";
 import ShopNowButton from "@/components/ShopNowButton";
 import { heroImages } from "@/data/hero-images";
@@ -19,6 +20,7 @@ export default function Home() {
       <Navbar />
 
       <section className={`page-hero-pad relative z-0 ${pageShell} pb-10 sm:pb-14`}>
+        <AnnouncementBar />
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,34%)_minmax(0,66%)] gap-8 lg:gap-10 xl:gap-12 items-center">
           <div className="order-2 lg:order-1 max-w-[280px] sm:max-w-xs lg:max-w-none">
             <p className={`text-[10px] ${labelCaps} text-[#1C3A2A] font-semibold mb-3 sm:mb-4`}>
