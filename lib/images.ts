@@ -1,5 +1,5 @@
 /** Bump when product images are replaced to bust Next.js / browser cache */
-export const IMAGE_VERSION = "20260520e";
+export const IMAGE_VERSION = "20260520f";
 
 export function imageUrl(path: string): string {
   if (!path) return path;

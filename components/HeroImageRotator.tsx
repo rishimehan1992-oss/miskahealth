@@ -29,8 +29,6 @@ export default function HeroImageRotator({ images }: Props) {
 
   if (!images.length) return null;
 
-  const current = images[index];
-
   return (
     <div
       className="w-full min-w-0"
@@ -40,30 +38,36 @@ export default function HeroImageRotator({ images }: Props) {
       aria-label="Product infographics"
     >
       <div className="relative w-full aspect-[10/9] min-h-[min(88vw,520px)] sm:min-h-[440px] lg:min-h-[min(50vw,560px)] overflow-hidden rounded-sm border border-[#E5E2DB] bg-[#F9F8F5] shadow-sm">
-        {images.map((img, i) => (
-          <div
-            key={imageUrl(img.src)}
-            className={`absolute inset-0 transition-opacity duration-500 ease-in-out ${
-              i === index ? "opacity-100 z-10" : "opacity-0 z-0 pointer-events-none"
-            }`}
-            aria-hidden={i !== index}
-          >
-            <ProductImage
-              src={img.src}
-              alt={img.alt}
-              priority={i === 0}
-              sizes="(max-width: 1024px) 95vw, 58vw"
-              className="object-contain w-full h-full"
-            />
-          </div>
-        ))}
-
-        <Link
-          href={`/products/${current.slug}`}
-          className="absolute z-20 bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 sm:min-w-[200px] inline-flex items-center justify-center bg-[#1C3A2A] text-white px-6 py-3.5 text-[11px] tracking-[0.14em] uppercase font-semibold hover:bg-[#152d20] shadow-md transition-colors"
-        >
-          Shop now — {current.productName}
-        </Link>
+        {images.map((img, i) => {
+          const active = i === index;
+          return (
+            <Link
+              key={imageUrl(img.src)}
+              href={`/products/${img.slug}`}
+              className={`absolute inset-0 block transition-opacity duration-500 ease-in-out focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1C3A2A] focus-visible:ring-offset-2 ${
+                active ? "opacity-100 z-10 cursor-pointer" : "opacity-0 z-0 pointer-events-none"
+              }`}
+              aria-hidden={!active}
+              aria-label={`View ${img.productName} — shop now`}
+              tabIndex={active ? 0 : -1}
+            >
+              <ProductImage
+                src={img.src}
+                alt=""
+                priority={i === 0}
+                sizes="(max-width: 1024px) 95vw, 58vw"
+                className="object-contain w-full h-full pointer-events-none"
+              />
+              <span
+                className="absolute inset-0 bg-[#1C3A2A]/0 hover:bg-[#1C3A2A]/[0.04] transition-colors"
+                aria-hidden
+              />
+              <span className="absolute z-20 bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 sm:min-w-[180px] inline-flex items-center justify-center bg-[#1C3A2A] text-white px-6 py-3.5 text-[11px] tracking-[0.14em] uppercase font-semibold shadow-md pointer-events-none">
+                Shop now
+              </span>
+            </Link>
+          );
+        })}
       </div>
 
       {images.length > 1 && (
