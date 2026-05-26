@@ -74,6 +74,15 @@ html {
   }
 }
 
+.hero-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hero-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @keyframes cart-drawer-in {
   from {
     transform: translateX(100%);
