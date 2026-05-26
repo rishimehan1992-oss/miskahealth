@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Visual-first hero slides: product + glanceable ingredient graphic."""
+"""Mobile-first homepage hero banners — big products, minimal readable text."""
 
 from __future__ import annotations
 
@@ -9,15 +9,13 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public" / "marketing" / "hero"
-W, H = 1400, 1260
-SPLIT = 520
+# Portrait 4:5 — reads clearly on phone carousels
+W, H = 1080, 1350
 
-BG = (249, 248, 245)
-PANEL = (255, 255, 255)
+BG = (252, 251, 248)
 GREEN = (28, 58, 42)
-GREEN_LT = (220, 234, 226)
 DARK = (10, 10, 10)
-LINE = (210, 206, 198)
+MUTED = (80, 80, 80)
 
 FONT_SERIF_B = "/System/Library/Fonts/Supplemental/Georgia Bold.ttf"
 FONT_SANS_B = "/Library/Fonts/Arial Bold.ttf"
@@ -28,10 +26,6 @@ def ft(path: str, size: int) -> ImageFont.FreeTypeFont:
         return ImageFont.truetype(path, size)
     except OSError:
         return ImageFont.load_default()
-
-
-def rounded_rect(draw, xy, r: int, fill, outline=None, width=1):
-    draw.rounded_rectangle(xy, radius=r, fill=fill, outline=outline, width=width)
 
 
 def paste_product(base: Image.Image, rel: str, box: tuple[int, int, int, int]):
@@ -45,158 +39,122 @@ def paste_product(base: Image.Image, rel: str, box: tuple[int, int, int, int]):
     base.paste(thumb, (x, y), thumb)
 
 
-def draw_arrow_flow(draw, x: int, y: int, w: int, steps: list[str]):
-    n = len(steps)
-    gap = w // n
-    for i, label in enumerate(steps):
-        cx = x + gap * i + gap // 2
-        draw.ellipse((cx - 72, y, cx + 72, y + 144), fill=GREEN_LT, outline=GREEN, width=4)
-        f = ft(FONT_SANS_B, 26)
-        tw = draw.textlength(label, font=f)
-        draw.text((cx - tw / 2, y + 54), label, fill=DARK, font=f)
-        if i < n - 1:
-            nx = x + gap * (i + 1) + gap // 2
-            draw.line((cx + 76, y + 72, nx - 76, y + 72), fill=GREEN, width=5)
-            draw.polygon([(nx - 76, y + 72), (nx - 96, y + 60), (nx - 96, y + 84)], fill=GREEN)
+def center_text(draw, y: int, text: str, font, fill, canvas_w: int = W):
+    tw = draw.textlength(text, font=font)
+    draw.text(((canvas_w - tw) / 2, y), text, fill=fill, font=font)
 
 
-def draw_ingredient_tile(draw, x: int, y: int, abbr: str, name: str, hint: str, accent: tuple[int, int, int]):
-    size = 200
-    rounded_rect(draw, (x, y, x + size, y + size), 16, fill=PANEL, outline=LINE, width=2)
-    draw.ellipse((x + 50, y + 28, x + 150, y + 128), fill=accent)
-    af = ft(FONT_SANS_B, 36)
-    atw = draw.textlength(abbr, font=af)
-    draw.text((x + (size - atw) / 2, y + 58), abbr, fill=(255, 255, 255), font=af)
-    nf = ft(FONT_SANS_B, 22)
-    ntw = draw.textlength(name, font=nf)
-    draw.text((x + (size - ntw) / 2, y + 142), name, fill=DARK, font=nf)
-    hf = ft(FONT_SANS_B, 17)
-    htw = draw.textlength(hint, font=hf)
-    draw.text((x + (size - htw) / 2, y + 170), hint, fill=GREEN, font=hf)
+def price_pill(draw, cx: int, cy: int, label: str, price: str):
+    f_label = ft(FONT_SANS_B, 22)
+    f_price = ft(FONT_SANS_B, 32)
+    lw = draw.textlength(label, font=f_label)
+    pw = draw.textlength(price, font=f_price)
+    w = int(max(lw, pw) + 48)
+    h = 88
+    x0, y0 = cx - w // 2, cy - h // 2
+    draw.rounded_rectangle((x0, y0, x0 + w, y0 + h), 14, fill=GREEN)
+    draw.text((cx - lw / 2, y0 + 14), label, fill=(255, 255, 255), font=f_label)
+    draw.text((cx - pw / 2, y0 + 44), price, fill=(255, 255, 255), font=f_price)
 
 
-def build_slide(
+def slide_full_range():
+    img = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(img)
+
+    center_text(draw, 44, "MISKA", ft(FONT_SANS_B, 24), GREEN)
+    center_text(draw, 88, "Hair fall routine", ft(FONT_SERIF_B, 52), DARK)
+    center_text(draw, 158, "Oil · Shampoo · Serum", ft(FONT_SANS_B, 28), MUTED)
+
+    products = [
+        ("products/rosemary-hair-oil/image-1.jpg", W // 6),
+        ("products/rosemary-shampoo/image-1.jpg", W // 2),
+        ("products/hair-scalp-serum/image-1.jpg", 5 * W // 6),
+    ]
+    y0, y1 = 200, 1120
+    slot_w = 340
+    for rel, cx in products:
+        paste_product(img, rel, (cx - slot_w // 2, y0, cx + slot_w // 2, y1))
+
+    price_pill(draw, W // 6, 1180, "Oil", "₹399")
+    price_pill(draw, W // 2, 1180, "Shampoo", "₹399")
+    price_pill(draw, 5 * W // 6, 1180, "Serum", "₹499")
+
+    center_text(draw, 1280, "Dermatologist tested · Made in India", ft(FONT_SANS_B, 22), MUTED)
+    return img
+
+
+def slide_single_product(
     *,
-    filename: str,
     product_rel: str,
-    name: str,
-    tag: str,
-    outcome: str,
-    volume: str,
+    headline: str,
+    subline: str,
     price: str,
-    flow: list[str],
-    tiles: list[tuple[str, str, str, tuple[int, int, int]]],
+    volume: str,
 ):
     img = Image.new("RGB", (W, H), BG)
     draw = ImageDraw.Draw(img)
 
-    # Product panel
-    rounded_rect(draw, (40, 40, SPLIT - 24, H - 40), 22, fill=PANEL, outline=LINE, width=2)
-    paste_product(img, product_rel, (56, 80, SPLIT - 40, H - 220))
-    rounded_rect(draw, (56, H - 180, 280, H - 56), 14, fill=GREEN)
-    draw.text((80, H - 148), price, fill=(255, 255, 255), font=ft(FONT_SANS_B, 40))
-    draw.text((80, H - 96), volume, fill=(220, 230, 220), font=ft(FONT_SANS_B, 22))
+    center_text(draw, 48, "MISKA", ft(FONT_SANS_B, 24), GREEN)
+    center_text(draw, 96, headline, ft(FONT_SERIF_B, 56), DARK)
+    center_text(draw, 172, subline, ft(FONT_SANS_B, 32), GREEN)
 
-    # Infographic panel
-    rx = SPLIT + 8
-    rounded_rect(draw, (rx, 40, W - 40, H - 40), 22, fill=PANEL, outline=LINE, width=2)
-    ix = rx + 48
-    iw = W - ix - 56
+    paste_product(img, product_rel, (80, 220, W - 80, 1140))
 
-    draw.text((ix, 72), name, fill=DARK, font=ft(FONT_SERIF_B, 48))
-    rounded_rect(draw, (ix, 148, ix + 200, 196), 10, fill=GREEN_LT, outline=GREEN, width=2)
-    draw.text((ix + 20, 160), tag, fill=GREEN, font=ft(FONT_SANS_B, 20))
+    draw.rounded_rectangle((W // 2 - 160, 1140, W // 2 + 160, 1240), 18, fill=GREEN)
+    center_text(draw, 1168, price, ft(FONT_SANS_B, 52), (255, 255, 255))
+    center_text(draw, 1228, volume, ft(FONT_SANS_B, 26), MUTED)
 
-    rounded_rect(draw, (ix, 220, ix + iw, 300), 14, fill=GREEN)
-    of = ft(FONT_SANS_B, 30)
-    otw = draw.textlength(outcome, font=of)
-    draw.text((ix + (iw - otw) / 2, 248), outcome, fill=(255, 255, 255), font=of)
-
-    draw_arrow_flow(draw, ix, 330, iw, flow)
-
-    tile_size = 220
-    gap = 28
-    grid_w = tile_size * 2 + gap
-    gx = ix + (iw - grid_w) // 2
-    ty = 500
-    for idx, (abbr, ing_name, hint, color) in enumerate(tiles):
-        col = idx % 2
-        row = idx // 2
-        tx = gx + col * (tile_size + gap)
-        ty_row = ty + row * (tile_size + gap)
-        draw_ingredient_tile(draw, tx, ty_row, abbr, ing_name, hint, color)
-
-    path = OUT / filename
-    img.save(path, "JPEG", quality=95, optimize=True)
-    print(f"Wrote {path}")
+    return img
 
 
-# Ingredient accent colors (brand greens + variants)
-C_ROSEMARY = (28, 58, 42)
-C_CAFFEINE = (92, 64, 42)
-C_BIOTIN = (42, 92, 82)
-C_CASTOR = (58, 78, 48)
-C_MORINGA = (72, 110, 52)
-C_CAPILIA = (38, 72, 58)
-C_REDENSYL = (28, 58, 42)
-C_PROCAPIL = (48, 88, 72)
-C_ANAGAIN = (62, 52, 88)
-C_PEPTIDE = (34, 68, 54)
+def slide_duo(product_a: str, name_a: str, price_a: str, product_b: str, name_b: str, price_b: str, title: str):
+    img = Image.new("RGB", (W, H), BG)
+    draw = ImageDraw.Draw(img)
+
+    center_text(draw, 44, "MISKA", ft(FONT_SANS_B, 24), GREEN)
+    center_text(draw, 92, title, ft(FONT_SERIF_B, 52), DARK)
+    center_text(draw, 162, "Clinical hair fall care", ft(FONT_SANS_B, 28), MUTED)
+
+    paste_product(img, product_a, (20, 210, W // 2 - 10, 1120))
+    paste_product(img, product_b, (W // 2 + 10, 210, W - 20, 1120))
+
+    price_pill(draw, W // 4, 1180, name_a, price_a)
+    price_pill(draw, 3 * W // 4, 1180, name_b, price_b)
+
+    return img
 
 
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
-
-    build_slide(
-        filename="hero-rosemary-hair-oil.jpg",
-        product_rel="products/rosemary-hair-oil/image-1.jpg",
-        name="Rosemary Hair Oil",
-        tag="Bestseller",
-        outcome="↓ Hair fall   ↑ Stronger roots",
-        volume="200 ml",
-        price="₹399",
-        flow=["Scalp", "Root", "Hair"],
-        tiles=[
-            ("Ro", "Rosemary", "Circulation", C_ROSEMARY),
-            ("Ca", "Caffeine", "Block DHT", C_CAFFEINE),
-            ("Bi", "Biotin", "Strength", C_BIOTIN),
-            ("Co", "Castor", "Moisture", C_CASTOR),
-        ],
-    )
-
-    build_slide(
-        filename="hero-rosemary-shampoo.jpg",
-        product_rel="products/rosemary-shampoo/image-1.jpg",
-        name="Rosemary Shampoo",
-        tag="Treatment wash",
-        outcome="↓ Breakage   ↑ Scalp health",
-        volume="200 ml",
-        price="₹399",
-        flow=["Cleanse", "Activate", "Protect"],
-        tiles=[
-            ("Ro", "Rosemary", "Follicles", C_ROSEMARY),
-            ("Ca", "Caffeine", "Penetrates", C_CAFFEINE),
-            ("Mo", "Moringa", "Antioxidant", C_MORINGA),
-            ("CL", "Capilia", "Density", C_CAPILIA),
-        ],
-    )
-
-    build_slide(
-        filename="hero-hair-scalp-serum.jpg",
-        product_rel="products/hair-scalp-serum/image-1.jpg",
-        name="Hairfall Serum",
-        tag="Clinical",
-        outcome="↓ Hair loss   ↑ Growth phase",
-        volume="60 ml",
-        price="₹499",
-        flow=["Stem", "Root", "Growth"],
-        tiles=[
-            ("Re", "Redensyl", "Reactivate", C_REDENSYL),
-            ("Pr", "Procapil", "Anchor", C_PROCAPIL),
-            ("An", "Anagain", "Anagen", C_ANAGAIN),
-            ("CL", "Capilia", "Thickness", C_CAPILIA),
-        ],
-    )
+    slides = [
+        ("hero-mobile-range.jpg", slide_full_range()),
+        (
+            "hero-mobile-oil.jpg",
+            slide_single_product(
+                product_rel="products/rosemary-hair-oil/image-1.jpg",
+                headline="Rosemary Hair Oil",
+                subline="Hair fall · weak roots",
+                price="₹399",
+                volume="200 ml · Bestseller",
+            ),
+        ),
+        (
+            "hero-mobile-serum-shampoo.jpg",
+            slide_duo(
+                "products/rosemary-shampoo/image-1.jpg",
+                "Shampoo",
+                "₹399",
+                "products/hair-scalp-serum/image-1.jpg",
+                "Serum",
+                "₹499",
+                "Cleanse + treat",
+            ),
+        ),
+    ]
+    for name, im in slides:
+        path = OUT / name
+        im.save(path, "JPEG", quality=94, optimize=True)
+        print(f"Wrote {path} ({path.stat().st_size // 1024} KB)")
 
 
 if __name__ == "__main__":
