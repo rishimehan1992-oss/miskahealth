@@ -76,8 +76,8 @@ def slide_full_range():
         paste_product(img, rel, (cx - slot_w // 2, y0, cx + slot_w // 2, y1))
 
     price_pill(draw, W // 6, 1180, "Oil", "₹399")
-    price_pill(draw, W // 2, 1180, "Shampoo", "₹399")
-    price_pill(draw, 5 * W // 6, 1180, "Serum", "₹499")
+    price_pill(draw, W // 2, 1180, "Shampoo", "₹349")
+    price_pill(draw, 5 * W // 6, 1180, "Serum", "₹899")
 
     center_text(draw, 1280, "Dermatologist tested · Made in India", ft(FONT_SANS_B, 22), MUTED)
     return img
@@ -143,10 +143,10 @@ def main():
             slide_duo(
                 "products/rosemary-shampoo/image-1.jpg",
                 "Shampoo",
-                "₹399",
+                "₹349",
                 "products/hair-scalp-serum/image-1.jpg",
                 "Serum",
-                "₹499",
+                "₹899",
                 "Cleanse + treat",
             ),
         ),

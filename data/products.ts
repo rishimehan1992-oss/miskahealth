@@ -89,7 +89,7 @@ export const products: Product[] = [
     concern: "Hair fall, oily scalp & breakage",
     category: "Shampoo",
     volume: "200 ml",
-    price: 399,
+    price: 349,
     mrp: 699,
     tag: "Daily use",
     available: true,
@@ -119,7 +119,7 @@ export const products: Product[] = [
       "https://www.amazon.in/Miska-Rosemary-Hair-Stimulates-Contains/dp/B0DPZJRXYF",
     seo: {
       title: "Rosemary Shampoo",
-      description: "Treatment shampoo with biotin & caffeine. ₹399 · 200ml.",
+      description: "Treatment shampoo with biotin & caffeine. ₹349 · 200ml.",
     },
   },
 
@@ -132,7 +132,7 @@ export const products: Product[] = [
     concern: "Severe hair loss & weak follicles",
     category: "Serum",
     volume: "60 ml",
-    price: 499,
+    price: 899,
     mrp: 799,
     tag: "New",
     available: true,
