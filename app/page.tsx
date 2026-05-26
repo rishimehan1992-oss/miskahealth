@@ -48,7 +48,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="order-1 lg:order-2 w-full min-w-0 -mx-3 sm:mx-0 max-w-none lg:max-w-none">
+          <div className="order-1 lg:order-2 w-full min-w-0">
             <HeroImageRotator images={heroImages} />
           </div>
         </div>
