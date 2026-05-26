@@ -133,7 +133,7 @@ export const products: Product[] = [
     category: "Serum",
     volume: "60 ml",
     price: 899,
-    mrp: 799,
+    mrp: 1299,
     tag: "New",
     available: true,
     images: {
