@@ -91,14 +91,14 @@ export default function HeroImageRotator({ images }: Props) {
 
         <div
           ref={scrollerRef}
-          className="hero-scroll flex gap-3 overflow-x-auto overscroll-x-contain snap-x snap-mandatory scroll-smooth pb-1 -mx-1 px-1 touch-pan-x"
-          style={{ WebkitOverflowScrolling: "touch" }}
+          className="hero-scroll flex gap-3 overflow-x-scroll overscroll-x-contain snap-x snap-mandatory scroll-smooth pb-1 pr-8 -mx-3 px-3"
+          style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" }}
         >
           {images.map((img, i) => (
             <Link
               key={imageUrl(img.src)}
               href={slideHref(img)}
-              className="hero-slide snap-center shrink-0 w-[min(88vw,420px)] lg:w-[96%] lg:max-w-none aspect-[4/5] max-h-[min(88vh,620px)] overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-[#E5E2DB] block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1C3A2A]"
+              className="hero-slide snap-center shrink-0 w-[calc(100%-3.5rem)] max-w-[460px] sm:w-[calc(100%-4.5rem)] sm:max-w-[560px] lg:w-[calc(100%-6rem)] lg:max-w-none aspect-[4/5] max-h-[min(88vh,620px)] overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-[#E5E2DB] block focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1C3A2A]"
               aria-label={`${img.productName} — shop now`}
             >
               <ProductImage
