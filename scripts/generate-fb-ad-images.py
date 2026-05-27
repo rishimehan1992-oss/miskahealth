@@ -24,13 +24,13 @@ SIZES = {
 
 BG = (255, 255, 255)
 BG_WARM = (252, 249, 244)
-GREEN = (28, 58, 42)
-GREEN_LT = (225, 238, 230)
+INK = (10, 10, 10)          # headers, CTAs, accents — no green
+CHARCOAL = (48, 48, 52)
+SLATE = (240, 238, 234)     # chips / soft panels
 WHITE = (255, 255, 255)
 BLACK = (18, 18, 18)
 MUTED = (100, 100, 100)
-RED = (195, 65, 55)
-CREAM = (245, 242, 235)
+OFFER = (195, 65, 55)       # discount badges only
 
 FONT_REG = "/System/Library/Fonts/Supplemental/Arial.ttf"
 FONT_BOLD = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
@@ -95,14 +95,14 @@ def cx(
 
 
 def brand_bar(draw: ImageDraw.ImageDraw, W: int, h_top: int = 88) -> None:
-    draw.rectangle((0, 0, W, h_top), fill=GREEN)
+    draw.rectangle((0, 0, W, h_top), fill=INK)
     t = fnt(36, True)
     bbox = draw.textbbox((0, 0), "MISKA", font=t)
     draw.text(((W - bbox[2]) // 2, 18), "MISKA", font=t, fill=WHITE)
     s = fnt(18, False)
     sub = "Hair & Skin Science · Bangalore"
     b2 = draw.textbbox((0, 0), sub, font=s)
-    draw.text(((W - b2[2]) // 2, 54), sub, font=s, fill=(215, 228, 220))
+    draw.text(((W - b2[2]) // 2, 54), sub, font=s, fill=(200, 200, 200))
 
 
 def chip_row(draw: ImageDraw.ImageDraw, y: int, items: list[str], W: int, x0: int = 48) -> int:
@@ -117,8 +117,8 @@ def chip_row(draw: ImageDraw.ImageDraw, y: int, items: list[str], W: int, x0: in
             x = x0
             row_y += row_h + gap
             row_h = 0
-        draw.rounded_rectangle((x, row_y, x + int(tw), row_y + 48), 24, fill=GREEN_LT, outline=GREEN, width=2)
-        draw.text((x + 18, row_y + 12), item, font=f, fill=GREEN)
+        draw.rounded_rectangle((x, row_y, x + int(tw), row_y + 48), 24, fill=SLATE, outline=CHARCOAL, width=2)
+        draw.text((x + 18, row_y + 12), item, font=f, fill=INK)
         row_h = max(row_h, 48)
         x += int(tw) + gap
     return row_y + row_h + 16
@@ -126,11 +126,11 @@ def chip_row(draw: ImageDraw.ImageDraw, y: int, items: list[str], W: int, x0: in
 
 def cta_button(draw: ImageDraw.ImageDraw, y: int, text: str, W: int, sub: str | None = None) -> int:
     h = 100 if not sub else 130
-    draw.rounded_rectangle((56, y, W - 56, y + h), 28, fill=GREEN)
+    draw.rounded_rectangle((56, y, W - 56, y + h), 28, fill=INK)
     f = fnt(34, True)
     cx(draw, y + 28, text, f, WHITE, W)
     if sub:
-        cx(draw, y + 72, sub, fnt(22, False), (220, 235, 225), W)
+        cx(draw, y + 72, sub, fnt(22, False), (210, 210, 210), W)
     return y + h + 20
 
 
@@ -168,7 +168,7 @@ def ad_science(W: int, H: int) -> Image.Image:
     y = chip_row(d, y, ["Biotin", "Caffeine", "Redensyl", "Procapil", "Rosemary", "Capilia Longa"], W)
     paste(img, PRODUCTS["oil_info"], (120, y, W - 120, y + 380))
     y += 400
-    cx(d, y, "Full formula on every pack.", fnt(24, True), GREEN, W)
+    cx(d, y, "Full formula on every pack.", fnt(24, True), INK, W)
     cta_button(d, H - 150, "Shop miskahealth.in", W, f"Oil from {rs(OIL['price'])}")
     return img
 
@@ -188,13 +188,13 @@ def ad_combo_offer(W: int, H: int) -> Image.Image:
     for i, (key, label, p) in enumerate([("oil", "Oil", OIL), ("shampoo", "Shampoo", SHAMPOO), ("serum", "Serum", SERUM)]):
         x0 = 40 + i * (cw + 16)
         paste(img, PRODUCTS[key], (x0, top, x0 + cw, top + 340), bg=BG_WARM)
-        d.rectangle((x0, top + 350, x0 + cw, top + 420), fill=GREEN)
+        d.rectangle((x0, top + 350, x0 + cw, top + 420), fill=INK)
         cx(d, top + 358, label, fnt(24, True), WHITE, cw, x0)
         cx(d, top + 388, rs(p["price"]), fnt(28, True), WHITE, cw, x0)
     y = top + 450
     # Offer badge — Pilgrim style
     draw = ImageDraw.Draw(img)
-    draw.rounded_rectangle((W // 2 - 200, y, W // 2 + 200, y + 72), 36, fill=RED)
+    draw.rounded_rectangle((W // 2 - 200, y, W // 2 + 200, y + 72), 36, fill=OFFER)
     cx(draw, y + 18, f"COMBO99 · {rs(99)} OFF", fnt(32, True), WHITE, W)
     y += 90
     cx(draw, y, f"Bundle from {rs(COMBO)}", fnt(36, True), BLACK, W)
@@ -211,11 +211,11 @@ def ad_oil_hero(W: int, H: int) -> Image.Image:
     brand_bar(d, W)
     y = 108
     y = cx(d, y, "Rosemary Hair Oil", fnt(42, serif=True), BLACK, W) + 8
-    y = cx(d, y, "Biotin · Caffeine · Castor", fnt(26, True), GREEN, W) + 20
+    y = cx(d, y, "Biotin · Caffeine · Castor", fnt(26, True), INK, W) + 20
     paste(img, PRODUCTS["oil"], (160, y, W - 160, y + 520))
     y += 540
     pct = save_pct(OIL["price"], OIL["mrp"])
-    y = cx(d, y, rs(OIL["price"]), fnt(80, True), GREEN, W) + 8
+    y = cx(d, y, rs(OIL["price"]), fnt(80, True), INK, W) + 8
     mrp = rs(OIL["mrp"])
     f = fnt(32, False)
     mw = d.textlength(mrp, font=f)
@@ -225,7 +225,7 @@ def ad_oil_hero(W: int, H: int) -> Image.Image:
     y += 44
     draw = ImageDraw.Draw(img)
     bw = d.textlength(f"SAVE {pct}%", font=fnt(26, True)) + 40
-    draw.rounded_rectangle(((W - bw) // 2, y, (W + bw) // 2, y + 50), 25, fill=GREEN)
+    draw.rounded_rectangle(((W - bw) // 2, y, (W + bw) // 2, y + 50), 25, fill=INK)
     cx(d, y + 10, f"SAVE {pct}%", fnt(26, True), WHITE, W)
     cta_button(d, H - 140, "Shop now", W, "miskahealth.in")
     return img
@@ -253,8 +253,8 @@ def ad_before_after(W: int, H: int) -> Image.Image:
             py += 80
         return py
 
-    col(24, "BEFORE", ["Excess hair fall", "Thinning hair", "Weak roots"], (55, 55, 58), WHITE, RED)
-    col(24 + half + 8, "AFTER", ["Less daily fall*", "Stronger look*", "Healthier scalp*"], GREEN, WHITE, GREEN)
+    col(24, "BEFORE", ["Excess hair fall", "Thinning hair", "Weak roots"], CHARCOAL, WHITE, OFFER)
+    col(24 + half + 8, "AFTER", ["Less daily fall*", "Stronger look*", "Healthier scalp*"], INK, WHITE, INK)
     paste(img, PRODUCTS["oil"], (200, y + 260, W - 200, y + 560))
     cx(d, y + 580, "*Results vary · patch test first", fnt(20, False), MUTED, W)
     cta_button(d, H - 130, "Start your MISKA routine", W, "miskahealth.in")

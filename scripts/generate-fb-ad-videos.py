@@ -20,12 +20,13 @@ AUDIO = OUT / "audio" / "ambient-beauty.mp3"
 W, H = 1088, 1920
 FPS = 30
 BG = (255, 255, 255)
-GREEN = (28, 58, 42)
+INK = (10, 10, 10)
+CHARCOAL = (48, 48, 52)
+SLATE = (240, 238, 234)
 WHITE = (255, 255, 255)
 BLACK = (15, 15, 15)
 MUTED = (90, 90, 90)
-RED = (185, 60, 50)
-GREEN_LT = (225, 238, 230)
+OFFER = (195, 65, 55)
 
 OIL = {"price": 399, "mrp": 799}
 SHAMPOO = {"price": 349, "mrp": 699}
@@ -99,7 +100,7 @@ def text_center(
     return y
 
 
-def bar(draw: ImageDraw.ImageDraw, y: int, h: int, color=GREEN) -> None:
+def bar(draw: ImageDraw.ImageDraw, y: int, h: int, color=INK) -> None:
     draw.rectangle((0, y, W, y + h), fill=color)
 
 
@@ -108,7 +109,7 @@ def card(
     y: int,
     text: str,
     *,
-    bg=GREEN,
+    bg=INK,
     fg=WHITE,
     height: int = 100,
     font_size: int = 44,
@@ -123,7 +124,7 @@ def card(
 
 
 def header(draw: ImageDraw.ImageDraw) -> int:
-    bar(draw, 0, 120, GREEN)
+    bar(draw, 0, 120, INK)
     f = get_font(56, True)
     bbox = draw.textbbox((0, 0), "MISKA", font=f)
     tw = bbox[2] - bbox[0]
@@ -131,14 +132,14 @@ def header(draw: ImageDraw.ImageDraw) -> int:
     f2 = get_font(24, False)
     sub = "Hair & Skin Science"
     bbox2 = draw.textbbox((0, 0), sub, font=f2)
-    draw.text(((W - bbox2[2]) // 2, 88), sub, font=f2, fill=(220, 230, 225))
+    draw.text(((W - bbox2[2]) // 2, 88), sub, font=f2, fill=(200, 200, 200))
     return 140
 
 
 def cta_bottom(draw: ImageDraw.ImageDraw, y: int, line1: str, line2: str) -> None:
-    draw.rounded_rectangle((48, y, W - 48, y + 120), radius=28, fill=GREEN)
+    draw.rounded_rectangle((48, y, W - 48, y + 120), radius=28, fill=INK)
     text_center(draw, y + 18, [line1], size=40, fill=WHITE, spacing=0)
-    text_center(draw, y + 68, [line2], size=32, fill=(220, 235, 225), bold=False, spacing=0)
+    text_center(draw, y + 68, [line2], size=32, fill=(210, 210, 210), bold=False, spacing=0)
 
 
 # ── Slides: ONE idea each, huge type ─────────────────────────────────────────
@@ -150,7 +151,7 @@ def slide_hook() -> Image.Image:
     y = header(d)
     y = text_center(d, y + 40, ["HAIR FALL WON'T STOP"], size=64, fill=BLACK)
     y = text_center(d, y + 8, ["WITH COSMETIC OIL"], size=64, fill=BLACK)
-    y = text_center(d, y + 48, ["You need actives at the follicle."], size=40, fill=GREEN, bold=True)
+    y = text_center(d, y + 48, ["You need actives at the follicle."], size=40, fill=INK, bold=True)
     paste(img, ASSETS["oil_life"], (60, y + 20, W - 60, y + 520))
     cta_bottom(d, H - 200, "Clinic-formulated in Bangalore", "miskahealth.in")
     return img
@@ -169,7 +170,7 @@ def slide_actives() -> Image.Image:
         "Castor + Rosemary",
         "Sulphate-free shampoo",
     ]:
-        y = card(d, y, label, bg=GREEN, fg=WHITE, height=108, font_size=42)
+        y = card(d, y, label, bg=INK, fg=WHITE, height=108, font_size=42)
     paste(img, ASSETS["oil"], (200, y + 10, W - 200, y + 480))
     cta_bottom(d, H - 180, f"Oil from {rs(OIL['price'])}", "miskahealth.in")
     return img
@@ -189,7 +190,7 @@ def slide_prices() -> Image.Image:
         x0 = 40 + i * (cw + gap)
         paste(img, path, (x0, top, x0 + cw, top + 520))
         y2 = top + 540
-        d.rounded_rectangle((x0, y2, x0 + cw, y2 + 110), radius=16, fill=GREEN)
+        d.rounded_rectangle((x0, y2, x0 + cw, y2 + 110), radius=16, fill=INK)
         f = get_font(36, True)
         for j, txt in enumerate([name, rs(p["price"])]):
             b = d.textbbox((0, 0), txt, font=f)
@@ -197,7 +198,7 @@ def slide_prices() -> Image.Image:
             d.text((x0 + (cw - tw) // 2, y2 + 18 + j * 44), txt, font=f, fill=WHITE)
     y = top + 680
     y = card(d, y, f"Combo {rs(748)} · Code COMBO99", bg=BLACK, fg=WHITE, height=100, font_size=38)
-    y = card(d, y, f"Extra {rs(99)} OFF at checkout", bg=RED, fg=WHITE, height=100, font_size=40)
+    y = card(d, y, f"Extra {rs(99)} OFF at checkout", bg=OFFER, fg=WHITE, height=100, font_size=40)
     cta_bottom(d, H - 170, "COD + Prepaid available", "miskahealth.in")
     return img
 
@@ -211,8 +212,8 @@ def slide_before_after() -> Image.Image:
     y += 24
     y = card(d, y, "BEFORE: Excess fall · thinning", bg=(50, 50, 54), fg=WHITE, height=96, font_size=36)
     y = card(d, y, "BEFORE: Weak roots · breakage", bg=(50, 50, 54), fg=WHITE, height=96, font_size=36)
-    y = card(d, y, "AFTER: Less fall · stronger hair*", bg=GREEN, fg=WHITE, height=96, font_size=36)
-    y = card(d, y, "AFTER: Healthier scalp feel*", bg=GREEN, fg=WHITE, height=96, font_size=36)
+    y = card(d, y, "AFTER: Less fall · stronger hair*", bg=INK, fg=WHITE, height=96, font_size=36)
+    y = card(d, y, "AFTER: Healthier scalp feel*", bg=INK, fg=WHITE, height=96, font_size=36)
     paste(img, ASSETS["oil"], (120, y + 8, W - 120, y + 420))
     y += 440
     text_center(d, y, ["*Results vary · patch test first"], size=28, fill=MUTED, bold=False)
@@ -228,9 +229,9 @@ def slide_offer() -> Image.Image:
     paste(img, ASSETS["oil"], (140, y + 20, W - 140, y + 700))
     y += 720
     pct = round((OIL["mrp"] - OIL["price"]) / OIL["mrp"] * 100)
-    y = text_center(d, y, [rs(OIL["price"])], size=96, fill=GREEN)
+    y = text_center(d, y, [rs(OIL["price"])], size=96, fill=INK)
     y = text_center(d, y, [f"MRP {rs(OIL['mrp'])}  ·  SAVE {pct}%"], size=40, fill=MUTED, bold=False)
-    y = card(d, y + 20, "Massage 3x/week · overnight", bg=GREEN_LT, fg=GREEN, height=90, font_size=36)
+    y = card(d, y + 20, "Massage 3x/week · overnight", bg=SLATE, fg=INK, height=90, font_size=36)
     cta_bottom(d, H - 180, "Order now", "miskahealth.in")
     return img
 
@@ -242,7 +243,7 @@ def slide_problem() -> Image.Image:
     text_center(d, y + 80, ["STILL LOSING HAIR?"], size=68, fill=WHITE)
     text_center(d, y + 200, ["Stress · postpartum · hard water"], size=40, fill=(200, 200, 200), bold=False)
     text_center(d, y + 320, ["Your scalp needs"], size=48, fill=WHITE)
-    text_center(d, y + 390, ["BIOTIN · CAFFEINE · REDENSYL"], size=44, fill=(160, 210, 180), bold=True)
+    text_center(d, y + 390, ["BIOTIN · CAFFEINE · REDENSYL"], size=44, fill=(220, 220, 220), bold=True)
     text_center(d, y + 480, ["Not fragrance-only products."], size=38, fill=(180, 180, 180), bold=False)
     cta_bottom(d, H - 180, "MISKA · Clinic routine", "miskahealth.in")
     return img
