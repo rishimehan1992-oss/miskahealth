@@ -5,13 +5,12 @@ from __future__ import annotations
 
 import os
 import subprocess
-import tempfile
 from pathlib import Path
 
 import imageio.v3 as iio
 import imageio_ffmpeg
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
@@ -32,10 +31,10 @@ AFTER_BG = (232, 245, 236)
 # Real product & ingredient assets only (no marketing hero composites / glass mock bottles)
 ASSETS = {
     "oil_product": "/products/rosemary-hair-oil/image-1.jpg",
-    "oil_ingredients": "/products/rosemary-hair-oil/ingredients/hero.jpg",
+    "oil_ingredients": "/products/rosemary-hair-oil/image-2.jpg",
     "oil_lifestyle": "/products/rosemary-hair-oil/lifestyle/lifestyle-2.jpg",
     "shampoo_product": "/products/rosemary-shampoo/image-1.jpg",
-    "shampoo_ingredients": "/products/rosemary-shampoo/ingredients/hero.jpg",
+    "shampoo_ingredients": "/products/rosemary-shampoo/image-3.jpg",
     "shampoo_lifestyle": "/products/rosemary-shampoo/lifestyle/lifestyle-1.jpg",
     "serum_product": "/products/hair-scalp-serum/image-1.jpg",
     "serum_ingredients": "/products/hair-scalp-serum/image-2.jpg",
@@ -44,9 +43,10 @@ ASSETS = {
 
 def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
     candidates = [
-        "/System/Library/Fonts/Supplemental/Georgia Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Georgia.ttf",
+        "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
+        "/Library/Fonts/Arial Bold.ttf" if bold else "/Library/Fonts/Arial.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
-        "/Library/Fonts/Arial.ttf",
+        "/System/Library/Fonts/Supplemental/Georgia Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Georgia.ttf",
     ]
     for path in candidates:
         if os.path.exists(path):
@@ -55,6 +55,44 @@ def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.Im
             except OSError:
                 continue
     return ImageFont.load_default()
+
+
+def load_ingredient_visual(path: str) -> Image.Image:
+    """Crop ingredient infographics — remove empty text-placeholder columns on the right."""
+    img = load(path)
+    if "/ingredients/hero" in path:
+        w, h = img.size
+        img = img.crop((0, 0, int(w * 0.58), h))
+    return img
+
+
+def draw_text_pill(
+    draw: ImageDraw.ImageDraw,
+    xy: tuple[int, int],
+    text: str,
+    *,
+    fill: tuple[int, int, int],
+    text_fill: tuple[int, int, int],
+    font_obj: ImageFont.FreeTypeFont | ImageFont.ImageFont,
+    width: int,
+    pad_y: int = 20,
+) -> int:
+    """Full-width pill with centred text; returns bottom y."""
+    x, y = xy
+    bbox = draw.multiline_textbbox((0, 0), text, font=font_obj, spacing=8, align="center")
+    th = bbox[3] - bbox[1]
+    ph = th + pad_y * 2
+    draw.rounded_rectangle((x, y, x + width, y + ph), radius=16, fill=fill)
+    draw.multiline_text(
+        (x + width // 2, y + pad_y),
+        text,
+        font=font_obj,
+        fill=text_fill,
+        spacing=8,
+        align="center",
+        anchor="ma",
+    )
+    return y + ph
 
 
 def load(path: str) -> Image.Image:
@@ -136,59 +174,68 @@ def slide_before_after(
     headline: str,
     sub: str,
 ) -> Image.Image:
+    """Full-width stacked BEFORE / AFTER — large readable text, real product photo only."""
     f = base_frame()
     d = ImageDraw.Draw(f)
-    d.text((W // 2, 185), headline, font=font(44, True), fill=GREEN, anchor="mm")
-    d.text((W // 2, 240), sub, font=font(26), fill=GREEN, anchor="mm")
+    margin = 40
+    inner_w = W - margin * 2
+    pill_font = font(36, True)
+    gap = 14
+    photo_h = 400
 
-    mid_y = 290
-    panel_h = 880
-    half = (W - 60) // 2
+    d.text((W // 2, 168), headline, font=font(48, True), fill=GREEN, anchor="mm")
+    d.text((W // 2, 228), sub, font=font(28), fill=GREEN, anchor="mm")
 
-    # BEFORE panel
-    before = Image.new("RGB", (half, panel_h), BEFORE_BG)
-    bd = ImageDraw.Draw(before)
-    bd.text((half // 2, 36), "BEFORE", font=font(38, True), fill=(220, 120, 110), anchor="mm")
-    bd.line((40, 70, half - 40, 70), fill=(120, 80, 80), width=2)
-    y = 110
+    y = 262
+
+    # —— BEFORE ——
+    d.rounded_rectangle((margin, y, margin + inner_w, y + 64), radius=18, fill=(180, 70, 65))
+    d.text((W // 2, y + 32), "BEFORE", font=font(42, True), fill=WHITE, anchor="mm")
+    y += 76
+    py = y
     for line in before_lines:
-        bd.text((half // 2, y), "✕  " + line, font=font(26), fill=(210, 200, 200), anchor="mm")
-        y += 52
-    # Subtle “thinning” visual — desaturated hair texture strip
-    strip = cover_crop(load(ASSETS["oil_lifestyle"]), half - 48, 280)
-    strip = ImageEnhance.Brightness(strip).enhance(0.45)
-    strip = ImageOps.grayscale(strip).convert("RGB")
-    strip = strip.filter(ImageFilter.GaussianBlur(radius=2))
-    before.paste(strip, (24, panel_h - 300))
-    bd.rectangle((0, 0, half - 1, panel_h - 1), outline=(90, 70, 70), width=3)
-    f.paste(before, (30, mid_y))
+        py = draw_text_pill(
+            d,
+            (margin, py),
+            line,
+            fill=(62, 62, 66),
+            text_fill=(255, 250, 250),
+            font_obj=pill_font,
+            width=inner_w,
+        ) + gap
+    y = py + 12
 
-    # AFTER panel
-    after = Image.new("RGB", (half, panel_h), AFTER_BG)
-    ad = ImageDraw.Draw(after)
-    ad.text((half // 2, 36), "AFTER", font=font(38, True), fill=MUTED_GREEN, anchor="mm")
-    ad.line((40, 70, half - 40, 70), fill=MUTED_GREEN, width=2)
-    y = 110
+    # —— AFTER ——
+    d.rounded_rectangle((margin, y, margin + inner_w, y + 64), radius=18, fill=GREEN)
+    d.text((W // 2, y + 32), "AFTER", font=font(42, True), fill=WHITE, anchor="mm")
+    y += 76
+    py = y
     for line in after_lines:
-        ad.text((half // 2, y), "✓  " + line, font=font(26), fill=GREEN, anchor="mm")
-        y += 52
-    photo = contain_fit(load(after_image), half - 48, 300, AFTER_BG)
-    after.paste(photo, (24, panel_h - 320))
-    ad.rectangle((0, 0, half - 1, panel_h - 1), outline=GREEN, width=3)
-    f.paste(after, (30 + half + 8, mid_y))
+        py = draw_text_pill(
+            d,
+            (margin, py),
+            line,
+            fill=WHITE,
+            text_fill=GREEN,
+            font_obj=pill_font,
+            width=inner_w,
+        ) + gap
+    photo = contain_fit(load(after_image), inner_w, photo_h, BG)
+    f.paste(photo, (margin, py + 8))
+    y = py + photo_h + 28
 
     d.text(
-        (W // 2, mid_y + panel_h + 24),
-        "With consistent MISKA routine · 8–12 weeks*",
-        font=font(22),
+        (W // 2, y),
+        "8–12 weeks with consistent MISKA routine*",
+        font=font(28, True),
         fill=GREEN,
         anchor="mm",
     )
     d.text(
-        (W // 2, mid_y + panel_h + 58),
-        "*Individual results vary. Patch test before use.",
-        font=font(18),
-        fill=(120, 120, 120),
+        (W // 2, y + 42),
+        "*Results vary by person · patch test before use",
+        font=font(22),
+        fill=(90, 90, 90),
         anchor="mm",
     )
     return f
@@ -207,6 +254,13 @@ def slide_combo_products() -> Image.Image:
     return f
 
 
+def paste_ingredients(frame: Image.Image, path: str, box: tuple[int, int, int, int]) -> None:
+    x0, y0, x1, y1 = box
+    img = load_ingredient_visual(path)
+    fitted = contain_fit(img, x1 - x0, y1 - y0)
+    frame.paste(fitted, (x0, y0))
+
+
 def slide_combo_oil_ingredients() -> Image.Image:
     f = base_frame()
     d = ImageDraw.Draw(f)
@@ -222,7 +276,7 @@ def slide_combo_before_after() -> Image.Image:
     return slide_before_after(
         before_lines=["Excessive hair fall", "Thinning & breakage", "Weak, dull roots"],
         after_lines=["Less daily hair fall*", "Stronger-looking hair", "Healthier scalp feel"],
-        after_image=ASSETS["oil_lifestyle"],
+        after_image=ASSETS["oil_product"],
         headline="Visible routine impact",
         sub="Before vs after consistent MISKA use",
     )
@@ -270,7 +324,7 @@ def slide_routine_before_after() -> Image.Image:
     return slide_before_after(
         before_lines=["Hair on pillow & comb", "Visible scalp patchiness", "No growth support"],
         after_lines=["Routine you can stick to", "Actives on scalp daily", "Supports growth phase*"],
-        after_image=ASSETS["shampoo_lifestyle"],
+        after_image=ASSETS["shampoo_product"],
         headline="The difference a routine makes",
         sub="Shampoo + Oil (+ Serum if severe)",
     )
@@ -281,8 +335,8 @@ def slide_oil_hero() -> Image.Image:
     d = ImageDraw.Draw(f)
     d.text((W // 2, 175), "Rosemary Hair Oil", font=font(48, True), fill=GREEN, anchor="mm")
     d.text((W // 2, 235), "₹399 · 200ml · Bestseller", font=font(28), fill=GREEN, anchor="mm")
-    paste_in(f, ASSETS["oil_product"], (100, 280, W - 100, 1020), mode="contain")
-    paste_in(f, ASSETS["oil_ingredients"], (140, 1040, W - 140, 1280), mode="contain")
+    paste_in(f, ASSETS["oil_product"], (100, 280, W - 100, 1080), mode="contain")
+    d.text((W // 2, 1120), "Biotin · Caffeine · Castor · Rosemary", font=font(30, True), fill=GREEN, anchor="mm")
     draw_cta(f, ["Massage 3×/week · leave overnight"], "Shop miskahealth.in")
     return f
 
@@ -323,11 +377,6 @@ def build_frames(slides: list[tuple]) -> list[np.ndarray]:
             if next_img and f >= hold - cross:
                 t = (f - (hold - cross)) / max(cross, 1)
                 frame = fade_blend(img, next_img, t)
-            elif is_ba and f > hold * 0.35:
-                # Pulse highlight on AFTER side
-                t = (f - hold * 0.35) / (hold * 0.65)
-                overlay = Image.new("RGB", (W, H), (255, 255, 255))
-                frame = Image.blend(img, overlay, 0.06 * np.sin(t * np.pi))
             frames.append(np.array(frame))
     return frames
 
