@@ -1,6 +1,6 @@
 import Link from "next/link";
 import ShopHeader from "@/components/checkout/ShopHeader";
-import AccountSignInPanel from "@/components/checkout/AccountSignInPanel";
+import CompactAuth from "@/components/checkout/CompactAuth";
 import { createClient } from "@/lib/supabase/server";
 import { pageShell } from "@/lib/layout";
 import { formatInr } from "@/lib/cart/pricing";
@@ -61,7 +61,7 @@ export default async function OrdersPage() {
             <p className="text-[15px] text-[#666] font-light leading-[1.9] mb-8">
               Sign in to see your past orders.
             </p>
-            <AccountSignInPanel />
+            <CompactAuth redirectPath="/orders" />
           </div>
         ) : (
           <OrdersForUser userId={user.id} />

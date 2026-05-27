@@ -7,11 +7,12 @@ import GoogleSignInButton from "@/components/auth/GoogleSignInButton";
 type Props = {
   defaultEmail?: string;
   onSignedIn?: () => void;
+  redirectPath?: string;
 };
 
 type Mode = "signin" | "signup";
 
-export default function CompactAuth({ defaultEmail = "", onSignedIn }: Props) {
+export default function CompactAuth({ defaultEmail = "", onSignedIn, redirectPath = "/checkout?step=pay" }: Props) {
   const { user, loading, authEnabled, signInWithEmail, signUpWithEmail, signOut } = useAuth();
   const [emailOpen, setEmailOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("signin");
@@ -68,7 +69,7 @@ export default function CompactAuth({ defaultEmail = "", onSignedIn }: Props) {
     <div className="mb-6 space-y-3">
       <p className="text-[10px] tracking-[0.14em] uppercase text-[#888] font-semibold">Account (optional)</p>
 
-      <GoogleSignInButton redirectPath="/checkout?step=pay" />
+      <GoogleSignInButton redirectPath={redirectPath} />
 
       <button
         type="button"
