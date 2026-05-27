@@ -1,4 +1,5 @@
 import { getProductBySlug } from "@/data/products";
+import { validateComboCoupon } from "@/lib/cart/coupons";
 import {
   cartSubtotal,
   orderTotal,
@@ -14,7 +15,8 @@ import type { OrderItem } from "@/lib/orders/types";
 export function buildOrderFromCart(
   lines: CartLine[],
   shipping: ShippingAddress,
-  paymentMethod: PaymentMethod = "prepaid"
+  paymentMethod: PaymentMethod = "prepaid",
+  couponCode?: string | null
 ) {
   const shippingErrors = validateShipping(shipping);
   if (hasErrors(shippingErrors)) {
@@ -34,8 +36,20 @@ export function buildOrderFromCart(
   }
 
   const subtotal = cartSubtotal(priced);
+
+  let discountAmount = 0;
+  let appliedCoupon: string | undefined;
+  if (couponCode?.trim()) {
+    const coupon = validateComboCoupon(couponCode, lines);
+    if (!coupon.valid) {
+      return { error: coupon.error as string };
+    }
+    discountAmount = coupon.discount;
+    appliedCoupon = coupon.code;
+  }
+
   const ship = shippingFee(subtotal, paymentMethod);
-  const total = orderTotal(subtotal, paymentMethod);
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
   const amountPaise = total * 100;
 
   const items: OrderItem[] = priced.map((l) => ({
@@ -48,6 +62,8 @@ export function buildOrderFromCart(
 
   return {
     subtotal,
+    discountAmount,
+    couponCode: appliedCoupon,
     shippingFee: ship,
     total,
     amountPaise,

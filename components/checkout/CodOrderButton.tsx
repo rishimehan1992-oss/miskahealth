@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/components/cart/CartProvider";
 import { readShipping, clearShipping, clearPaymentMethod } from "@/lib/checkout/storage";
+import { clearCouponCode } from "@/lib/cart/coupon-storage";
 import { formatInr, orderTotal, type PaymentMethod } from "@/lib/cart/pricing";
 
 type Props = {
@@ -14,11 +15,11 @@ type Props = {
 
 export default function CodOrderButton({ disabled, paymentMethod, className = "" }: Props) {
   const router = useRouter();
-  const { lines, subtotal, clearCart } = useCart();
+  const { lines, subtotal, discountAmount, couponCode, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const total = orderTotal(subtotal, paymentMethod);
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
 
   const handlePlace = async () => {
     setError(null);
@@ -33,7 +34,7 @@ export default function CodOrderButton({ disabled, paymentMethod, className = ""
       const res = await fetch("/api/orders/place-cod", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines, shipping }),
+        body: JSON.stringify({ lines, shipping, couponCode: couponCode ?? undefined }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -46,6 +47,7 @@ export default function CodOrderButton({ disabled, paymentMethod, className = ""
       clearCart();
       clearShipping();
       clearPaymentMethod();
+      clearCouponCode();
       router.push(`/checkout/success?order=${data.orderId}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Order could not be placed");

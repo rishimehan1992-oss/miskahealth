@@ -31,7 +31,9 @@ export default function CheckoutSuccessContent({
     }
   }, [orderId, serverOrder]);
 
-  const totalInr = order ? order.subtotal + order.shippingFee : null;
+  const totalInr = order
+    ? order.amountPaise / 100
+    : null;
   const isCod = order?.paymentMethod === "cod" || order?.status === "cod_pending";
 
   return (

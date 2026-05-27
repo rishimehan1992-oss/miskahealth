@@ -6,6 +6,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { readShipping } from "@/lib/checkout/storage";
 import { formatInr, orderTotal, type PaymentMethod } from "@/lib/cart/pricing";
 import { clearPaymentMethod } from "@/lib/checkout/storage";
+import { clearCouponCode } from "@/lib/cart/coupon-storage";
 import { useRazorpayReady } from "./RazorpayScript";
 
 declare global {
@@ -25,12 +26,12 @@ type Props = {
 
 export default function RazorpayPayButton({ disabled, className = "", paymentMethod }: Props) {
   const router = useRouter();
-  const { lines, pricedLines, subtotal, clearCart } = useCart();
+  const { lines, pricedLines, subtotal, discountAmount, couponCode, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scriptReady = useRazorpayReady();
 
-  const total = orderTotal(subtotal, paymentMethod);
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
   const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
 
   const handlePay = async () => {
@@ -54,7 +55,12 @@ export default function RazorpayPayButton({ disabled, className = "", paymentMet
       const res = await fetch("/api/razorpay/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines, shipping, paymentMethod: "prepaid" }),
+        body: JSON.stringify({
+          lines,
+          shipping,
+          paymentMethod: "prepaid",
+          couponCode: couponCode ?? undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -90,6 +96,7 @@ export default function RazorpayPayButton({ disabled, className = "", paymentMet
               razorpaySignature: response.razorpay_signature,
               lines,
               shipping: shippingNow,
+              couponCode: couponCode ?? undefined,
             }),
           });
           const verifyData = await verifyRes.json();
@@ -104,6 +111,7 @@ export default function RazorpayPayButton({ disabled, className = "", paymentMet
           clearCart();
           localStorage.removeItem("miska-shipping-v1");
           clearPaymentMethod();
+          clearCouponCode();
           router.push(`/checkout/success?order=${data.orderId}`);
         },
         modal: {

@@ -15,6 +15,7 @@ type Body = {
   razorpaySignature: string;
   lines?: CartLine[];
   shipping?: ShippingAddress;
+  couponCode?: string;
 };
 
 export async function POST(request: Request) {
@@ -30,7 +31,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
 
-  const { orderId, razorpayOrderId, razorpayPaymentId, razorpaySignature, lines, shipping } = body;
+  const { orderId, razorpayOrderId, razorpayPaymentId, razorpaySignature, lines, shipping, couponCode } =
+    body;
   if (!orderId || !razorpayOrderId || !razorpayPaymentId || !razorpaySignature) {
     return NextResponse.json({ error: "Missing payment fields" }, { status: 400 });
   }
@@ -49,7 +51,7 @@ export async function POST(request: Request) {
   let order = await fetchOrderById(orderId);
 
   if ((!order || order.razorpayOrderId !== razorpayOrderId) && lines?.length && shipping) {
-    const built = buildOrderFromCart(lines, shipping, "prepaid");
+    const built = buildOrderFromCart(lines, shipping, "prepaid", couponCode);
     if ("error" in built) {
       return NextResponse.json({ error: built.error }, { status: 400 });
     }
@@ -78,6 +80,8 @@ export async function POST(request: Request) {
       paymentMethod: "prepaid",
       amountPaise: built.amountPaise,
       subtotal: built.subtotal,
+      discountAmount: built.discountAmount,
+      couponCode: built.couponCode,
       shippingFee: built.shippingFee,
       items: built.items,
       shipping,

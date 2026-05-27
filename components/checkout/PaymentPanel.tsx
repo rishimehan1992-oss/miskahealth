@@ -21,8 +21,8 @@ export default function PaymentPanel({
   onPaymentMethodChange,
   showPayButton = "all",
 }: Props) {
-  const { subtotal } = useCart();
-  const total = orderTotal(subtotal, paymentMethod);
+  const { subtotal, discountAmount } = useCart();
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
   const razorpayReady = Boolean(process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID);
   const shippingValid = shipping ? !hasErrors(validateShipping(shipping)) : false;
 

@@ -45,8 +45,13 @@ export function shippingFee(subtotal: number, method: PaymentMethod = "prepaid")
   return method === "cod" ? COD_SHIPPING_FEE : 0;
 }
 
-export function orderTotal(subtotal: number, method: PaymentMethod = "prepaid") {
-  return subtotal + shippingFee(subtotal, method);
+export function orderTotal(
+  subtotal: number,
+  method: PaymentMethod = "prepaid",
+  discount = 0
+) {
+  const discountedSubtotal = Math.max(0, subtotal - discount);
+  return discountedSubtotal + shippingFee(subtotal, method);
 }
 
 export function formatInr(amount: number) {

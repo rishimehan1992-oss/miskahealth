@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatInr, orderTotal, shippingLabel, type PaymentMethod } from "@/lib/cart/pricing";
 import { useCart } from "@/components/cart/CartProvider";
 import { imageUrl } from "@/lib/images";
+import CouponField from "./CouponField";
 
 type Props = {
   showEditLink?: boolean;
@@ -12,9 +13,9 @@ type Props = {
 };
 
 export default function OrderSummary({ showEditLink = false, paymentMethod = "prepaid" }: Props) {
-  const { pricedLines, subtotal } = useCart();
+  const { pricedLines, subtotal, discountAmount } = useCart();
   const shipping = shippingLabel(paymentMethod);
-  const total = orderTotal(subtotal, paymentMethod);
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
 
   if (pricedLines.length === 0) {
     return (
@@ -66,11 +67,19 @@ export default function OrderSummary({ showEditLink = false, paymentMethod = "pr
         ))}
       </ul>
 
+      <CouponField />
+
       <dl className="space-y-3 text-[14px] font-light">
         <div className="flex justify-between text-[#666]">
           <dt>Subtotal</dt>
           <dd>{formatInr(subtotal)}</dd>
         </div>
+        {discountAmount > 0 && (
+          <div className="flex justify-between text-[#1C3A2A]">
+            <dt>Combo discount</dt>
+            <dd>−{formatInr(discountAmount)}</dd>
+          </div>
+        )}
         <div className="flex justify-between text-[#666]">
           <dt>Shipping</dt>
           <dd>{shipping}</dd>

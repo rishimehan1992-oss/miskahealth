@@ -2,7 +2,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import type { PaymentMethod } from "@/lib/cart/pricing";
 import type { OrderRecord } from "./types";
 
-type ShippingPayload = OrderRecord["shipping"] & { paymentMethod?: PaymentMethod };
+type ShippingPayload = OrderRecord["shipping"] & {
+  paymentMethod?: PaymentMethod;
+  couponCode?: string;
+  discountAmount?: number;
+};
 
 function parsePaymentMethod(
   shipping: ShippingPayload,
@@ -40,7 +44,7 @@ function rowToOrder(
 ): OrderRecord {
   const ship = row.shipping as ShippingPayload;
   const { paymentMethod, status } = parsePaymentMethod(ship, row.razorpay_order_id, row.status);
-  const { paymentMethod: _pm, ...shipping } = ship;
+  const { paymentMethod: _pm, couponCode, discountAmount, ...shipping } = ship;
 
   return {
     id: row.id,
@@ -51,6 +55,8 @@ function rowToOrder(
     paymentMethod,
     amountPaise: row.amount_paise,
     subtotal: row.subtotal,
+    couponCode,
+    discountAmount,
     shippingFee: row.shipping_fee,
     shipping,
     items: items.map((i) => ({
@@ -73,6 +79,8 @@ export async function saveOrderToSupabase(order: OrderRecord, userId?: string | 
   const shippingPayload: ShippingPayload = {
     ...order.shipping,
     paymentMethod: order.paymentMethod,
+    couponCode: order.couponCode,
+    discountAmount: order.discountAmount,
   };
 
   const { error: orderError } = await admin.from("orders").upsert({

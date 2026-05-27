@@ -16,6 +16,7 @@ export default function CartDrawer() {
     pricedLines,
     itemCount,
     subtotal,
+    discountAmount,
     ready,
     setQuantity,
     removeItem,
@@ -23,7 +24,7 @@ export default function CartDrawer() {
 
   if (!drawerOpen) return null;
 
-  const total = orderTotal(subtotal, "prepaid");
+  const total = orderTotal(subtotal, "prepaid", discountAmount);
 
   const goCheckout = () => {
     closeCart();
@@ -145,6 +146,12 @@ export default function CartDrawer() {
               <span>Subtotal</span>
               <span className="font-medium text-[#0A0A0A]">{formatInr(subtotal)}</span>
             </div>
+            {discountAmount > 0 && (
+              <div className="flex justify-between text-[13px] text-[#1C3A2A]">
+                <span>Combo discount</span>
+                <span>−{formatInr(discountAmount)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-[12px] text-[#999]">
               <span>Shipping (pay now)</span>
               <span>Free</span>

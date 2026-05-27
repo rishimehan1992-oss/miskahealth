@@ -17,6 +17,8 @@ export type OrderRecord = {
   paymentMethod: PaymentMethod;
   amountPaise: number;
   subtotal: number;
+  discountAmount?: number;
+  couponCode?: string;
   shippingFee: number;
   items: OrderItem[];
   shipping: ShippingAddress;

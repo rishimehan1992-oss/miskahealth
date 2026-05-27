@@ -20,8 +20,8 @@ export default function CheckoutMobileBar({
   payDisabled,
   paymentMethod,
 }: Props) {
-  const { subtotal } = useCart();
-  const total = orderTotal(subtotal, paymentMethod);
+  const { subtotal, discountAmount } = useCart();
+  const total = orderTotal(subtotal, paymentMethod, discountAmount);
 
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#F9F8F5]/95 backdrop-blur-sm border-t border-[#E5E2DB] px-4 py-3 safe-area-pb">

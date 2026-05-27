@@ -9,6 +9,7 @@ import type { OrderRecord } from "@/lib/orders/types";
 type Body = {
   lines: CartLine[];
   shipping: ShippingAddress;
+  couponCode?: string;
 };
 
 export async function POST(request: Request) {
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Cart and shipping are required" }, { status: 400 });
   }
 
-  const built = buildOrderFromCart(body.lines, body.shipping, "cod");
+  const built = buildOrderFromCart(body.lines, body.shipping, "cod", body.couponCode);
   if ("error" in built) {
     return NextResponse.json({ error: built.error }, { status: 400 });
   }
@@ -37,6 +38,8 @@ export async function POST(request: Request) {
     paymentMethod: "cod",
     amountPaise: built.amountPaise,
     subtotal: built.subtotal,
+    discountAmount: built.discountAmount,
+    couponCode: built.couponCode,
     shippingFee: built.shippingFee,
     items: built.items,
     shipping: body.shipping,

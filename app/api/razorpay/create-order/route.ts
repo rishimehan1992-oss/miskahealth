@@ -12,6 +12,7 @@ type Body = {
   lines: CartLine[];
   shipping: ShippingAddress;
   paymentMethod?: PaymentMethod;
+  couponCode?: string;
 };
 
 export async function POST(request: Request) {
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Use COD checkout for cash on delivery" }, { status: 400 });
   }
 
-  const built = buildOrderFromCart(body.lines, body.shipping, "prepaid");
+  const built = buildOrderFromCart(body.lines, body.shipping, "prepaid", body.couponCode);
   if ("error" in built) {
     return NextResponse.json({ error: built.error }, { status: 400 });
   }
@@ -66,6 +67,8 @@ export async function POST(request: Request) {
       paymentMethod: "prepaid",
       amountPaise: built.amountPaise,
       subtotal: built.subtotal,
+      discountAmount: built.discountAmount,
+      couponCode: built.couponCode,
       shippingFee: built.shippingFee,
       items: built.items,
       shipping: body.shipping,
