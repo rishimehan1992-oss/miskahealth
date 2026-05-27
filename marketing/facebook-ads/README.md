@@ -4,8 +4,12 @@
 
 | File | Angle | Length |
 |------|--------|--------|
-| `miska-combo99-offer-9x16.mp4` | Bundle + **COMBO99** (₹99 off) | ~11s |
-| `miska-hairfall-routine-9x16.mp4` | Problem → oil → 3-step routine | ~12s |
+| `miska-combo99-offer-9x16.mp4` | Real products → oil ingredients → **before/after** → COMBO99 | ~14s |
+| `miska-hairfall-routine-9x16.mp4` | Problem → shampoo ingredients → **before/after** → oil → routine | ~17s |
+
+**Assets:** Real pack shots only — no marketing hero graphics or glass “golden oil” mock bottle.
+
+**Music:** Background track in `audio/ambient-beauty.mp3` (downloaded on first run). Swap that file for your own royalty-free MP3 and re-run.
 
 Regenerate after asset changes:
 
