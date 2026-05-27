@@ -14,6 +14,16 @@ Each creative is exported in **1080×1080** (square) and **1080×1350** (4:5 fee
 | `ad-04-before-after` | Before vs After cards | Problem-aware audience |
 | `ad-05-lifestyle-trust` | Lifestyle + clinic trust + COD | Brand trust, women 25–44 |
 
+### Ingredient & hair-fall mechanism ads (new)
+
+| File | Focus | Best for |
+|------|--------|----------|
+| `ad-06-oil-four-actives` | Oil infographic + 4 actives vs hair fall | Oil prospecting |
+| `ad-07-caffeine-dht` | Caffeine · DHT / follicle defence | Educated buyers, men & women |
+| `ad-08-serum-peptides` | Redensyl · Procapil · Anagain | Severe hair fall / serum upsell |
+| `ad-09-arrest-hairfall-flow` | 3-step how MISKA arrests fall | Top-of-funnel education |
+| `ad-10-shampoo-deposits` | Shampoo actives every wash | Shampoo + routine cross-sell |
+
 Regenerate:
 
 ```bash

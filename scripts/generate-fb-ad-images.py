@@ -47,7 +47,28 @@ PRODUCTS = {
     "serum": "products/hair-scalp-serum/image-1.jpg",
     "oil_life": "products/rosemary-hair-oil/lifestyle/lifestyle-2.jpg",
     "oil_info": "products/rosemary-hair-oil/image-2.jpg",
+    "shampoo_info": "products/rosemary-shampoo/image-3.jpg",
+    "serum_info": "products/hair-scalp-serum/image-3.jpg",
 }
+
+# From data/ingredients.ts — mechanism copy for ads
+OIL_ACTIVES = [
+    ("Rosemary", "Boosts scalp circulation", "Nutrients reach the follicle bed"),
+    ("Biotin", "Reinforces the hair shaft", "Less breakage · stronger strands"),
+    ("Caffeine", "Helps counter DHT effects", "Targets follicle miniaturisation"),
+    ("Castor Oil", "Seals root-zone moisture", "Flexible, nourished roots"),
+]
+SHAMPOO_ACTIVES = [
+    ("Rosemary", "Stimulates follicles", "Actives reach roots while you cleanse"),
+    ("Caffeine", "Deep scalp penetration", "Follicle-level delivery each wash"),
+    ("Moringa", "Antioxidant scalp shield", "Fights stress that weakens follicles"),
+    ("Capilia Longa", "Density peptide signal", "Supports fuller-looking hair"),
+]
+SERUM_ACTIVES = [
+    ("Redensyl", "Reactivates stem cells", "Shifts follicles toward growth"),
+    ("Procapil", "Strengthens follicle anchor", "Less shedding from weak roots"),
+    ("Anagain", "Extends growth phase", "Hair stays in anagen longer"),
+]
 
 
 def rs(n: int) -> str:
@@ -122,6 +143,38 @@ def chip_row(draw: ImageDraw.ImageDraw, y: int, items: list[str], W: int, x0: in
         row_h = max(row_h, 48)
         x += int(tw) + gap
     return row_y + row_h + 16
+
+
+def ingredient_row(
+    draw: ImageDraw.ImageDraw,
+    y: int,
+    step: int,
+    name: str,
+    benefit: str,
+    detail: str,
+    W: int,
+    *,
+    compact: bool = False,
+) -> int:
+    """Single active — how it helps arrest hair fall."""
+    h = 88 if compact else 108
+    draw.rounded_rectangle((40, y, W - 40, y + h), radius=14, fill=SLATE, outline=CHARCOAL, width=1)
+    draw.text((56, y + 14), f"{step:02d}  {name.upper()}", font=fnt(22, True), fill=INK)
+    draw.text((56, y + 42), benefit, font=fnt(20, True), fill=BLACK)
+    if not compact:
+        line = detail if len(detail) <= 58 else detail[:55] + "..."
+        draw.text((56, y + 68), line, font=fnt(17, False), fill=MUTED)
+    return y + h + 10
+
+
+def flow_step(draw: ImageDraw.ImageDraw, y: int, num: str, title: str, body: str, W: int) -> int:
+    h = 118
+    draw.rounded_rectangle((40, y, W - 40, y + h), radius=16, fill=WHITE, outline=CHARCOAL, width=2)
+    draw.ellipse((52, y + 20, 100, y + 68), fill=INK)
+    draw.text((76, y + 32), num, font=fnt(26, True), fill=WHITE, anchor="mm")
+    draw.text((116, y + 18), title, font=fnt(24, True), fill=INK)
+    draw.text((116, y + 52), body, font=fnt(18, False), fill=MUTED)
+    return y + h + 12
 
 
 def cta_button(draw: ImageDraw.ImageDraw, y: int, text: str, W: int, sub: str | None = None) -> int:
@@ -289,12 +342,98 @@ def ad_lifestyle_trust(W: int, H: int) -> Image.Image:
     return img
 
 
+# ─── Ingredient-focused creatives ─────────────────────────────────────────────
+
+
+def ad_oil_four_actives(W: int, H: int) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    brand_bar(d, W)
+    y = 108
+    y = cx(d, y, "4 actives that target hair fall", fnt(38, serif=True), BLACK, W) + 10
+    y = cx(d, y, "Rosemary Oil · follicle-level care", fnt(24, False), MUTED, W) + 20
+    paste(img, PRODUCTS["oil_info"], (56, y, W - 56, y + 340))
+    y += 352
+    for i, (name, benefit, detail) in enumerate(OIL_ACTIVES, 1):
+        y = ingredient_row(d, y, i, name, benefit, detail, W, compact=True)
+    cta_button(d, H - 128, "Shop Rosemary Oil", W, f"{rs(OIL['price'])} · miskahealth.in")
+    return img
+
+
+def ad_caffeine_dht(W: int, H: int) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    brand_bar(d, W)
+    y = 108
+    y = cx(d, y, "DHT weakens your follicles", fnt(40, serif=True), BLACK, W) + 10
+    y = cx(d, y, "A key driver of pattern hair thinning", fnt(24, False), MUTED, W) + 16
+    y = ingredient_row(
+        d, y, 1, "Caffeine", "Helps counter DHT at the root",
+        "Penetrates scalp to support follicles against miniaturisation", W,
+    )
+    paste(img, PRODUCTS["oil"], (180, y + 8, W - 180, y + 380))
+    y += 392
+    y = cx(d, y, "In MISKA Rosemary Oil + Shampoo", fnt(22, True), INK, W) + 8
+    cta_button(d, H - 128, "See full formula", W, "miskahealth.in")
+    return img
+
+
+def ad_serum_peptides(W: int, H: int) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    brand_bar(d, W)
+    y = 108
+    y = cx(d, y, "Severe hair fall?", fnt(42, serif=True), BLACK, W) + 8
+    y = cx(d, y, "Clinical peptides · not cosmetic oil", fnt(26, False), MUTED, W) + 20
+    paste(img, PRODUCTS["serum"], (200, y, W - 200, y + 380))
+    y += 392
+    for i, (name, benefit, detail) in enumerate(SERUM_ACTIVES, 1):
+        y = ingredient_row(d, y, i, name, benefit, detail, W, compact=True)
+    cta_button(d, H - 128, "Hairfall Control Serum", W, f"{rs(SERUM['price'])} · miskahealth.in")
+    return img
+
+
+def ad_arrest_hairfall_flow(W: int, H: int) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    brand_bar(d, W)
+    y = 108
+    y = cx(d, y, "How MISKA arrests hair fall", fnt(40, serif=True), BLACK, W) + 10
+    y = cx(d, y, "Actives at the follicle — not the surface", fnt(24, False), MUTED, W) + 20
+    y = flow_step(d, y, "1", "STOP THE TRIGGER", "Caffeine + peptides help counter DHT & weak anchoring", W)
+    y = flow_step(d, y, "2", "FEED THE FOLLICLE", "Biotin · rosemary circulation · moringa shield", W)
+    y = flow_step(d, y, "3", "EXTEND GROWTH PHASE", "Redensyl · Anagain · Procapil in serum", W)
+    paste(img, PRODUCTS["oil_life"], (80, y + 4, W - 80, y + 200))
+    cta_button(d, H - 128, "Complete routine from Rs.748", W, "miskahealth.in")
+    return img
+
+
+def ad_shampoo_deposits(W: int, H: int) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    brand_bar(d, W)
+    y = 108
+    y = cx(d, y, "Deposits actives every wash", fnt(40, serif=True), BLACK, W) + 8
+    y = cx(d, y, "Sulphate-free · treatment shampoo", fnt(26, False), MUTED, W) + 16
+    paste(img, PRODUCTS["shampoo_info"], (48, y, W - 48, y + 360))
+    y += 372
+    for i, (name, benefit, detail) in enumerate(SHAMPOO_ACTIVES, 1):
+        y = ingredient_row(d, y, i, name, benefit, detail, W, compact=True)
+    cta_button(d, H - 128, "Rosemary Shampoo", W, f"{rs(SHAMPOO['price'])} · miskahealth.in")
+    return img
+
+
 CREATIVES = [
     ("ad-01-science-actives", ad_science),
     ("ad-02-combo-offer", ad_combo_offer),
     ("ad-03-oil-hero-price", ad_oil_hero),
     ("ad-04-before-after", ad_before_after),
     ("ad-05-lifestyle-trust", ad_lifestyle_trust),
+    ("ad-06-oil-four-actives", ad_oil_four_actives),
+    ("ad-07-caffeine-dht", ad_caffeine_dht),
+    ("ad-08-serum-peptides", ad_serum_peptides),
+    ("ad-09-arrest-hairfall-flow", ad_arrest_hairfall_flow),
+    ("ad-10-shampoo-deposits", ad_shampoo_deposits),
 ]
 
 
