@@ -22,9 +22,15 @@ type Props = {
   onSelect: (address: ShippingAddress) => void;
   selectedId: string | null;
   onSelectedIdChange: (id: string | null) => void;
+  onUsingSavedChange?: (usingSaved: boolean) => void;
 };
 
-export default function SavedAddressPicker({ onSelect, selectedId, onSelectedIdChange }: Props) {
+export default function SavedAddressPicker({
+  onSelect,
+  selectedId,
+  onSelectedIdChange,
+  onUsingSavedChange,
+}: Props) {
   const [addresses, setAddresses] = useState<SavedAddress[]>([]);
   const [loading, setLoading] = useState(true);
   const initialPickDone = useRef(false);
@@ -35,9 +41,7 @@ export default function SavedAddressPicker({ onSelect, selectedId, onSelectedIdC
       try {
         const res = await fetch("/api/addresses");
         const data = await res.json();
-        if (!cancelled) {
-          setAddresses(data.addresses ?? []);
-        }
+        if (!cancelled) setAddresses(data.addresses ?? []);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -53,10 +57,19 @@ export default function SavedAddressPicker({ onSelect, selectedId, onSelectedIdC
     const preferred = addresses.find((a) => a.isDefault) ?? addresses[0];
     onSelectedIdChange(preferred.id);
     onSelect(toShipping(preferred));
-  }, [loading, addresses, onSelect, onSelectedIdChange]);
+    onUsingSavedChange?.(true);
+  }, [loading, addresses, onSelect, onSelectedIdChange, onUsingSavedChange]);
+
+  useEffect(() => {
+    onUsingSavedChange?.(selectedId !== null);
+  }, [selectedId, onUsingSavedChange]);
 
   if (loading) {
-    return <p className="text-[12px] text-[#999] mb-4">Loading saved addresses…</p>;
+    return (
+      <div className="mb-6 rounded-lg border border-[#E5E2DB] bg-white px-4 py-3">
+        <p className="text-[13px] text-[#999]">Loading your addresses…</p>
+      </div>
+    );
   }
 
   if (addresses.length === 0) return null;
@@ -64,12 +77,20 @@ export default function SavedAddressPicker({ onSelect, selectedId, onSelectedIdC
   const pick = (addr: SavedAddress) => {
     onSelectedIdChange(addr.id);
     onSelect(toShipping(addr));
+    onUsingSavedChange?.(true);
+  };
+
+  const useNew = () => {
+    onSelectedIdChange(null);
+    onUsingSavedChange?.(false);
   };
 
   return (
     <div className="mb-6">
-      <p className="text-[10px] tracking-[0.14em] uppercase text-[#888] font-semibold mb-3">Saved addresses</p>
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory">
+      <p className="text-[11px] tracking-[0.14em] uppercase text-[#888] font-semibold mb-3">
+        Deliver to
+      </p>
+      <div className="space-y-2">
         {addresses.map((addr) => {
           const active = selectedId === addr.id;
           return (
@@ -77,33 +98,47 @@ export default function SavedAddressPicker({ onSelect, selectedId, onSelectedIdC
               key={addr.id}
               type="button"
               onClick={() => pick(addr)}
-              className={`snap-start shrink-0 max-w-[220px] text-left px-3 py-2.5 border text-[12px] leading-snug transition-colors ${
+              className={`w-full text-left px-4 py-3.5 rounded-lg border-2 transition-colors touch-manipulation ${
                 active
-                  ? "border-[#1C3A2A] bg-[#1C3A2A]/5 text-[#0A0A0A]"
-                  : "border-[#E5E2DB] text-[#666] hover:border-[#999]"
+                  ? "border-[#1C3A2A] bg-[#1C3A2A]/[0.04]"
+                  : "border-[#E5E2DB] bg-white hover:border-[#CCC9C2]"
               }`}
             >
-              <span className="block font-semibold text-[11px] uppercase tracking-wide text-[#1C3A2A] mb-0.5">
-                {addr.label}
-                {addr.isDefault ? " · Default" : ""}
-              </span>
-              <span className="block truncate">{addr.fullName}</span>
-              <span className="block truncate text-[#999]">
-                {addr.city}, {addr.state} {addr.pincode}
-              </span>
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[14px] font-semibold text-[#0A0A0A]">{addr.fullName}</p>
+                  <p className="text-[13px] text-[#666] mt-0.5">
+                    {addr.addressLine1}
+                    {addr.addressLine2 ? `, ${addr.addressLine2}` : ""}
+                  </p>
+                  <p className="text-[13px] text-[#666]">
+                    {addr.city}, {addr.state} — {addr.pincode}
+                  </p>
+                  <p className="text-[12px] text-[#999] mt-1">{addr.phone}</p>
+                </div>
+                <span
+                  className={`shrink-0 mt-0.5 h-5 w-5 rounded-full border-2 flex items-center justify-center ${
+                    active ? "border-[#1C3A2A]" : "border-[#D4D0C8]"
+                  }`}
+                  aria-hidden
+                >
+                  {active && <span className="h-2.5 w-2.5 rounded-full bg-[#1C3A2A]" />}
+                </span>
+              </div>
             </button>
           );
         })}
+
         <button
           type="button"
-          onClick={() => onSelectedIdChange(null)}
-          className={`snap-start shrink-0 px-3 py-2.5 border text-[11px] tracking-[0.1em] uppercase font-semibold ${
+          onClick={useNew}
+          className={`w-full text-left px-4 py-3.5 rounded-lg border-2 transition-colors touch-manipulation ${
             selectedId === null
-              ? "border-[#1C3A2A] text-[#1C3A2A]"
-              : "border-[#E5E2DB] text-[#888] hover:border-[#999]"
+              ? "border-[#1C3A2A] bg-[#1C3A2A]/[0.04]"
+              : "border-dashed border-[#CCC9C2] bg-transparent hover:border-[#999]"
           }`}
         >
-          New address
+          <span className="text-[14px] font-medium text-[#0A0A0A]">+ Use a different address</span>
         </button>
       </div>
     </div>

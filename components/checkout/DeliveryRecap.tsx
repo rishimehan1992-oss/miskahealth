@@ -7,25 +7,29 @@ type Props = {
 
 export default function DeliveryRecap({ shipping, onEdit }: Props) {
   return (
-    <div className="mb-6 p-4 border border-[#E5E2DB] bg-white/60">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0 text-[13px] text-[#666] leading-relaxed">
-          <p className="font-medium text-[#0A0A0A]">{shipping.fullName}</p>
-          <p className="truncate">{shipping.phone} · {shipping.email}</p>
-          <p>
-            {shipping.addressLine1}
-            {shipping.addressLine2 ? `, ${shipping.addressLine2}` : ""}, {shipping.city},{" "}
-            {shipping.state} {shipping.pincode}
-          </p>
-        </div>
+    <div className="mb-6 rounded-lg border border-[#E5E2DB] bg-white p-4 sm:p-5">
+      <div className="flex items-start justify-between gap-4 mb-3">
+        <p className="text-[11px] tracking-[0.14em] uppercase text-[#888] font-semibold">
+          Delivering to
+        </p>
         <button
           type="button"
           onClick={onEdit}
-          className="shrink-0 text-[10px] tracking-[0.12em] uppercase font-semibold text-[#1C3A2A] hover:underline"
+          className="text-[12px] font-semibold text-[#1C3A2A] hover:underline shrink-0"
         >
-          Edit
+          Change
         </button>
       </div>
+      <p className="text-[15px] font-semibold text-[#0A0A0A]">{shipping.fullName}</p>
+      <p className="text-[14px] text-[#666] mt-1 leading-relaxed">
+        {shipping.addressLine1}
+        {shipping.addressLine2 ? `, ${shipping.addressLine2}` : ""}
+        <br />
+        {shipping.city}, {shipping.state} {shipping.pincode}
+      </p>
+      <p className="text-[13px] text-[#999] mt-2">
+        {shipping.phone} · {shipping.email}
+      </p>
     </div>
   );
 }

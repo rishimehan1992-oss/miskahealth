@@ -39,6 +39,7 @@ export default function CheckoutFlow() {
   const [errors, setErrors] = useState<FieldErrors>({});
   const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
   const [saveAddress, setSaveAddress] = useState(true);
+  const [usingSavedAddress, setUsingSavedAddress] = useState(false);
   const [addressReloadKey, setAddressReloadKey] = useState(0);
   const { user } = useAuth();
   const [hydrated, setHydrated] = useState(false);
@@ -155,9 +156,14 @@ export default function CheckoutFlow() {
           </h1>
 
           {step === "delivery" && (
-            <form id={SHIPPING_FORM_ID} onSubmit={onShippingSubmit}>
-              <p className="text-[13px] text-[#666] font-light mb-5 max-w-md">
-                Delivering across India. Two steps: delivery, then pay.
+            <form
+              id={SHIPPING_FORM_ID}
+              onSubmit={onShippingSubmit}
+              autoComplete="on"
+              className="max-w-lg"
+            >
+              <p className="text-[14px] text-[#666] font-light mb-6 leading-relaxed">
+                Where should we deliver? Your browser can autofill contact and address fields.
               </p>
 
               <CompactAuth
@@ -170,11 +176,25 @@ export default function CheckoutFlow() {
                   key={addressReloadKey}
                   selectedId={savedAddressId}
                   onSelectedIdChange={setSavedAddressId}
-                  onSelect={setShipping}
+                  onSelect={(addr) => {
+                    setShipping(addr);
+                    setErrors({});
+                  }}
+                  onUsingSavedChange={setUsingSavedAddress}
                 />
               )}
 
-              <ShippingForm value={shipping} errors={errors} onChange={setShipping} compact />
+              {user && usingSavedAddress && savedAddressId ? (
+                <DeliveryRecap
+                  shipping={shipping}
+                  onEdit={() => {
+                    setSavedAddressId(null);
+                    setUsingSavedAddress(false);
+                  }}
+                />
+              ) : (
+                <ShippingForm value={shipping} errors={errors} onChange={setShipping} />
+              )}
 
               {user && !savedAddressId && (
                 <label className="mt-4 flex items-center gap-2 text-[12px] text-[#666] cursor-pointer">
