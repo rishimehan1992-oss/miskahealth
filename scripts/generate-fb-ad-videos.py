@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""9:16 Facebook/Reels ads — MISKA (science-led, competitor-grade pacing)."""
+"""9:16 Reels — one big message per slide, readable on a phone."""
 
 from __future__ import annotations
 
@@ -16,425 +16,313 @@ ROOT = Path(__file__).resolve().parents[1]
 PUBLIC = ROOT / "public"
 OUT = ROOT / "marketing" / "facebook-ads"
 AUDIO = OUT / "audio" / "ambient-beauty.mp3"
-OUT.mkdir(parents=True, exist_ok=True)
-AUDIO.parent.mkdir(parents=True, exist_ok=True)
 
 W, H = 1088, 1920
 FPS = 30
-BG = (252, 251, 248)
+BG = (255, 255, 255)
 GREEN = (28, 58, 42)
-GREEN_LT = (220, 234, 226)
 WHITE = (255, 255, 255)
-DARK = (18, 18, 18)
-MUTED = (100, 100, 100)
-BEFORE_BG = (32, 32, 36)
-ACCENT = (180, 70, 65)
+BLACK = (15, 15, 15)
+MUTED = (90, 90, 90)
+RED = (185, 60, 50)
+GREEN_LT = (225, 238, 230)
 
-FONT_SANS = "/Library/Fonts/Arial.ttf"
-FONT_SANS_B = "/Library/Fonts/Arial Bold.ttf"
-
-OIL = {"price": 399, "mrp": 799, "vol": "200 ml"}
-SHAMPOO = {"price": 349, "mrp": 699, "vol": "200 ml"}
-SERUM = {"price": 899, "mrp": 1299, "vol": "60 ml"}
-COMBO_OIL_SHAMPOO = OIL["price"] + SHAMPOO["price"]
-COMBO_DISCOUNT = 99
+OIL = {"price": 399, "mrp": 799}
+SHAMPOO = {"price": 349, "mrp": 699}
+SERUM = {"price": 899, "mrp": 1299}
 
 ASSETS = {
-    "oil_product": "/products/rosemary-hair-oil/image-1.jpg",
-    "oil_ingredients": "/products/rosemary-hair-oil/image-2.jpg",
-    "oil_lifestyle": "/products/rosemary-hair-oil/lifestyle/lifestyle-2.jpg",
-    "shampoo_product": "/products/rosemary-shampoo/image-1.jpg",
-    "shampoo_ingredients": "/products/rosemary-shampoo/image-3.jpg",
-    "serum_product": "/products/hair-scalp-serum/image-1.jpg",
+    "oil": "/products/rosemary-hair-oil/image-1.jpg",
+    "shampoo": "/products/rosemary-shampoo/image-1.jpg",
+    "serum": "/products/hair-scalp-serum/image-1.jpg",
+    "oil_life": "/products/rosemary-hair-oil/lifestyle/lifestyle-2.jpg",
 }
 
+# Correct macOS paths — /Library/Fonts/Arial.ttf does NOT exist (was breaking all text)
+FONT_REGULAR = "/System/Library/Fonts/Supplemental/Arial.ttf"
+FONT_BOLD = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
 
-def rs(amount: int) -> str:
-    return f"Rs.{amount}"
-
-
-def save_pct(price: int, mrp: int) -> int:
-    return round((mrp - price) / mrp * 100)
+_font_cache: dict[tuple[str, int], ImageFont.FreeTypeFont] = {}
 
 
-def font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
-    path = FONT_SANS_B if bold else FONT_SANS
-    if os.path.exists(path):
-        try:
-            return ImageFont.truetype(path, size)
-        except OSError:
-            pass
-    return ImageFont.load_default()
+def rs(n: int) -> str:
+    return f"Rs.{n}"
+
+
+def get_font(size: int, bold: bool = True) -> ImageFont.FreeTypeFont:
+    key = ("b" if bold else "r", size)
+    if key in _font_cache:
+        return _font_cache[key]
+    path = FONT_BOLD if bold else FONT_REGULAR
+    if not os.path.isfile(path):
+        raise FileNotFoundError(f"Font missing: {path}")
+    _font_cache[key] = ImageFont.truetype(path, size)
+    return _font_cache[key]
 
 
 def load(path: str) -> Image.Image:
     return Image.open(PUBLIC / path.lstrip("/")).convert("RGB")
 
 
-def cover_crop(img: Image.Image, tw: int, th: int) -> Image.Image:
-    scale = max(tw / img.width, th / img.height)
-    nw, nh = int(img.width * scale), int(img.height * scale)
-    resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
-    left, top = (nw - tw) // 2, (nh - th) // 2
-    return resized.crop((left, top, left + tw, top + th))
+def contain(img: Image.Image, tw: int, th: int, bg=BG) -> Image.Image:
+    s = min(tw / img.width, th / img.height)
+    nw, nh = int(img.width * s), int(img.height * s)
+    r = img.resize((nw, nh), Image.Resampling.LANCZOS)
+    c = Image.new("RGB", (tw, th), bg)
+    c.paste(r, ((tw - nw) // 2, (th - nh) // 2))
+    return c
 
 
-def contain_fit(img: Image.Image, tw: int, th: int, bg: tuple = BG) -> Image.Image:
-    scale = min(tw / img.width, th / img.height)
-    nw, nh = int(img.width * scale), int(img.height * scale)
-    resized = img.resize((nw, nh), Image.Resampling.LANCZOS)
-    canvas = Image.new("RGB", (tw, th), bg)
-    canvas.paste(resized, ((tw - nw) // 2, (th - nh) // 2))
-    return canvas
-
-
-def paste_in(frame: Image.Image, path: str, box: tuple, mode: str = "contain") -> None:
-    img = load(path)
+def paste(frame: Image.Image, path: str, box: tuple[int, int, int, int]) -> None:
     x0, y0, x1, y1 = box
-    tw, th = x1 - x0, y1 - y0
-    fitted = cover_crop(img, tw, th) if mode == "cover" else contain_fit(img, tw, th)
-    frame.paste(fitted, (x0, y0))
+    frame.paste(contain(load(path), x1 - x0, y1 - y0), (x0, y0))
 
 
-def center_text(draw: ImageDraw.ImageDraw, y: int, text: str, fnt, fill, canvas_w: int = W) -> None:
-    tw = draw.textlength(text, font=fnt)
-    draw.text(((canvas_w - tw) / 2, y), text, fill=fill, font=fnt)
+def text_center(
+    draw: ImageDraw.ImageDraw,
+    y: int,
+    lines: list[str],
+    *,
+    size: int = 72,
+    fill=BLACK,
+    bold: bool = True,
+    spacing: int = 16,
+) -> int:
+    """Draw centred lines; return y after last line."""
+    f = get_font(size, bold)
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=f)
+        tw = bbox[2] - bbox[0]
+        th = bbox[3] - bbox[1]
+        draw.text(((W - tw) // 2, y), line, font=f, fill=fill)
+        y += th + spacing
+    return y
 
 
-def draw_header(frame: Image.Image, tagline: str = "Clinic-formulated · Bangalore") -> None:
-    d = ImageDraw.Draw(frame)
-    d.rectangle((0, 0, W, 128), fill=GREEN)
-    d.text((W // 2, 58), "MISKA", font=font(50, True), fill=WHITE, anchor="mm")
-    d.text((W // 2, 102), tagline, font=font(20), fill=(210, 225, 215), anchor="mm")
+def bar(draw: ImageDraw.ImageDraw, y: int, h: int, color=GREEN) -> None:
+    draw.rectangle((0, y, W, y + h), fill=color)
 
 
-def slide_frame(body_fn) -> Image.Image:
-    f = Image.new("RGB", (W, H), BG)
-    draw_header(f)
-    body_fn(f)
-    return f
+def card(
+    draw: ImageDraw.ImageDraw,
+    y: int,
+    text: str,
+    *,
+    bg=GREEN,
+    fg=WHITE,
+    height: int = 100,
+    font_size: int = 44,
+) -> int:
+    """Full-width solid card — text always visible."""
+    draw.rounded_rectangle((40, y, W - 40, y + height), radius=20, fill=bg)
+    f = get_font(font_size, True)
+    bbox = draw.textbbox((0, 0), text, font=f)
+    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+    draw.text(((W - tw) // 2, y + (height - th) // 2), text, font=f, fill=fg)
+    return y + height + 16
 
 
-def draw_text_pill(draw, xy, text, *, fill, text_fill, font_obj, width, pad_y=18) -> int:
-    x, y = xy
-    bbox = draw.multiline_textbbox((0, 0), text, font=font_obj, spacing=6, align="center")
-    th = bbox[3] - bbox[1]
-    ph = th + pad_y * 2
-    draw.rounded_rectangle((x, y, x + width, y + ph), radius=14, fill=fill)
-    draw.multiline_text(
-        (x + width // 2, y + pad_y), text, font=font_obj, fill=text_fill,
-        spacing=6, align="center", anchor="ma",
-    )
-    return y + ph
+def header(draw: ImageDraw.ImageDraw) -> int:
+    bar(draw, 0, 120, GREEN)
+    f = get_font(56, True)
+    bbox = draw.textbbox((0, 0), "MISKA", font=f)
+    tw = bbox[2] - bbox[0]
+    draw.text(((W - tw) // 2, 28), "MISKA", font=f, fill=WHITE)
+    f2 = get_font(24, False)
+    sub = "Hair & Skin Science"
+    bbox2 = draw.textbbox((0, 0), sub, font=f2)
+    draw.text(((W - bbox2[2]) // 2, 88), sub, font=f2, fill=(220, 230, 225))
+    return 140
 
 
-def draw_price_block(draw, y, price, mrp, volume) -> int:
-    pct = save_pct(price, mrp)
-    center_text(draw, y, rs(price), font(56, True), GREEN)
-    y += 68
-    mrp_txt = rs(mrp)
-    mrp_w = draw.textlength(mrp_txt, font=font(28))
-    cx = W // 2
-    draw.text((cx - mrp_w / 2, y), mrp_txt, fill=(160, 160, 160), font=font(28))
-    draw.line((cx - mrp_w / 2 - 4, y + 14, cx + mrp_w / 2 + 4, y + 14), fill=(160, 160, 160), width=2)
-    y += 40
-    badge = f"SAVE {pct}%"
-    bw = draw.textlength(badge, font=font(22, True)) + 36
-    draw.rounded_rectangle((cx - bw / 2, y, cx + bw / 2, y + 44), radius=22, fill=GREEN)
-    draw.text((cx, y + 22), badge, font=font(22, True), fill=WHITE, anchor="mm")
-    y += 56
-    center_text(draw, y, volume, font(24), MUTED)
-    return y + 36
+def cta_bottom(draw: ImageDraw.ImageDraw, y: int, line1: str, line2: str) -> None:
+    draw.rounded_rectangle((48, y, W - 48, y + 120), radius=28, fill=GREEN)
+    text_center(draw, y + 18, [line1], size=40, fill=WHITE, spacing=0)
+    text_center(draw, y + 68, [line2], size=32, fill=(220, 235, 225), bold=False, spacing=0)
 
 
-def ken_burns(img: Image.Image, t: float) -> Image.Image:
-    z = 1.0 + 0.07 * t
-    iw, ih = int(W * z), int(H * z)
-    scaled = img.resize((iw, ih), Image.Resampling.LANCZOS)
-    left, top = (iw - W) // 2, (ih - H) // 2
-    return scaled.crop((left, top, left + W, top + H))
+# ── Slides: ONE idea each, huge type ─────────────────────────────────────────
 
 
-def fade_blend(a: Image.Image, b: Image.Image, t: float) -> Image.Image:
-    return Image.blend(a, b, max(0.0, min(1.0, t)))
+def slide_hook() -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    y = text_center(d, y + 40, ["HAIR FALL WON'T STOP"], size=64, fill=BLACK)
+    y = text_center(d, y + 8, ["WITH COSMETIC OIL"], size=64, fill=BLACK)
+    y = text_center(d, y + 48, ["You need actives at the follicle."], size=40, fill=GREEN, bold=True)
+    paste(img, ASSETS["oil_life"], (60, y + 20, W - 60, y + 520))
+    cta_bottom(d, H - 200, "Clinic-formulated in Bangalore", "miskahealth.in")
+    return img
 
 
-# ─── Slides ──────────────────────────────────────────────────────────────────
+def slide_actives() -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    y = text_center(d, y + 30, ["WHAT'S INSIDE MISKA"], size=56, fill=BLACK)
+    y = text_center(d, y + 12, ["Not just rosemary"], size=44, fill=MUTED, bold=False)
+    y += 20
+    for label in [
+        "Biotin + Caffeine",
+        "Redensyl + Procapil",
+        "Castor + Rosemary",
+        "Sulphate-free shampoo",
+    ]:
+        y = card(d, y, label, bg=GREEN, fg=WHITE, height=108, font_size=42)
+    paste(img, ASSETS["oil"], (200, y + 10, W - 200, y + 480))
+    cta_bottom(d, H - 180, f"Oil from {rs(OIL['price'])}", "miskahealth.in")
+    return img
 
 
-def slide_hook_science() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 158, "Hair fall is a follicle problem.", font(44, True), DARK)
-        center_text(d, 218, "Not a cosmetic oil problem.", font(44, True), DARK)
-        center_text(d, 290, "Generic rosemary = surface care only.", font(26), MUTED)
-        center_text(d, 334, "MISKA = actives at the root.", font(28, True), GREEN)
-        items = [
-            ("Rosemary", "Scalp circulation"),
-            ("Biotin + Caffeine", "Strength · DHT care"),
-            ("Redensyl + Procapil", "Growth-phase support"),
-            ("Capilia Longa", "Density support"),
-        ]
-        y = 390
-        for name, action in items:
-            d.rounded_rectangle((48, y, W - 48, y + 84), radius=12, fill=WHITE, outline=(210, 206, 198), width=2)
-            d.text((72, y + 16), name, font=font(28, True), fill=GREEN)
-            d.text((72, y + 48), action, font=font(22), fill=MUTED)
-            y += 96
-        center_text(d, y + 16, "Full transparency on every pack", font(24, True), GREEN)
-    return slide_frame(body)
+def slide_prices() -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    y = text_center(d, y + 24, ["COMPLETE ROUTINE"], size=56, fill=BLACK)
+    y = text_center(d, y + 8, ["Oil + Shampoo + Serum"], size=40, fill=MUTED, bold=False)
+    gap = 16
+    cw = (W - 80 - gap * 2) // 3
+    items = [("Oil", ASSETS["oil"], OIL), ("Shampoo", ASSETS["shampoo"], SHAMPOO), ("Serum", ASSETS["serum"], SERUM)]
+    top = y + 30
+    for i, (name, path, p) in enumerate(items):
+        x0 = 40 + i * (cw + gap)
+        paste(img, path, (x0, top, x0 + cw, top + 520))
+        y2 = top + 540
+        d.rounded_rectangle((x0, y2, x0 + cw, y2 + 110), radius=16, fill=GREEN)
+        f = get_font(36, True)
+        for j, txt in enumerate([name, rs(p["price"])]):
+            b = d.textbbox((0, 0), txt, font=f)
+            tw = b[2] - b[0]
+            d.text((x0 + (cw - tw) // 2, y2 + 18 + j * 44), txt, font=f, fill=WHITE)
+    y = top + 680
+    y = card(d, y, f"Combo {rs(748)} · Code COMBO99", bg=BLACK, fg=WHITE, height=100, font_size=38)
+    y = card(d, y, f"Extra {rs(99)} OFF at checkout", bg=RED, fg=WHITE, height=100, font_size=40)
+    cta_bottom(d, H - 170, "COD + Prepaid available", "miskahealth.in")
+    return img
 
 
-def slide_combo_hook() -> Image.Image:
-    f = Image.new("RGB", (W, H), BG)
-    draw_header(f)
-    d = ImageDraw.Draw(f)
-    center_text(d, 168, "Stop buying", font(50, True), DARK)
-    center_text(d, 236, "cosmetic hair oils.", font(50, True), DARK)
-    center_text(d, 320, "Start a clinical routine", font(38, True), GREEN)
-    center_text(d, 376, "that targets the follicle.", font(38, True), GREEN)
-    paste_in(f, ASSETS["oil_lifestyle"], (0, 440, W, 980), mode="cover")
-    fade = Image.new("RGB", (W, 220), BG)
-    f.paste(fade, (0, 880))
-    d = ImageDraw.Draw(f)
-    center_text(d, 1140, f"From {rs(OIL['price'])} · Made in India", font(28, True), GREEN)
-    return f
+def slide_before_after() -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    y = text_center(d, y + 20, ["BEFORE  vs  AFTER"], size=56, fill=BLACK)
+    y = text_center(d, y + 8, ["8-12 weeks consistent use"], size=36, fill=MUTED, bold=False)
+    y += 24
+    y = card(d, y, "BEFORE: Excess fall · thinning", bg=(50, 50, 54), fg=WHITE, height=96, font_size=36)
+    y = card(d, y, "BEFORE: Weak roots · breakage", bg=(50, 50, 54), fg=WHITE, height=96, font_size=36)
+    y = card(d, y, "AFTER: Less fall · stronger hair*", bg=GREEN, fg=WHITE, height=96, font_size=36)
+    y = card(d, y, "AFTER: Healthier scalp feel*", bg=GREEN, fg=WHITE, height=96, font_size=36)
+    paste(img, ASSETS["oil"], (120, y + 8, W - 120, y + 420))
+    y += 440
+    text_center(d, y, ["*Results vary · patch test first"], size=28, fill=MUTED, bold=False)
+    cta_bottom(d, H - 170, "Shop the routine", "miskahealth.in")
+    return img
 
 
-def slide_combo_ingredients() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 152, "Every active. Named. On pack.", font(40, True), DARK)
-        center_text(d, 200, "Science-first — like leading D2C brands.", font(24), MUTED)
-        paste_in(f, ASSETS["oil_ingredients"], (48, 240, W - 48, 1100), mode="contain")
-        center_text(d, 1140, "Biotin · Caffeine · Castor · Rosemary", font(28, True), GREEN)
-    return slide_frame(body)
+def slide_offer() -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    y = text_center(d, y + 60, ["ROSEMARY HAIR OIL"], size=52, fill=BLACK)
+    paste(img, ASSETS["oil"], (140, y + 20, W - 140, y + 700))
+    y += 720
+    pct = round((OIL["mrp"] - OIL["price"]) / OIL["mrp"] * 100)
+    y = text_center(d, y, [rs(OIL["price"])], size=96, fill=GREEN)
+    y = text_center(d, y, [f"MRP {rs(OIL['mrp'])}  ·  SAVE {pct}%"], size=40, fill=MUTED, bold=False)
+    y = card(d, y + 20, "Massage 3x/week · overnight", bg=GREEN_LT, fg=GREEN, height=90, font_size=36)
+    cta_bottom(d, H - 180, "Order now", "miskahealth.in")
+    return img
 
 
-def slide_three_products_offer() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 152, "Complete hair fall routine", font(44, True), DARK)
-        center_text(d, 200, "Oil + Shampoo + Serum", font(26), MUTED)
-        gap, col_w = 20, (W - 80 - 40) // 3
-        for i, (path, label, p) in enumerate([
-            (ASSETS["oil_product"], "Oil", OIL),
-            (ASSETS["shampoo_product"], "Shampoo", SHAMPOO),
-            (ASSETS["serum_product"], "Serum", SERUM),
-        ]):
-            x0 = 40 + i * (col_w + gap)
-            paste_in(f, path, (x0, 250, x0 + col_w, 780), mode="contain")
-            cy = 800
-            d.rounded_rectangle((x0, cy, x0 + col_w, cy + 88), radius=12, fill=GREEN)
-            d.text((x0 + col_w // 2, cy + 22), label, font=font(20, True), fill=WHITE, anchor="mm")
-            d.text((x0 + col_w // 2, cy + 58), rs(p["price"]), font=font(26, True), fill=WHITE, anchor="mm")
-        y = 920
-        center_text(d, y, f"Combo from {rs(COMBO_OIL_SHAMPOO)}", font(36, True), DARK)
-        d.rounded_rectangle((100, y + 50, W - 100, y + 130), radius=20, fill=GREEN)
-        d.text((W // 2, y + 90), f"Code COMBO99 · {rs(COMBO_DISCOUNT)} OFF", font=font(32, True), fill=WHITE, anchor="mm")
-        center_text(d, y + 160, "COD & Razorpay · miskahealth.in", font(26, True), GREEN)
-    return slide_frame(body)
-
-
-def slide_before_after(before_lines, after_lines, after_image, headline, sub) -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        margin, inner_w, pill_font, gap, photo_h = 44, W - 88, font(34, True), 12, 360
-        center_text(d, 158, headline, font(42, True), DARK)
-        center_text(d, 208, sub, font(26), MUTED)
-        y = 248
-        d.rounded_rectangle((margin, y, margin + inner_w, y + 58), radius=14, fill=ACCENT)
-        d.text((W // 2, y + 29), "BEFORE", font=font(36, True), fill=WHITE, anchor="mm")
-        y += 68
-        for line in before_lines:
-            y = draw_text_pill(d, (margin, y), line, fill=(58, 58, 62), text_fill=WHITE, font_obj=pill_font, width=inner_w) + gap
-        y += 6
-        d.rounded_rectangle((margin, y, margin + inner_w, y + 58), radius=14, fill=GREEN)
-        d.text((W // 2, y + 29), "AFTER", font=font(36, True), fill=WHITE, anchor="mm")
-        y += 68
-        for line in after_lines:
-            y = draw_text_pill(d, (margin, y), line, fill=WHITE, text_fill=GREEN, font_obj=pill_font, width=inner_w) + gap
-        f.paste(contain_fit(load(after_image), inner_w, photo_h), (margin, y + 4))
-        y += photo_h + 16
-        center_text(d, y, "8–12 weeks with consistent routine*", font(26, True), GREEN)
-        center_text(d, y + 36, "*Results vary · patch test before use", font(20), MUTED)
-    return slide_frame(body)
-
-
-def slide_combo_before_after() -> Image.Image:
-    return slide_before_after(
-        ["Excessive hair fall", "Thinning & breakage", "Weak roots"],
-        ["Less daily hair fall*", "Stronger-looking hair", "Healthier scalp"],
-        ASSETS["oil_product"],
-        "Real results need a real routine",
-        "Before vs after MISKA",
-    )
-
-
-def slide_trust_badges() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 158, "Why customers choose MISKA", font(40, True), DARK)
-        y = 250
-        for title, sub in [
-            ("Clinic-formulated", "Made in Bangalore"),
-            ("Sulphate & paraben free", "Treatment-grade care"),
-            ("COD + prepaid", "Free shipping on prepaid"),
-            ("Proven actives on label", "Not hidden behind fragrance"),
-        ]:
-            d.rounded_rectangle((56, y, W - 56, y + 96), radius=16, fill=GREEN_LT)
-            d.text((80, y + 20), title, font=font(28, True), fill=GREEN)
-            d.text((80, y + 54), sub, font=font(22), fill=MUTED)
-            y += 112
-        center_text(d, y + 20, "miskahealth.in", font(36, True), GREEN)
-    return slide_frame(body)
-
-
-def slide_problem_full() -> Image.Image:
-    f = Image.new("RGB", (W, H), DARK)
-    draw_header(f)
-    d = ImageDraw.Draw(f)
-    center_text(d, 200, "Still losing hair?", font(54, True), WHITE)
-    center_text(d, 278, "Stress · postpartum · hard water", font(28), (200, 200, 200))
-    center_text(d, 390, "Your scalp needs actives —", font(32), (180, 210, 190))
-    center_text(d, 444, "not just fragrance.", font(32, True), WHITE)
-    center_text(d, 540, "Most brands sell lifestyle.", font(26), (130, 130, 130))
-    center_text(d, 588, "MISKA sells follicle science.", font(30, True), (180, 220, 200))
-    return f
-
-
-def slide_shampoo_science() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 152, "Treatment shampoo", font(42, True), DARK)
-        center_text(d, 200, "Deposits actives every single wash", font(26), MUTED)
-        paste_in(f, ASSETS["shampoo_ingredients"], (48, 240, W - 48, 1080), mode="contain")
-        center_text(d, 1120, "Sulphate & paraben free", font(28, True), GREEN)
-    return slide_frame(body)
-
-
-def slide_oil_price() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 152, "Rosemary Hair Oil", font(44, True), DARK)
-        center_text(d, 200, "Bestseller · 200 ml", font(26), MUTED)
-        paste_in(f, ASSETS["oil_product"], (100, 240, W - 100, 900), mode="contain")
-        draw_price_block(d, 920, OIL["price"], OIL["mrp"], OIL["vol"])
-        center_text(d, 1120, "Shop · miskahealth.in", font(28, True), GREEN)
-    return slide_frame(body)
-
-
-def slide_routine_before_after() -> Image.Image:
-    return slide_before_after(
-        ["Hair on pillow & comb", "Scalp feels weak", "No growth support"],
-        ["Simple 3-step routine", "Actives daily on scalp", "Supports growth phase*"],
-        ASSETS["shampoo_product"],
-        "The routine difference",
-        "Shampoo + Oil (+ Serum if severe)",
-    )
-
-
-def slide_routine_steps() -> Image.Image:
-    def body(f):
-        d = ImageDraw.Draw(f)
-        center_text(d, 152, "Your 3-step routine", font(44, True), DARK)
-        gap, col_w = 20, (W - 80 - 40) // 3
-        for i, (path, label, p) in enumerate([
-            (ASSETS["shampoo_product"], "Step 1", SHAMPOO),
-            (ASSETS["oil_product"], "Step 2", OIL),
-            (ASSETS["serum_product"], "Step 3", SERUM),
-        ]):
-            x0 = 40 + i * (col_w + gap)
-            paste_in(f, path, (x0, 220, x0 + col_w, 700), mode="contain")
-            d.text((x0 + col_w // 2, 720), label, font=font(22, True), fill=GREEN, anchor="mm")
-            d.text((x0 + col_w // 2, 756), rs(p["price"]), font=font(24, True), fill=DARK, anchor="mm")
-        steps = [
-            "Shampoo — treatment wash",
-            "Oil — overnight scalp massage",
-            "Serum — if hair fall is severe",
-        ]
-        y = 800
-        for s in steps:
-            d.rounded_rectangle((56, y, W - 56, y + 68), radius=14, fill=WHITE, outline=(210, 206, 198), width=2)
-            d.text((W // 2, y + 34), s, font=font(26), fill=DARK, anchor="mm")
-            y += 80
-        d.rounded_rectangle((100, y + 10, W - 100, y + 90), radius=24, fill=GREEN)
-        d.text((W // 2, y + 50), "miskahealth.in", font=font(32, True), fill=WHITE, anchor="mm")
-    return slide_frame(body)
+def slide_problem() -> Image.Image:
+    img = Image.new("RGB", (W, H), (25, 28, 30))
+    d = ImageDraw.Draw(img)
+    y = header(d)
+    text_center(d, y + 80, ["STILL LOSING HAIR?"], size=68, fill=WHITE)
+    text_center(d, y + 200, ["Stress · postpartum · hard water"], size=40, fill=(200, 200, 200), bold=False)
+    text_center(d, y + 320, ["Your scalp needs"], size=48, fill=WHITE)
+    text_center(d, y + 390, ["BIOTIN · CAFFEINE · REDENSYL"], size=44, fill=(160, 210, 180), bold=True)
+    text_center(d, y + 480, ["Not fragrance-only products."], size=38, fill=(180, 180, 180), bold=False)
+    cta_bottom(d, H - 180, "MISKA · Clinic routine", "miskahealth.in")
+    return img
 
 
 def build_frames(slides: list[tuple]) -> list[np.ndarray]:
-    frames = []
-    built = [fn() for fn, _ in slides]
-    durations = [dur for _, dur in slides]
-    for i, img in enumerate(built):
-        hold = int(durations[i] * FPS)
-        next_img = built[i + 1] if i + 1 < len(built) else None
-        cross = int(0.35 * FPS) if next_img else 0
+    """No Ken Burns — keeps text sharp."""
+    frames: list[np.ndarray] = []
+    images = [fn() for fn, _ in slides]
+    for i, img in enumerate(images):
+        hold = int(slides[i][1] * FPS)
+        nxt = images[i + 1] if i + 1 < len(images) else None
+        cross = int(0.25 * FPS) if nxt else 0
+        arr = np.array(img)
         for f in range(hold):
-            t = f / max(hold - 1, 1)
-            frame = ken_burns(img, t) if durations[i] >= 2.5 else img
-            if next_img and f >= hold - cross:
-                t2 = (f - (hold - cross)) / max(cross, 1)
-                frame = fade_blend(frame, ken_burns(next_img, 0), t2)
-            frames.append(np.array(frame))
+            if nxt is not None and f >= hold - cross:
+                t = (f - (hold - cross)) / max(cross, 1)
+                frames.append(np.asarray(Image.blend(img, nxt, t)))
+            else:
+                frames.append(arr)
     return frames
 
 
-def mux_audio(video_path: Path, music_path: Path, duration: float) -> None:
-    if not music_path.exists():
+def mux_audio(path: Path, dur: float) -> None:
+    if not AUDIO.is_file():
         return
-    ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
-    tmp = video_path.with_suffix(".tmp.mp4")
-    fade_out = max(0, duration - 2.5)
+    ff = imageio_ffmpeg.get_ffmpeg_exe()
+    tmp = path.with_suffix(".tmp.mp4")
     subprocess.run(
         [
-            ffmpeg, "-y", "-i", str(video_path), "-i", str(music_path),
-            "-filter_complex", f"[1:a]volume=0.28,afade=t=in:st=0:d=1,afade=t=out:st={fade_out}:d=2[a]",
-            "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
-            "-shortest", "-movflags", "+faststart", str(tmp),
+            ff, "-y", "-i", str(path), "-i", str(AUDIO),
+            "-filter_complex", f"[1:a]volume=0.25,afade=t=in:st=0:d=0.8,afade=t=out:st={max(0,dur-2)}:d=1.5[a]",
+            "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-shortest",
+            "-movflags", "+faststart", str(tmp),
         ],
         check=True, capture_output=True,
     )
-    tmp.replace(video_path)
+    tmp.replace(path)
 
 
-def render_video(slides: list, out_name: str) -> None:
+def render(slides: list[tuple], name: str) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
     frames = build_frames(slides)
-    path = OUT / out_name
-    iio.imwrite(path, np.stack(frames), fps=FPS, codec="libx264", pixelformat="yuv420p",
-                output_params=["-movflags", "+faststart"])
-    if AUDIO.exists():
-        mux_audio(path, AUDIO, len(frames) / FPS)
-    print(f"Wrote {path} ({len(frames) / FPS:.1f}s)")
-
-
-def ensure_music() -> None:
-    if AUDIO.exists() and AUDIO.stat().st_size > 10_000:
-        return
-    subprocess.run(["curl", "-sL", "-o", str(AUDIO),
-                    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3"], check=True)
+    path = OUT / name
+    iio.imwrite(
+        path,
+        np.stack(frames),
+        fps=FPS,
+        codec="libx264",
+        pixelformat="yuv420p",
+        output_params=["-crf", "18", "-movflags", "+faststart"],
+    )
+    mux_audio(path, len(frames) / FPS)
+    print(f"Wrote {path} ({len(frames)/FPS:.1f}s)")
 
 
 def main() -> None:
-    ensure_music()
-    render_video([
-        (slide_combo_hook, 2.8),
-        (slide_hook_science, 3.2),
-        (slide_combo_ingredients, 3.0),
-        (slide_three_products_offer, 3.5),
-        (slide_combo_before_after, 4.0),
-        (slide_trust_badges, 3.0),
-    ], "miska-combo99-offer-9x16.mp4")
+    # Verify fonts up front
+    get_font(48, True)
+    print("Font OK:", FONT_BOLD)
 
-    render_video([
-        (slide_problem_full, 2.8),
-        (slide_shampoo_science, 3.2),
-        (slide_oil_price, 3.5),
-        (slide_routine_before_after, 4.0),
-        (slide_routine_steps, 3.2),
-        (slide_trust_badges, 3.0),
-    ], "miska-hairfall-routine-9x16.mp4")
+    # ~14s each — 4 slides, 3.5s each
+    render(
+        [
+            (slide_hook, 3.5),
+            (slide_actives, 3.5),
+            (slide_prices, 3.5),
+            (slide_before_after, 3.5),
+        ],
+        "miska-combo99-offer-9x16.mp4",
+    )
+    render(
+        [
+            (slide_problem, 3.5),
+            (slide_offer, 3.5),
+            (slide_before_after, 3.5),
+            (slide_prices, 3.5),
+        ],
+        "miska-hairfall-routine-9x16.mp4",
+    )
 
 
 if __name__ == "__main__":
