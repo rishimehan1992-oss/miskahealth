@@ -1,5 +1,27 @@
 # MISKA Facebook Ads — Creatives & Playbook
 
+## Static images (Feed / Advantage+ / Carousel)
+
+**Folder:** `marketing/facebook-ads/static/`
+
+Each creative is exported in **1080×1080** (square) and **1080×1350** (4:5 feed).
+
+| File | Style | Best for |
+|------|--------|----------|
+| `ad-01-science-actives` | Minimalist — actives chips + formula | Cold traffic, science angle |
+| `ad-02-combo-offer` | Pilgrim — 3 products + COMBO99 | Bundle / offer ad set |
+| `ad-03-oil-hero-price` | Hero product + Rs.399 + SAVE 50% | Bestseller oil, retargeting |
+| `ad-04-before-after` | Before vs After cards | Problem-aware audience |
+| `ad-05-lifestyle-trust` | Lifestyle + clinic trust + COD | Brand trust, women 25–44 |
+
+Regenerate:
+
+```bash
+python3 scripts/generate-fb-ad-images.py
+```
+
+---
+
 ## Video files (9:16 · Reels / Stories / Feed)
 
 | File | Angle | Length |
