@@ -4,10 +4,14 @@
 
 | File | Angle | Length |
 |------|--------|--------|
-| `miska-combo99-offer-9x16.mp4` | Real products → oil ingredients → **before/after** → COMBO99 | ~14s |
-| `miska-hairfall-routine-9x16.mp4` | Problem → shampoo ingredients → **before/after** → oil → routine | ~17s |
+| `miska-combo99-offer-9x16.mp4` | Hook → science actives → products + **Rs.** prices → before/after → trust | ~19s |
+| `miska-hairfall-routine-9x16.mp4` | Problem → shampoo science → **Rs.** price + SAVE % → before/after → routine | ~20s |
 
-**Assets:** Real pack shots only — no marketing hero graphics or glass “golden oil” mock bottle.
+**Currency:** All on-screen prices use `Rs.399` (not `₹`) — Arial cannot render the rupee glyph in video frames.
+
+**Style:** Science-first hooks (Minimalist-style transparency), trust badges, MRP strikethrough + SAVE %, Ken Burns motion.
+
+**Assets:** Real pack shots only — no marketing hero graphics or glass mock bottles.
 
 **Music:** Background track in `audio/ambient-beauty.mp3` (downloaded on first run). Swap that file for your own royalty-free MP3 and re-run.
 
@@ -29,7 +33,7 @@ python3 scripts/generate-fb-ad-videos.py
 
 1. **Advantage+ Shopping Campaign (ASC)** — one catalog/creative mix, Meta finds buyers. Use when you have 2+ creatives and stable checkout.
 2. **Reels / Stories (9:16)** — use the MP4s above; highest reach per rupee for D2C beauty in India.
-3. **Carousel** — slide 1: range hero, slide 2: oil, slide 3: shampoo, slide 4: “COMBO99 · ₹99 off bundles”.
+3. **Carousel** — slide 1: range hero, slide 2: oil, slide 3: shampoo, slide 4: “COMBO99 · Rs.99 off bundles”.
 4. **UGC-style** (film on phone) — 15–30s: “I switched from random rosemary oil to this because of biotin + caffeine on the label.” Performs well next to polished ads.
 
 ### Targeting (India · hair fall / thinning)
