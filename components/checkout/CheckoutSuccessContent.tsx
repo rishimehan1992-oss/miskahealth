@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { formatInr } from "@/lib/cart/pricing";
 import type { OrderRecord } from "@/lib/orders/types";
+import { trackPurchase } from "@/lib/meta/pixel";
 
 const STORAGE_KEY = "miska-last-order";
+const PURCHASE_SENT_KEY = "miska-pixel-purchase-sent-v1";
 
 export default function CheckoutSuccessContent({
   orderId,
@@ -30,6 +32,27 @@ export default function CheckoutSuccessContent({
       /* ignore */
     }
   }, [orderId, serverOrder]);
+
+  useEffect(() => {
+    if (!order) return;
+    try {
+      const sentRaw = sessionStorage.getItem(PURCHASE_SENT_KEY);
+      const sent: Record<string, true> = sentRaw ? (JSON.parse(sentRaw) as Record<string, true>) : {};
+      if (sent[order.id]) return;
+
+      const items = order.items.map((i) => ({
+        id: i.slug,
+        quantity: i.quantity,
+        item_price: i.unitPrice,
+      }));
+      trackPurchase({ order_id: order.id, value: order.amountPaise / 100, items });
+
+      sent[order.id] = true;
+      sessionStorage.setItem(PURCHASE_SENT_KEY, JSON.stringify(sent));
+    } catch {
+      /* non-blocking */
+    }
+  }, [order]);
 
   const totalInr = order
     ? order.amountPaise / 100

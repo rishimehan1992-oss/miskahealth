@@ -1,6 +1,8 @@
 "use client";
 
 import { COD_SHIPPING_FEE, formatInr, type PaymentMethod } from "@/lib/cart/pricing";
+import { useCart } from "@/components/cart/CartProvider";
+import { trackAddPaymentInfo } from "@/lib/meta/pixel";
 
 type Props = {
   value: PaymentMethod;
@@ -8,6 +10,8 @@ type Props = {
 };
 
 export default function PaymentMethodSelector({ value, onChange }: Props) {
+  const { pricedLines, subtotal } = useCart();
+  const items = pricedLines.map((l) => ({ id: l.slug, quantity: l.quantity, item_price: l.unitPrice }));
   return (
     <div className="mb-6" role="radiogroup" aria-label="Payment method">
       <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-[#0A0A0A] mb-3">
@@ -26,7 +30,10 @@ export default function PaymentMethodSelector({ value, onChange }: Props) {
             name="payment-method"
             value="prepaid"
             checked={value === "prepaid"}
-            onChange={() => onChange("prepaid")}
+            onChange={() => {
+              onChange("prepaid");
+              trackAddPaymentInfo({ value: subtotal, items, payment_method: "prepaid" });
+            }}
             className="mt-1 accent-[#1C3A2A]"
           />
           <span>
@@ -49,7 +56,10 @@ export default function PaymentMethodSelector({ value, onChange }: Props) {
             name="payment-method"
             value="cod"
             checked={value === "cod"}
-            onChange={() => onChange("cod")}
+            onChange={() => {
+              onChange("cod");
+              trackAddPaymentInfo({ value: subtotal, items, payment_method: "cod" });
+            }}
             className="mt-1 accent-[#1C3A2A]"
           />
           <span>

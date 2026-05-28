@@ -7,6 +7,7 @@ import ProductLifestyle from "@/components/ProductLifestyle";
 import ProductSubheader from "@/components/ProductSubheader";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 import ProductBuyBar from "@/components/cart/ProductBuyBar";
+import ViewContentPixel from "@/components/meta/ViewContentPixel";
 import { labelCaps, pageShell, sectionYSm } from "@/lib/layout";
 import type { Metadata } from "next";
 
@@ -33,6 +34,7 @@ export default async function ProductPage({ params }: Props) {
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
       <ProductSubheader product={p} backHref="/" backLabel="Back" />
+      <ViewContentPixel id={p.slug} name={p.name} price={p.price ?? 0} />
 
       <div className={`${pageShell} py-12 sm:py-20 lg:py-28`}>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 sm:gap-16 lg:gap-20 xl:gap-24">

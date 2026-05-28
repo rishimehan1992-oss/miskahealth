@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ShoppingBag, Check } from "lucide-react";
 import { useCart } from "./CartProvider";
 import type { Product } from "@/data/products";
+import { trackAddToCart } from "@/lib/meta/pixel";
 
 type Props = {
   product: Product;
@@ -33,6 +34,7 @@ export default function AddToCartButton({
       type="button"
       onClick={() => {
         addItem(product.slug, product.id);
+        trackAddToCart({ id: product.slug, name: product.name, price: product.price ?? 0 });
         openCart();
         setAdded(true);
         window.setTimeout(() => setAdded(false), 2000);

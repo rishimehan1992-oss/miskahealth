@@ -24,6 +24,7 @@ import type { PaymentMethod } from "@/lib/cart/pricing";
 import { hasErrors, validateShipping, type FieldErrors } from "@/lib/checkout/validate";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { pageShell } from "@/lib/layout";
+import { trackInitiateCheckout } from "@/lib/meta/pixel";
 
 const SHIPPING_FORM_ID = "checkout-shipping";
 
@@ -32,7 +33,7 @@ export default function CheckoutFlow() {
   const searchParams = useSearchParams();
   const rawStep = searchParams.get("step");
   const step = parseCheckoutStep(rawStep);
-  const { pricedLines, itemCount, ready, openCart } = useCart();
+  const { pricedLines, itemCount, ready, openCart, subtotal } = useCart();
 
   const [shipping, setShipping] = useState<ShippingAddress>(EMPTY_SHIPPING);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("prepaid");
@@ -50,6 +51,19 @@ export default function CheckoutFlow() {
     setPaymentMethod(readPaymentMethod());
     setHydrated(true);
   }, []);
+
+  useEffect(() => {
+    if (!ready || !hydrated) return;
+    if (itemCount === 0) return;
+    const items = pricedLines.map((l) => ({
+      id: l.slug,
+      quantity: l.quantity,
+      item_price: l.unitPrice,
+    }));
+    trackInitiateCheckout({ value: subtotal, items });
+    // fire once per page load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, hydrated]);
 
   useEffect(() => {
     if (!rawStep || rawStep === "delivery" || rawStep === "pay") return;
