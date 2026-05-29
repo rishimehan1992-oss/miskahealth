@@ -4,7 +4,7 @@ import ImageCarousel from "./ImageCarousel";
 import type { Product } from "@/data/products";
 
 function allProductImages(p: Product) {
-  return [...p.images.gallery, ...p.images.lifestyle];
+  return p.images.gallery;
 }
 
 type Props = {

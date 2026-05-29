@@ -30,7 +30,7 @@ export default function ImageCarousel({ images, alt, priority = false }: Props) 
               src={src}
               alt={`${alt} — ${i + 1}`}
               priority={priority && i === 0}
-              sizes="(max-width: 768px) 100vw, 400px"
+              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 420px"
               className="object-contain p-6 sm:p-8 md:p-10"
             />
           </div>

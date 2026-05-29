@@ -75,8 +75,9 @@ export const products: Product[] = [
     amazonUrl:
       "https://www.amazon.in/Miska-Rosemary-Hair-Contains-Caffeine/dp/B0DPC8L8B9",
     seo: {
-      title: "Rosemary Hair Oil",
-      description: "Rosemary hair oil with biotin, caffeine & castor. ₹399 · 200ml.",
+      title: "Rosemary Hair Oil — Biotin, Caffeine & Castor | MISKA",
+      description:
+        "MISKA Rosemary Hair Oil with biotin, caffeine, castor oil & rosemary. Clinically formulated for hair fall & thinning. 200ml · ₹399. Free shipping on prepaid orders.",
     },
   },
 
@@ -100,12 +101,7 @@ export const products: Product[] = [
         "/products/rosemary-shampoo/image-2.jpg",
         "/products/rosemary-shampoo/image-3.jpg",
       ],
-      lifestyle: [
-        "/products/rosemary-shampoo/lifestyle/lifestyle-1.jpg",
-        "/products/rosemary-shampoo/lifestyle/lifestyle-2.jpg",
-        "/products/rosemary-shampoo/lifestyle/lifestyle-3.jpg",
-        "/products/rosemary-shampoo/lifestyle/lifestyle-4.jpg",
-      ],
+      lifestyle: [],
     },
     description:
       "Not a cosmetic shampoo — a treatment shampoo. Each wash deposits biotin, caffeine, moringa and cappila longa onto the scalp. Sulphate and paraben free.",
@@ -118,8 +114,9 @@ export const products: Product[] = [
     amazonUrl:
       "https://www.amazon.in/Miska-Rosemary-Hair-Stimulates-Contains/dp/B0DPZJRXYF",
     seo: {
-      title: "Rosemary Shampoo",
-      description: "Treatment shampoo with biotin & caffeine. ₹349 · 200ml.",
+      title: "Rosemary Treatment Shampoo — Biotin & Caffeine | MISKA",
+      description:
+        "MISKA Rosemary Treatment Shampoo with biotin, caffeine & moringa. SLS & paraben free. Clinically formulated for hair fall & oily scalp. 200ml · ₹349.",
     },
   },
 
@@ -160,8 +157,9 @@ export const products: Product[] = [
     ],
     amazonUrl: "https://www.amazon.in/dp/B0FXTS927W",
     seo: {
-      title: "Hairfall Control Serum",
-      description: "Clinical hairfall serum with Redensyl, Procapil & Anagain. 60ml.",
+      title: "Hairfall Control Serum — Redensyl, Procapil & Anagain | MISKA",
+      description:
+        "MISKA Hairfall Control Serum with Redensyl, Procapil, Anagain & Capilia Longa. Targets hair fall at the follicle level. 60ml · ₹899. Free shipping on prepaid.",
     },
   },
 ];

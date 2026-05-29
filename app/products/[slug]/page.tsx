@@ -21,7 +21,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const p = getProductBySlug(slug);
   if (!p) return { title: "Not Found" };
-  return { title: p.seo.title, description: p.seo.description };
+  const imageUrl = `https://www.miskahealth.in${p.images.main}`;
+  return {
+    title: p.seo.title,
+    description: p.seo.description,
+    keywords: [p.name, p.category, "hair fall", "MISKA", "India", ...p.formula.map((f) => f.name)],
+    openGraph: {
+      title: p.seo.title,
+      description: p.seo.description,
+      url: `https://www.miskahealth.in/products/${slug}`,
+      images: [{ url: imageUrl, width: 2000, height: 2000, alt: p.name }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: p.seo.title,
+      description: p.seo.description,
+      images: [imageUrl],
+    },
+    alternates: { canonical: `https://www.miskahealth.in/products/${slug}` },
+  };
 }
 
 export default async function ProductPage({ params }: Props) {

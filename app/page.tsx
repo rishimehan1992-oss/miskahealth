@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import BrandMark from "@/components/BrandMark";
@@ -12,6 +13,45 @@ import { getIngredientPage } from "@/data/ingredients";
 import { products } from "@/data/products";
 import { labelCaps, pageShell, sectionY } from "@/lib/layout";
 import { ArrowRight } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "MISKA Hair & Skin Science — Clinical Hair Fall Products",
+  description:
+    "Rosemary hair oil, treatment shampoo and hairfall serum — clinically formulated in Bangalore. Biotin, caffeine & Redensyl. Free shipping on prepaid orders.",
+  keywords: [
+    "hair fall treatment",
+    "rosemary hair oil",
+    "hairfall control serum",
+    "treatment shampoo",
+    "biotin for hair",
+    "caffeine hair growth",
+    "Redensyl serum",
+    "MISKA hair",
+    "clinical hair care India",
+    "hair fall oil India",
+  ],
+  openGraph: {
+    title: "MISKA Hair & Skin Science",
+    description:
+      "Clinical-grade rosemary oil, treatment shampoo & hairfall serum. Developed in a Bangalore clinic. Free shipping on prepaid.",
+    url: "https://www.miskahealth.in",
+    images: [
+      {
+        url: "https://www.miskahealth.in/products/rosemary-hair-oil/image-1.jpg",
+        width: 2000,
+        height: 2000,
+        alt: "MISKA Rosemary Hair Oil",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MISKA Hair & Skin Science",
+    description: "Clinical hair fall actives — rosemary oil, treatment shampoo & serum. Made in India.",
+    images: ["https://www.miskahealth.in/products/rosemary-hair-oil/image-1.jpg"],
+  },
+  alternates: { canonical: "https://www.miskahealth.in" },
+};
 
 export default function Home() {
   return (
