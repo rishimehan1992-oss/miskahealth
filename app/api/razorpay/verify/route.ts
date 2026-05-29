@@ -6,6 +6,7 @@ import { getRazorpayClient } from "@/lib/razorpay/config";
 import { verifyPaymentSignature } from "@/lib/razorpay/verify";
 import { fetchOrderById, persistOrder } from "@/lib/orders/persist";
 import { createClient } from "@/lib/supabase/server";
+import { notifyNewOrder } from "@/lib/telegram";
 import type { OrderRecord } from "@/lib/orders/types";
 
 type Body = {
@@ -109,7 +110,11 @@ export async function POST(request: Request) {
     /* guest */
   }
 
-  await persistOrder({ ...updated, userId: userId ?? undefined }, userId);
+  const finalOrder = { ...updated, userId: userId ?? undefined };
+  await persistOrder(finalOrder, userId);
+
+  // non-blocking Telegram notification
+  void notifyNewOrder(finalOrder);
 
   return NextResponse.json({
     success: true,

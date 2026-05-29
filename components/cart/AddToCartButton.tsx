@@ -6,6 +6,18 @@ import { useCart } from "./CartProvider";
 import type { Product } from "@/data/products";
 import { trackAddToCart } from "@/lib/meta/pixel";
 
+async function notifyCart(product: { name: string; price: number }, qty: number) {
+  try {
+    await fetch("/api/notify/cart", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productName: product.name, quantity: qty, price: product.price }),
+    });
+  } catch {
+    /* non-blocking */
+  }
+}
+
 type Props = {
   product: Product;
   className?: string;
@@ -35,6 +47,7 @@ export default function AddToCartButton({
       onClick={() => {
         addItem(product.slug, product.id);
         trackAddToCart({ id: product.slug, name: product.name, price: product.price ?? 0 });
+        void notifyCart({ name: product.name, price: product.price ?? 0 }, 1);
         openCart();
         setAdded(true);
         window.setTimeout(() => setAdded(false), 2000);

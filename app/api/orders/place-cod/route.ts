@@ -4,6 +4,7 @@ import type { CartLine } from "@/lib/cart/types";
 import type { ShippingAddress } from "@/lib/checkout/types";
 import { persistOrder } from "@/lib/orders/persist";
 import { createClient } from "@/lib/supabase/server";
+import { notifyNewOrder } from "@/lib/telegram";
 import type { OrderRecord } from "@/lib/orders/types";
 
 type Body = {
@@ -61,6 +62,9 @@ export async function POST(request: Request) {
     console.error("COD order persist failed:", err);
     return NextResponse.json({ error: "Could not save order. Try again." }, { status: 502 });
   }
+
+  // non-blocking Telegram notification
+  void notifyNewOrder(record);
 
   return NextResponse.json({
     orderId: record.id,
