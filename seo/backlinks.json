@@ -1,0 +1,17 @@
+{
+  "updatedAt": "2026-05-29",
+  "prospects": [
+    {
+      "id": "bl-001",
+      "site": "Example — Indian beauty listicle",
+      "url": "",
+      "type": "listicle",
+      "targetPage": "/products/rosemary-hair-oil",
+      "status": "prospect",
+      "contactedAt": null,
+      "liveAt": null,
+      "anchor": "",
+      "notes": "Replace with real prospect from outreach"
+    }
+  ]
+}

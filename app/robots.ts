@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/checkout", "/cart", "/orders", "/api/", "/auth/"],
+        disallow: ["/checkout", "/cart", "/orders", "/admin", "/api/", "/auth/"],
       },
     ],
     sitemap: "https://www.miskahealth.in/sitemap.xml",

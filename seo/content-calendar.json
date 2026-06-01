@@ -1,0 +1,59 @@
+{
+  "updatedAt": "2026-05-29",
+  "posts": [
+    {
+      "id": "post-004",
+      "title": "How to use rosemary oil for hair fall (step-by-step)",
+      "targetKeyword": "how to use rosemary oil for hair fall",
+      "slug": "rosemary-oil-hair-fall-how-to-use",
+      "relatedProductSlug": "rosemary-hair-oil",
+      "status": "published",
+      "dueDate": "2026-06-15",
+      "publishedSlug": "rosemary-oil-hair-fall-how-to-use"
+    },
+    {
+      "id": "post-005",
+      "title": "Hair fall routine for women in India — oil, wash, serum",
+      "targetKeyword": "hair fall routine for women",
+      "slug": "hair-fall-routine-women-india",
+      "relatedProductSlug": "hair-scalp-serum",
+      "status": "planned",
+      "dueDate": "2026-06-30",
+      "publishedSlug": null
+    },
+    {
+      "id": "post-006",
+      "title": "Why SLS-free shampoo matters when you're losing hair",
+      "targetKeyword": "SLS free shampoo hair fall",
+      "slug": "sls-free-shampoo-hair-fall",
+      "relatedProductSlug": "rosemary-shampoo",
+      "status": "planned",
+      "dueDate": "2026-07-15",
+      "publishedSlug": null
+    },
+    {
+      "id": "post-001",
+      "title": "Why rosemary belongs in a serious hair-fall routine",
+      "targetKeyword": "rosemary hair oil for hair fall",
+      "slug": "rosemary-scalp-science-hair-fall",
+      "status": "published",
+      "publishedSlug": "rosemary-scalp-science-hair-fall"
+    },
+    {
+      "id": "post-002",
+      "title": "Treatment shampoo vs regular shampoo",
+      "targetKeyword": "treatment shampoo hair fall",
+      "slug": "treatment-shampoo-hair-fall",
+      "status": "published",
+      "publishedSlug": "treatment-shampoo-hair-fall"
+    },
+    {
+      "id": "post-003",
+      "title": "When a hairfall serum beats oil",
+      "targetKeyword": "hair fall serum Redensyl",
+      "slug": "hairfall-serum-peptides-guide",
+      "status": "published",
+      "publishedSlug": "hairfall-serum-peptides-guide"
+    }
+  ]
+}

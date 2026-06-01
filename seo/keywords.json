@@ -1,0 +1,115 @@
+{
+  "updatedAt": "2026-05-29",
+  "market": "IN",
+  "domain": "https://www.miskahealth.in",
+  "keywords": [
+    {
+      "id": "kw-001",
+      "keyword": "rosemary hair oil for hair fall",
+      "priority": "P0",
+      "intent": "commercial",
+      "targetUrl": "/products/rosemary-hair-oil",
+      "volumeNote": "high — core product",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-002",
+      "keyword": "rosemary oil hair growth India",
+      "priority": "P0",
+      "intent": "commercial",
+      "targetUrl": "/products/rosemary-hair-oil",
+      "volumeNote": "high",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-003",
+      "keyword": "hair fall shampoo India",
+      "priority": "P0",
+      "intent": "commercial",
+      "targetUrl": "/products/rosemary-shampoo",
+      "volumeNote": "high",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-004",
+      "keyword": "treatment shampoo hair fall",
+      "priority": "P1",
+      "intent": "commercial",
+      "targetUrl": "/products/rosemary-shampoo",
+      "volumeNote": "medium",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-005",
+      "keyword": "SLS free shampoo hair fall",
+      "priority": "P1",
+      "intent": "commercial",
+      "targetUrl": "/products/rosemary-shampoo",
+      "volumeNote": "medium — blog support needed",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-006",
+      "keyword": "hair fall serum India",
+      "priority": "P0",
+      "intent": "commercial",
+      "targetUrl": "/products/hair-scalp-serum",
+      "volumeNote": "high",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-007",
+      "keyword": "Redensyl serum hair fall",
+      "priority": "P1",
+      "intent": "commercial",
+      "targetUrl": "/products/hair-scalp-serum",
+      "volumeNote": "medium — ingredient aware",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-008",
+      "keyword": "how to use rosemary oil for hair fall",
+      "priority": "P1",
+      "intent": "informational",
+      "targetUrl": "/blog/rosemary-oil-hair-fall-how-to-use",
+      "volumeNote": "high",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-009",
+      "keyword": "hair fall routine for women",
+      "priority": "P1",
+      "intent": "informational",
+      "targetUrl": "/blog/hair-fall-routine-women-india",
+      "volumeNote": "medium",
+      "status": "planned-content"
+    },
+    {
+      "id": "kw-010",
+      "keyword": "biotin caffeine hair fall",
+      "priority": "P2",
+      "intent": "informational",
+      "targetUrl": "/blog/rosemary-scalp-science-hair-fall",
+      "volumeNote": "medium — existing post partial match",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-011",
+      "keyword": "MISKA hair oil",
+      "priority": "P0",
+      "intent": "branded",
+      "targetUrl": "/",
+      "volumeNote": "brand",
+      "status": "tracking"
+    },
+    {
+      "id": "kw-012",
+      "keyword": "clinical hair care India",
+      "priority": "P2",
+      "intent": "commercial",
+      "targetUrl": "/",
+      "volumeNote": "low-medium",
+      "status": "tracking"
+    }
+  ]
+}

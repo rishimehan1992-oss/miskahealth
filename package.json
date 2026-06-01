@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seo:audit": "node scripts/seo-audit.mjs",
+    "seo:ranks": "node scripts/seo-rank-check.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.3",

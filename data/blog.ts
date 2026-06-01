@@ -17,6 +17,54 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "rosemary-oil-hair-fall-how-to-use",
+    title: "How to use rosemary oil for hair fall — step by step",
+    excerpt:
+      "Apply to the scalp, not just the lengths. A simple rosemary oil routine for hair fall: when to use, how much, and what to pair with your wash day.",
+    date: "2026-06-01",
+    readTime: "5 min",
+    category: "Hair science",
+    image: "/products/rosemary-hair-oil/image-1.jpg",
+    relatedProductSlug: "rosemary-hair-oil",
+    sections: [
+      {
+        paragraphs: [
+          "Rosemary oil for hair fall only works when it reaches the scalp. Most people pour oil on mid-lengths, tie up, and wonder why shedding continues. Follicles live in the scalp — circulation, anchoring, and growth phase are decided there.",
+          "This guide is a practical routine for India’s climate: leave-on night application, gentle treatment shampoo on wash days, and consistency over eight to twelve weeks.",
+        ],
+      },
+      {
+        heading: "When to apply rosemary oil",
+        paragraphs: [
+          "Use on non-wash nights or at least four to six hours before shampooing. Evening works well — the scalp is not exposed to pollution or heat styling right after application.",
+          "If you wash hair every two to three days, oil on alternate nights is enough. Daily heavy oiling can clog pores on oily scalps.",
+        ],
+      },
+      {
+        heading: "Step-by-step application",
+        paragraphs: [
+          "Part dry or towel-damp hair into sections. Using the dropper or fingertips, apply oil directly along the partings — crown, temples, and thinning zones first.",
+          "Use roughly one to two teaspoons for shoulder-length hair; adjust for density. Massage with fingertips for two to three minutes in small circles. Do not scratch.",
+          "Leave in overnight or for a minimum of two hours. In the morning, wash with a sulphate-free treatment shampoo so actives deposit without stripping.",
+        ],
+      },
+      {
+        heading: "What to pair with rosemary oil",
+        paragraphs: [
+          "Rosemary supports scalp microcirculation. Biotin helps keratin structure; caffeine supports follicles under DHT-linked stress. MISKA Rosemary Hair Oil combines these in a leave-on base.",
+          "On wash days, use a treatment shampoo that deposits rosemary and caffeine — not a harsh clarifier. For advanced thinning, add a peptide serum on clean scalp mornings. See our notes on treatment shampoo vs regular shampoo and when a serum beats oil alone.",
+        ],
+      },
+      {
+        heading: "Common mistakes",
+        paragraphs: [
+          "Applying only to ends, skipping massage, washing too soon, or switching products every week. Track shedding loosely — bathroom drain and part width — not daily panic.",
+          "Patch test behind the ear if you are new to essential-oil-based formulas. Stop if you see persistent redness or itching.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "rosemary-scalp-science-hair-fall",
     title: "Why rosemary belongs in a serious hair-fall routine",
     excerpt:

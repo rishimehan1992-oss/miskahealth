@@ -33,7 +33,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/products`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE}/ingredients`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${BASE}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE}/cart`, lastModified: now, changeFrequency: "monthly", priority: 0.3 },
     ...productUrls,
     ...ingredientUrls,
     ...blogUrls,

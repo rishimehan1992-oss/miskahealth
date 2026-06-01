@@ -1,0 +1,4 @@
+{
+  "description": "Daily rank snapshots. Keys are ISO dates (YYYY-MM-DD). Ranks are Google organic position (1 = top). null = not in top 100.",
+  "snapshots": {}
+}

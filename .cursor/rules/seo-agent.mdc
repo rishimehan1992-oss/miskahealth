@@ -1,0 +1,15 @@
+---
+description: MISKA SEO Agent — organic traffic, keywords, blog, backlinks. Use when editing seo/, data/blog.ts, sitemap, or metadata.
+globs: seo/**,data/blog.ts,app/sitemap.ts,app/robots.ts,SEO-AGENT.md,.cursor/skills/miska-seo-agent/**
+alwaysApply: false
+---
+
+# SEO Agent context
+
+When working on these files, follow `.cursor/skills/miska-seo-agent/SKILL.md`.
+
+- Target market: India, English, hair fall / rosemary / clinical actives
+- Canonical domain: https://www.miskahealth.in
+- Blog voice: science-backed, plain language — no cure claims
+- Every new blog post: update `seo/content-calendar.json`, internal links, run `npm run seo:audit`
+- Keyword cannibalization: one primary URL per keyword in `seo/keywords.json`

@@ -18,7 +18,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getBlogPost(slug);
   if (!post) return { title: "Not Found" };
-  return { title: post.title, description: post.excerpt };
+  const url = `https://www.miskahealth.in/blog/${slug}`;
+  const imageUrl = `https://www.miskahealth.in${post.image}`;
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: url },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      url,
+      type: "article",
+      publishedTime: post.date,
+      images: [{ url: imageUrl, width: 2000, height: 2000, alt: post.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [imageUrl],
+    },
+  };
 }
 
 function formatDate(iso: string) {
@@ -37,8 +57,28 @@ export default async function BlogPostPage({ params }: Props) {
   const related = post.relatedProductSlug ? getProductBySlug(post.relatedProductSlug) : undefined;
   const otherPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    image: `https://www.miskahealth.in${post.image}`,
+    author: { "@type": "Organization", name: "MISKA Hair & Skin Science" },
+    publisher: {
+      "@type": "Organization",
+      name: "MISKA Hair & Skin Science",
+      url: "https://www.miskahealth.in",
+    },
+    mainEntityOfPage: `https://www.miskahealth.in/blog/${slug}`,
+  };
+
   return (
     <main className="bg-[#F9F8F5] min-h-screen overflow-x-clip">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <Navbar />
 
       <article className={`${pageShell} pt-28 sm:pt-32 pb-20 sm:pb-28`}>
