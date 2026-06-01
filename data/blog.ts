@@ -17,6 +17,59 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "hair-fall-routine-women-india",
+    title: "Hair fall routine for women in India — oil, wash, serum",
+    excerpt:
+      "A simple weekly rhythm for hair fall: rosemary oil on scalp nights, sulphate-free treatment shampoo, and when to add a peptide serum for thinning at the part line.",
+    date: "2026-06-01",
+    readTime: "6 min",
+    category: "Hair science",
+    image: "/products/hair-scalp-serum/image-1.jpg",
+    relatedProductSlug: "hair-scalp-serum",
+    sections: [
+      {
+        paragraphs: [
+          "Hair fall in women is rarely one cause. Stress, postpartum shifts, tight hairstyles, hard water, and harsh cleansers stack on top of genetics. A routine that works in India’s heat and pollution does not need ten products — it needs three roles done consistently: nourish roots, wash without stripping, signal growth where thinning shows.",
+        ],
+      },
+      {
+        heading: "Weekly rhythm at a glance",
+        paragraphs: [
+          "Wash every two to three days with a treatment shampoo. On non-wash nights, apply rosemary hair oil to the scalp and massage two to three minutes. If the part line is widening or shedding is above your normal baseline, add a peptide serum on clean scalp mornings — not on heavy oil nights.",
+          "Keep the same rhythm for eight to twelve weeks before judging results. Switching products weekly makes it impossible to know what helped.",
+        ],
+      },
+      {
+        heading: "Step 1 — Rosemary oil (scalp nights)",
+        paragraphs: [
+          "Part hair in sections. Apply oil along the scalp, especially temples and crown. Use one to two teaspoons for shoulder-length hair. Leave at least two hours or overnight.",
+          "Rosemary supports circulation; biotin supports keratin structure; caffeine helps follicles under everyday DHT-linked stress. MISKA Rosemary Hair Oil is built as a leave-on scalp treatment, not a length-only shine oil.",
+        ],
+      },
+      {
+        heading: "Step 2 — Treatment shampoo (wash days)",
+        paragraphs: [
+          "Choose sulphate-free shampoo that deposits actives during the wash — rosemary, caffeine, moringa — without a squeaky, tight scalp. That is the difference between treatment shampoo and regular shampoo.",
+          "MISKA Rosemary Shampoo is designed for frequent washing in Indian climates without undoing your oil nights.",
+        ],
+      },
+      {
+        heading: "Step 3 — Serum when thinning is visible",
+        paragraphs: [
+          "If shedding is advanced — visible scalp at the part, ponytail circumference shrinking — add a low-viscosity serum with Redensyl, Procapil, or Anagain on clean, dry scalp. Apply in rows along partings; do not rinse out.",
+          "MISKA Hairfall Control Serum layers peptide actives for follicle signalling. Pair with gentle washing; avoid stacking five styling products on the same day.",
+        ],
+      },
+      {
+        heading: "What to avoid",
+        paragraphs: [
+          "Daily heat on the roots, tight buns while hair is wet, skipping wash after heavy sweat, and oiling only the ends. Patch test new actives behind the ear.",
+          "See a dermatologist if you have sudden bald patches, scarring, or shedding with scalp pain — those need diagnosis beyond home care.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "rosemary-oil-hair-fall-how-to-use",
     title: "How to use rosemary oil for hair fall — step by step",
     excerpt:
