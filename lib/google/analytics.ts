@@ -37,10 +37,15 @@ function gaEvent(event: string, params: Record<string, unknown>) {
       function (...args: unknown[]) {
         window.dataLayer!.push(args);
       };
-    gtag("event", event, {
+    const payload = {
       send_to: GA_MEASUREMENT_ID,
       ...params,
-    });
+      ...(isGaDebugMode() ? { debug_mode: true } : {}),
+    };
+    gtag("event", event, payload);
+    if (isGaDebugMode()) {
+      console.info(`[MISKA GA] event: ${event}`, payload);
+    }
   } catch {
     /* non-blocking */
   }

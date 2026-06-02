@@ -33,10 +33,28 @@ Official guide: [Create or modify key events](https://support.google.com/analyti
 
 ## Step 1 — Verify events (DebugView)
 
-1. Open your site with debug mode:  
-   `https://www.miskahealth.in?debug_ga=1`
-2. In GA4: **Admin → Data display → DebugView** (left column while debugging).
-3. Do this flow:
+DebugView only shows traffic when **debug mode is on** in the browser you’re testing. If you see *“No development devices have logged any debug events”*, do **A + B** below.
+
+### A — Enable debug on the site (required)
+
+1. Open (bookmark this):  
+   **`https://www.miskahealth.in?debug_ga=1`**
+2. Open browser **DevTools → Console**. You should see:  
+   `[MISKA GA] Debug mode enabled — open GA4 → Admin → DebugView`
+3. Stay on that tab; browse with `?debug_ga=1` on the URL **or** debug stays on via localStorage after first visit.
+
+### B — Chrome extension (if A still shows nothing)
+
+1. Install [Google Analytics Debugger](https://chrome.google.com/webstore/detail/google-analytics-debugger/jnkmfdileelhofjcijamephohjechfla) in Chrome.
+2. Turn the extension **ON** (icon lit).
+3. Reload `https://www.miskahealth.in?debug_ga=1` with ad blockers **disabled** for this site.
+
+### C — GA4 DebugView
+
+1. Use the **same Google account** that owns the Analytics property.
+2. **Admin → Data display → DebugView** (not Realtime).
+3. Within ~30 seconds you should see your device and `miska_debug_ping`, then `page_view`.
+4. Do this flow:
    - Open a product page → expect `view_item`
    - Click **Add to cart** → expect `add_to_cart`
    - Go to checkout → expect `begin_checkout`
@@ -77,6 +95,7 @@ You do **not** need a separate “thank you page” event if `purchase` already 
 
 | Problem | Fix |
 |---------|-----|
+| DebugView empty | `?debug_ga=1` + Console log; GA Debugger extension; same Google login as GA4; ad blocker off |
 | No events at all | Ad blocker off; confirm `G-JP9Q237XV0` in page source; try `?debug_ga=1` |
 | `add_to_cart` missing | Click Add to cart on a product page after deploy |
 | `purchase` missing | Must reach `/checkout/success?order=...` with order data |
