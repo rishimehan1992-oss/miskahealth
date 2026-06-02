@@ -117,6 +117,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = useCallback(() => {
     persist([]);
+    // If the user checks out with the drawer open, keep UX clean.
+    setDrawerOpen(false);
     clearCouponCode();
     setCouponCode(null);
   }, [persist]);
