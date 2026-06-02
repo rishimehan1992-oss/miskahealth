@@ -1,9 +1,12 @@
 /**
- * GA4 ecommerce events via gtag (G-JP9Q237XV0 in app/layout.tsx).
+ * GA4 ecommerce events — queued via dataLayer so nothing is lost before gtag.js loads.
  * @see https://developers.google.com/analytics/devguides/collection/ga4/ecommerce
  */
+export const GA_MEASUREMENT_ID = "G-JP9Q237XV0";
+
 declare global {
   interface Window {
+    dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
   }
 }
@@ -24,13 +27,32 @@ function gaItems(items: AnalyticsLineItem[]) {
   }));
 }
 
+/** Push event the same way gtag.js does — works before the external script finishes loading. */
 function gaEvent(event: string, params: Record<string, unknown>) {
   if (typeof window === "undefined") return;
-  if (typeof window.gtag !== "function") return;
   try {
-    window.gtag("event", event, params);
+    window.dataLayer = window.dataLayer ?? [];
+    const gtag =
+      window.gtag ??
+      function (...args: unknown[]) {
+        window.dataLayer!.push(args);
+      };
+    gtag("event", event, {
+      send_to: GA_MEASUREMENT_ID,
+      ...params,
+    });
   } catch {
     /* non-blocking */
+  }
+}
+
+export function isGaDebugMode(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    if (window.location.search.includes("debug_ga=1")) return true;
+    return localStorage.getItem("miska-ga-debug") === "1";
+  } catch {
+    return false;
   }
 }
 

@@ -7,6 +7,7 @@ import "./globals.css";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import SiteChrome from "@/components/SiteChrome";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 const geist = Geist({
   variable: "--font-sans",
@@ -43,19 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${geist.variable} ${playfair.variable} antialiased`}>
-        {/* Google Analytics */}
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-JP9Q237XV0"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-JP9Q237XV0');
-          `}
-        </Script>
+        <GoogleAnalytics />
 
         {/* Meta Pixel */}
         <Script id="meta-pixel" strategy="afterInteractive">
