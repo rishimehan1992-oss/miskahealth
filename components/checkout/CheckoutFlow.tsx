@@ -24,7 +24,7 @@ import type { PaymentMethod } from "@/lib/cart/pricing";
 import { hasErrors, validateShipping, type FieldErrors } from "@/lib/checkout/validate";
 import { useAuth } from "@/components/auth/AuthProvider";
 import { pageShell } from "@/lib/layout";
-import { trackInitiateCheckout } from "@/lib/meta/pixel";
+import { trackInitiateCheckout } from "@/lib/analytics/ecommerce";
 
 const SHIPPING_FORM_ID = "checkout-shipping";
 

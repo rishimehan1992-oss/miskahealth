@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ShoppingBag, Check } from "lucide-react";
 import { useCart } from "./CartProvider";
 import type { Product } from "@/data/products";
-import { trackAddToCart } from "@/lib/meta/pixel";
+import { trackAddToCart } from "@/lib/analytics/ecommerce";
 
 async function notifyCart(product: { name: string; price: number }, qty: number) {
   try {

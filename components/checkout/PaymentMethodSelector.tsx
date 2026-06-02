@@ -2,7 +2,7 @@
 
 import { COD_SHIPPING_FEE, formatInr, type PaymentMethod } from "@/lib/cart/pricing";
 import { useCart } from "@/components/cart/CartProvider";
-import { trackAddPaymentInfo } from "@/lib/meta/pixel";
+import { trackAddPaymentInfo } from "@/lib/analytics/ecommerce";
 
 type Props = {
   value: PaymentMethod;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { trackViewContent } from "@/lib/meta/pixel";
+import { trackViewContent } from "@/lib/analytics/ecommerce";
 
 export default function ViewContentPixel({
   id,

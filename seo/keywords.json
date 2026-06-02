@@ -44,8 +44,8 @@
       "keyword": "SLS free shampoo hair fall",
       "priority": "P1",
       "intent": "commercial",
-      "targetUrl": "/products/rosemary-shampoo",
-      "volumeNote": "medium — blog support needed",
+      "targetUrl": "/blog/sls-free-shampoo-hair-fall",
+      "volumeNote": "medium",
       "status": "tracking"
     },
     {

@@ -17,6 +17,52 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: "sls-free-shampoo-hair-fall",
+    title: "Why SLS-free shampoo matters when you're losing hair",
+    excerpt:
+      "Sulphates clean well but can leave the scalp tight and stressed. For hair fall, a gentle treatment shampoo deposits actives without the daily strip.",
+    date: "2026-06-01",
+    readTime: "5 min",
+    category: "Scalp care",
+    image: "/products/rosemary-shampoo/image-1.jpg",
+    relatedProductSlug: "rosemary-shampoo",
+    sections: [
+      {
+        paragraphs: [
+          "Hair fall is not only about what you add — it is about what your wash removes. Sodium lauryl sulphate (SLS) and similar sulphates are strong surfactants. They lift oil and build-up fast, but many people finish with a tight, squeaky scalp.",
+          "When follicles are already under stress from shedding, hard water, or heat styling, that tightness is a signal worth listening to.",
+        ],
+      },
+      {
+        heading: "What sulphate-free really means",
+        paragraphs: [
+          "SLS-free does not mean non-cleansing. It means the cleanser is milder and less likely to strip the scalp barrier you need for comfortable daily washing.",
+          "For hair fall routines in India — sweat, pollution, frequent washing — you still need a shampoo that cleans. The goal is clean without panic at the root.",
+        ],
+      },
+      {
+        heading: "Treatment shampoo vs regular sulphate-free",
+        paragraphs: [
+          "A mild shampoo that only rinses clean is step one. A treatment shampoo also deposits actives during the wash window — rosemary and caffeine for follicle support, moringa for antioxidant defence, peptides for density signalling.",
+          "MISKA Rosemary Shampoo is SLS- and paraben-free by design, so you can wash every two to three days without undoing overnight oil or serum work.",
+        ],
+      },
+      {
+        heading: "How to build your wash day",
+        paragraphs: [
+          "Focus product on the scalp, not only lengths. Massage for a minute, rinse thoroughly, and avoid piling conditioner on the root if your scalp runs oily.",
+          "Pair with rosemary hair oil on non-wash nights. If thinning is visible at the part line, add a peptide serum on clean scalp mornings.",
+        ],
+      },
+      {
+        heading: "When to see a specialist",
+        paragraphs: [
+          "Sudden patches, pain, or scarring need a dermatologist — not a shampoo change alone. For gradual shedding with a stressed scalp feel, switching off harsh sulphates is a low-risk first move.",
+        ],
+      },
+    ],
+  },
+  {
     slug: "hair-fall-routine-women-india",
     title: "Hair fall routine for women in India — oil, wash, serum",
     excerpt:
