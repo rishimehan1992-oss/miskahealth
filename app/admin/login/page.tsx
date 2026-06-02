@@ -33,7 +33,6 @@ export default async function AdminLoginPage({
               name="password"
               type="password"
               autoComplete="current-password"
-              autoFocus
               required
               className="w-full border-b border-[#E5E2DB] bg-transparent py-3 text-[16px] text-[#0A0A0A] placeholder:text-[#BBB] focus:outline-none focus:border-[#1C3A2A]"
               placeholder="Admin password"
