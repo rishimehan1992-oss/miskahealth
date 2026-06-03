@@ -84,7 +84,49 @@
         "keyword": "MISKA hair oil",
         "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
       }
+    },
+    "2026-06-03": {
+      "kw-001": {
+        "keyword": "rosemary hair oil for hair fall",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-002": {
+        "keyword": "rosemary oil hair growth India",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-003": {
+        "keyword": "hair fall shampoo India",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-004": {
+        "keyword": "treatment shampoo hair fall",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-005": {
+        "keyword": "SLS free shampoo hair fall",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-006": {
+        "keyword": "hair fall serum India",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-007": {
+        "keyword": "Redensyl serum hair fall",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-008": {
+        "keyword": "how to use rosemary oil for hair fall",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-009": {
+        "keyword": "hair fall routine for women",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      },
+      "kw-011": {
+        "keyword": "MISKA hair oil",
+        "error": "SerpAPI 401: {\n  \"error\": \"Invalid API key. Your API key should be here: https://serpapi.com/manage-api-key\"\n}"
+      }
     }
   },
-  "lastRun": "2026-06-02"
+  "lastRun": "2026-06-03"
 }
