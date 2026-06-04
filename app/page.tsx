@@ -221,6 +221,9 @@ export default function Home() {
               <Link href="/terms" className="hover:text-[#1C3A2A]">
                 Terms
               </Link>
+              <Link href="/return-policy" className="hover:text-[#1C3A2A]">
+                Returns
+              </Link>
             </p>
           </div>
         </div>

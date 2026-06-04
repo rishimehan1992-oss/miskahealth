@@ -40,8 +40,11 @@ export default function TermsPage() {
             <h2 className="text-[#0A0A0A] font-medium text-[17px] mb-2">Shipping &amp; returns</h2>
             <p>
               Delivery is currently offered within India. Prepaid orders include free shipping; cash on delivery includes a ₹49 shipping fee shown at checkout.
-              Returns and refunds follow our published return policy and applicable consumer law in India.
-              Contact us for order-specific issues.
+              We do not accept returns. Exchanges for transit damage only are described in our{" "}
+              <Link href="/return-policy" className="text-[#1C3A2A] hover:underline">
+                Return &amp; Exchange Policy
+              </Link>
+              . Contact us for order-specific issues.
             </p>
           </section>
 
@@ -89,6 +92,10 @@ export default function TermsPage() {
         </div>
 
         <p className="mt-12 text-[12px] text-[#AAA]">
+          <Link href="/return-policy" className="text-[#1C3A2A] hover:underline">
+            Return Policy
+          </Link>
+          {" · "}
           <Link href="/privacy" className="text-[#1C3A2A] hover:underline">
             Privacy Policy
           </Link>
