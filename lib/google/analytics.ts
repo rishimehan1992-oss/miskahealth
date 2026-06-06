@@ -28,7 +28,7 @@ function gaItems(items: AnalyticsLineItem[]) {
   }));
 }
 
-/** Push event the same way gtag.js does — works before the external script finishes loading. */
+/** GA4 ecommerce event */
 function gaEvent(event: string, params: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   try {
@@ -46,6 +46,26 @@ function gaEvent(event: string, params: Record<string, unknown>) {
     gtag("event", event, payload);
     if (isGaDebugMode()) {
       console.info(`[MISKA GA] event: ${event}`, payload);
+    }
+  } catch {
+    /* non-blocking */
+  }
+}
+
+/** Google Ads conversion / remarketing event */
+function gaAdsEvent(event: string, params: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  try {
+    window.dataLayer = window.dataLayer ?? [];
+    const gtag =
+      window.gtag ??
+      function (...args: unknown[]) {
+        window.dataLayer!.push(args);
+      };
+    const payload = { send_to: GOOGLE_ADS_ID, ...params };
+    gtag("event", event, payload);
+    if (isGaDebugMode()) {
+      console.info(`[MISKA Ads] event: ${event}`, payload);
     }
   } catch {
     /* non-blocking */
@@ -75,6 +95,10 @@ export function trackAddToCart(product: { id: string; name: string; price: numbe
     currency: "INR",
     value: product.price,
     items: gaItems([{ id: product.id, name: product.name, quantity: 1, item_price: product.price }]),
+  });
+  gaAdsEvent("ads_conversion_add_to_cart", {
+    currency: "INR",
+    value: product.price,
   });
 }
 
