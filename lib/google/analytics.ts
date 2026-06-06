@@ -3,6 +3,7 @@
  * @see https://developers.google.com/analytics/devguides/collection/ga4/ecommerce
  */
 export const GA_MEASUREMENT_ID = "G-JP9Q237XV0";
+export const GOOGLE_ADS_ID = "AW-11299806152";
 
 declare global {
   interface Window {
